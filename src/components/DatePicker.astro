@@ -1,0 +1,39 @@
+---
+import { getInputDateString } from '@/utils/utils';
+type Props = {
+  label: string;
+  name: string;
+  required?: boolean;
+  value?: Date | null;
+  min?: Date;
+};
+const { label, name, required = false, value, min } = Astro.props;
+---
+
+<div class='flex flex-col gap-2'>
+  <label for={name} class='label-text'>{label}</label>
+  <input
+    required={required}
+    type='date'
+    id={name}
+    name={name}
+    value={value ? getInputDateString(value) : undefined}
+    min={min ? getInputDateString(min) : undefined}
+    class='input input-bordered rounded-lg p-2 font-semibold hover:cursor-pointer'
+  />
+</div>
+<style>
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  input {
+    font-size: min(3.5vw, 16px);
+    animation-name: fade;
+    animation-duration: 300ms;
+  }
+</style>

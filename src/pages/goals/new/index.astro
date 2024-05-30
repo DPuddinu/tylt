@@ -1,0 +1,38 @@
+---
+import { validateGoal } from '@/utils/validation';
+import GoalForm from '@components/GoalForm.astro';
+import Layout from '@layouts/Layout.astro';
+import { Category, Goal, db, eq } from 'astro:db';
+
+const { user } = Astro.locals;
+const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  const data = validateGoal(formData);
+  const { title, description, completed, categoryId, completionDate, dueDate } = data;
+  try {
+    await db.insert(Goal).values({
+      authorId: user.id,
+      authorName: user.name,
+      categoryId,
+      title,
+      description: description ?? '',
+      creationDate: new Date(),
+      updateDate: new Date(),
+      completionDate: completionDate,
+      dueDate: dueDate,
+      completed
+    });
+
+    return Astro.redirect('/goals');
+  } catch (error) {
+    return Astro.redirect('/goals/new/error');
+  }
+}
+---
+
+<Layout pageName='New'>
+  <GoalForm title='Add New Goal' categories={categories} />
+</Layout>

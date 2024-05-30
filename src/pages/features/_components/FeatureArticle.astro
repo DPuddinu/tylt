@@ -1,0 +1,23 @@
+---
+type Props = {
+  title: string;
+  paragraph: string;
+};
+const { paragraph, title } = Astro.props;
+---
+
+<article class='grid h-28 gap-1'>
+  <div class='grid h-24 grid-cols-10 grid-rows-2'>
+    <div class='col-span-2 m-auto md:col-span-2'>
+      <slot name='icon' />
+    </div>
+    <div class='col-span-8 content-center md:col-span-6'>
+      <h3 class='line-clamp-1 text-4xl font-semibold '>{title}</h3>
+    </div>
+    <div class='col-span-8 col-start-3 md:col-span-8 md:col-start-3'>
+      <p class='text-pretty px-1 text-base opacity-85 md:text-lg'>
+        {paragraph}
+      </p>
+    </div>
+  </div>
+</article>

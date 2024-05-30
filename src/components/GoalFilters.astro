@@ -1,0 +1,63 @@
+---
+import type { Filters } from '@/types/filters';
+import Checkbox from '@components/Checkbox.astro';
+import DatePicker from '@components/DatePicker.astro';
+import type { TCategory } from 'db/config';
+import AstroSelect from './AstroSelect.astro';
+
+type Props = {
+  categories: TCategory[];
+  filters: Filters;
+};
+const { categories, filters } = Astro.props;
+const { from_date, to_date, filterCategory, expired, notExpired, completed, notCompleted } = filters;
+---
+
+<aside class='collapse collapse-arrow h-fit w-auto border border-base-300/50 bg-base-200 shadow sm:collapse-open'>
+  <input type='checkbox' />
+  <header class='collapse-title text-xl font-medium'>Filters</header>
+  <section class='collapse-content'>
+    <form id='filter-form' method='get' class='flex flex-col gap-4'>
+      <div class='grid grid-cols-2 gap-2'>
+        <DatePicker name='from_date' label='From Date' value={from_date ? new Date(from_date) : null} />
+        <DatePicker name='to_date' label='To Date' value={to_date ? new Date(to_date) : null} />
+      </div>
+
+      <div class='flex flex-col gap-2'>
+        <label for='select-category' class='label-text'>Select Category</label>
+        <AstroSelect
+          value={filterCategory}
+          options={categories}
+          label={'name'}
+          fieldKey={'id'}
+          id='select-category'
+          name='category'
+          form='filter-form'
+        />
+      </div>
+      <div class='space-y-4 py-2'>
+        <Checkbox checked={!!completed} label='Completed' name='completed' />
+        <Checkbox checked={!!notCompleted} label='Not Completed' name='not-completed' />
+        <Checkbox checked={!!expired} label='Expired' name='expired' />
+        <Checkbox checked={!!notExpired} label='not-expired' name='not-expired' />
+      </div>
+
+      <button type='submit' class='btn bg-base-300 hover:border-base-300 hover:bg-base-300/80'>Filter</button>
+      <a href='/goals' class='btn bg-base-300 hover:border-base-300 hover:bg-base-300/80'>Reset</a>
+    </form>
+  </section>
+</aside>
+
+<style>
+  input[type='date'] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  @media screen and (min-width: 640px) {
+    .collapse-arrow > .collapse-title:after {
+      display: none;
+    }
+  }
+</style>

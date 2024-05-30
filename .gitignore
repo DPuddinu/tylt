@@ -12,7 +12,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
+.vscode/
+.vercel/
 # environment variables
 .env
 
@@ -21,3 +22,4 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+.vercel

@@ -1,0 +1,66 @@
+---
+import SignInButton from '@components/SignInButton.astro';
+import '@fontsource/inter';
+import { ViewTransitions } from 'astro:transitions';
+
+const { title } = Astro.props;
+---
+
+<html lang='en' transition:animate='none'>
+  <head>
+    <meta charset='utf-8' />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <meta name='viewport' content='width=device-width' />
+    <meta name='generator' content={Astro.generator} />
+    <title>{title}</title>
+    <ViewTransitions />
+  </head>
+  <body class='bg-base-300'>
+    <header>
+      <div class='navbar bg-base-100 px-4'>
+        <div class='navbar-start'>
+          <div class='dropdown'>
+            <div tabindex='0' role='button' class='btn btn-ghost lg:hidden'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                class='h-5 w-5'
+                fill='none'
+                viewBox='0 0 24 24'
+                stroke='currentColor'>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h8m-8 6h16'></path>
+              </svg>
+            </div>
+            <ul tabindex='0' class='menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow'>
+              <li><a href='/features'>Features</a></li>
+              <li class='disabled'><a>Changelog</a></li>
+            </ul>
+          </div>
+          <a class='text-base' href='/'>TYLT</a>
+        </div>
+        <div class='navbar-center hidden lg:flex'>
+          <ul class='menu menu-horizontal px-1'>
+            <li><a href='/features'>Features</a></li>
+            <li class='disabled'><a>Changelog</a></li>
+          </ul>
+        </div>
+        <div class='navbar-end'>
+          <SignInButton label='Sign in' />
+        </div>
+      </div>
+    </header>
+
+    <main class='flex flex-col items-center justify-center gap-12 px-8'>
+      <slot />
+    </main>
+    <footer class='h-16 w-full content-center border-t border-t-base-100 text-center font-mono text-sm opacity-85'>
+      Dario Puddinu 2024
+    </footer>
+    <style>
+      body {
+        display: grid;
+        min-height: 100vh;
+        grid-template-rows: auto 1fr auto;
+      }
+    </style>
+  </body>
+</html>

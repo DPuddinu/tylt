@@ -1,0 +1,102 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import type { Filters } from '@/types/filters';
+import { Category, Goal, Settings, and, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
+import type { TGoal } from 'db/config';
+import GoalFilterSidebar from '../../components/GoalFilters.astro';
+
+const { user } = Astro.locals;
+const currentLanguage = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
+
+const [firstSetupDone] = await db.select().from(Settings).where(eq(Settings.authorId, user.id));
+if (!firstSetupDone) return Astro.redirect('/setup');
+
+function getParam(param: string) {
+  return Astro.url.searchParams.get(param);
+}
+
+const offset = getParam('offset');
+const from_date = getParam('from_date');
+const to_date = getParam('to_date');
+const category = getParam('category');
+const expired = getParam('expired');
+const notExpired = getParam('not-expired');
+const completed = getParam('completed');
+const notCompleted = getParam('not-completed');
+
+const filters: Filters = {
+  completed: completed ? completed === 'on' : undefined,
+  notCompleted: notCompleted ? notCompleted === 'on' : undefined,
+  expired: expired ? expired === 'on' : undefined,
+  notExpired: notExpired ? notExpired === 'on' : undefined,
+  from_date: from_date ?? undefined,
+  to_date: to_date ?? undefined,
+  filterCategory: Number(category) ?? undefined
+};
+
+const filterMode = Object.values(filters).some((filter) => filter !== undefined);
+
+let goals: TGoal[] = [];
+
+const _user = eq(Goal.authorId, user.id);
+
+if (!filterMode) {
+  goals = await db.select().from(Goal).where(_user).orderBy(desc(Goal.creationDate)).limit(20).offset(0);
+} else {
+  const _fromDate = !!from_date ? gte(Goal.creationDate, new Date(from_date)) : undefined;
+  const _toDate = !!to_date ? lte(Goal.creationDate, new Date(to_date)) : undefined;
+  const _category = category ? eq(Goal.categoryId, Number(category)) : undefined;
+  const _expired = expired ? lt(Goal.dueDate, new Date()) : undefined;
+  const _notexpired = notExpired ? gt(Goal.dueDate, new Date()) : undefined;
+  const _completed = completed ? eq(Goal.completed, true) : undefined;
+  const _notcompleted = notCompleted ? eq(Goal.completed, false) : undefined;
+  goals = await db
+    .select()
+    .from(Goal)
+    .where(and(_user, _fromDate, _toDate, _category, _notcompleted, _completed, _expired, _notexpired))
+    .orderBy(desc(Goal.creationDate))
+    .limit(20)
+    .offset(offset ? Number(offset) : 0);
+}
+
+const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
+---
+<Layout pageName='Goals'>
+  <section transition:animate='slide' class='flex-container'>
+    <div class='content flex max-h-full flex-col gap-4 sm:flex-row'>
+      <GoalFilterSidebar categories={categories} filters={filters} />
+      <div class='flex-container flex max-w-xl flex-col gap-4 sm:grow sm:gap-4'>
+        <div class='content flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
+          <header class='flex items-center justify-between'>
+            <h1 class='text-xl font-medium'>Goals</h1>
+            <a href='/goals/new' class='btn btn-warning btn-sm'>New</a>
+          </header>
+          {
+            goals.length > 0 && (
+              <article class='flex flex-col gap-4'>
+                <ul>
+                  {goals.map((goal) => (
+                    <li class='py-2'>
+                      <a href={`/goals/${goal.id}`}>
+                        <article class='grid gap-4 rounded-box border border-base-200 bg-base-100 p-4 hover:border-base-300/50 hover:bg-base-100/80 hover:shadow'>
+                          <header>
+                            <b>{goal.title}</b>
+                          </header>
+                          <footer class='text-sm font-thin'>
+                            {goal.completed && goal.completionDate
+                              ? `Achieved on ${goal.completionDate.toLocaleDateString(currentLanguage)}`
+                              : 'Not Completed'}
+                          </footer>
+                        </article>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

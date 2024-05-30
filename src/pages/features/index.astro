@@ -1,0 +1,57 @@
+---
+import SignIn from '@components/SignInButton.astro';
+import GoalIcon from '@components/icons/GoalIcon.astro';
+import ProgressIcon from '@components/icons/ProgressIcon.astro';
+import ReportIcon from '@components/icons/ReportIcon.astro';
+import LandingLayout from '@layouts/LandingLayout.astro';
+import FeatureArticle from './_components/FeatureArticle.astro';
+---
+
+<LandingLayout title='Features'>
+  <section transition:animate='slide' class='grid max-w-6xl items-start gap-8 sm:items-center md:grid-cols-2 md:gap-0'>
+    <header >
+      <h1
+        class='title gap-2 text-center font-bold !leading-tight'
+        transition:name='title'>
+        Powerful Tools To Reach Your Goals
+      </h1>
+    </header>
+    <div class='grid gap-4 md:gap-14 lg:gap-10'>
+      <FeatureArticle
+        title='Goal'
+        paragraph='Easily create and manage your goals, with options to set deadlines, milestones, and reminders.'>
+        <GoalIcon slot='icon' />
+      </FeatureArticle>
+
+      <FeatureArticle
+        title='Progress'
+        paragraph='Monitor your progress and see how close you are to achieving your goals.'>
+        <ProgressIcon slot='icon' />
+      </FeatureArticle>
+
+      <FeatureArticle
+        title='Report'
+        paragraph='Generate detailed reports to analyze your progress and identify areas for improvement.'>
+        <ReportIcon slot='icon' />
+      </FeatureArticle>
+
+      <footer class='flex justify-center pt-4'>
+        <SignIn label='Sign In With Github' />
+      </footer>
+    </div>
+  </section>
+</LandingLayout>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .title {
+    font-size: min(10vw, 4em);
+  }
+</style>

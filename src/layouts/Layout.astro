@@ -1,0 +1,119 @@
+---
+import Dropdown from '@components/Dropdown.astro';
+import SignOut from '@components/SignOutButton.astro';
+import '@fontsource/inter';
+import { ViewTransitions } from 'astro:transitions';
+
+const { user } = Astro.locals;
+type Props = {
+  pageName: string;
+};
+const { pageName } = Astro.props;
+---
+
+<html transition:animate='none'>
+  <head>
+    <meta charset='utf-8' />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <meta name='viewport' content='width=device-width' />
+    <meta name='generator' content={Astro.generator} />
+    <title>{pageName}</title>
+    <ViewTransitions />
+  </head>
+  <body class='grid h-screen grid-rows-[auto_1fr]'>
+    <header>
+      <div
+        class='navbar justify-between border border-b border-base-300 border-base-300/50 bg-base-200 p-2 pl-6 shadow-md shadow-base-300/50'>
+        <label for='my-drawer' class='drawer-button hover:scale-105 hover:cursor-pointer'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke-width='2'
+            stroke='currentColor'
+            class='h-6 w-6'>
+            <path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12'></path>
+          </svg>
+        </label>
+        <Dropdown>
+          <div
+            slot='trigger'
+            class='btn btn-circle border-slate-700 bg-slate-700 hover:border-slate-600 hover:bg-slate-600'>
+            {user.name[0]}
+          </div>
+          <div slot='content' >
+            <li>
+              <a class='flex p-0 active:bg-transparent h-8'>
+                <SignOut />
+              </a>
+            </li>
+          </div>
+        </Dropdown>
+      </div>
+    </header>
+    <main class='grid grid-rows-1 overflow-y-hidden'>
+      <div class='drawer'>
+        <input id='my-drawer' type='checkbox' class='drawer-toggle' />
+        <div class='flex-container drawer-content p-8'>
+          <slot />
+        </div>
+        <div class='drawer-side z-10'>
+          <label for='my-drawer' aria-label='close sidebar' class='drawer-overlay'></label>
+          <ul class='menu min-h-full w-80 border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
+            <li class='text-lg font-bold'><a href='/goals'>Goals</a></li>
+            <li class='disabled text-lg font-bold'>
+              <a>Categories</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </main>
+    <style is:global>
+      html {
+        scrollbar-gutter: auto !important;
+      }
+      textarea {
+        resize: none;
+      }
+
+      .flex-container {
+        flex: 1; /* Takes up remaining space */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Prevents overflow */
+      }
+
+      .content {
+        flex: 1; /* Takes as much height as possible */
+        overflow-y: auto; /* Enables vertical scrolling if needed */
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-corner {
+        background: transparent;
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+      ::scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+    </style>
+  </body>
+</html>

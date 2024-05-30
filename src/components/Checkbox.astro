@@ -1,0 +1,15 @@
+---
+type Props = {
+  label: string;
+  name: string;
+  checked?: boolean;
+  disabled?: boolean;
+  className?: string;
+};
+const { label, name, checked = false, disabled = false, className = '' } = Astro.props;
+---
+
+<div class={`flex flex-row-reverse items-center justify-end gap-4 ${className}`}>
+  <span class='label-text'>{label}</span>
+  <input disabled={disabled} id={name} name={name} type='checkbox' class='checkbox' checked={checked} />
+</div>

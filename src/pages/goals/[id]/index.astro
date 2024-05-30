@@ -1,0 +1,74 @@
+---
+import { validateGoal } from '@/utils/validation';
+import GoalForm from '@components/GoalForm.astro';
+import Layout from '@layouts/Layout.astro';
+import { Category, Goal, and, db, eq } from 'astro:db';
+
+const { id } = Astro.params;
+const { user } = Astro.locals;
+
+const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
+
+const [goal] = await db
+  .select()
+  .from(Goal)
+  .where(and(eq(Goal.id, Number(id)), eq(Goal.authorId, user.id)));
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  const data = validateGoal(formData);
+  const { title, description, completed, categoryId, completionDate, dueDate } = data;
+  try {
+    await db
+      .update(Goal)
+      .set({
+        title,
+        description,
+        completed,
+        categoryId,
+        completionDate,
+        dueDate
+      })
+      .where(and(eq(Goal.authorId, user.id), eq(Goal.id, goal.id)));
+      
+    return Astro.redirect('/goals/' + goal.id);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+
+<Layout pageName='Goal'>
+  <GoalForm editMode goal={goal} title='Edit Goal' categories={categories} />
+</Layout>
+
+<script>
+  import { disabledEditor } from '@/store';
+  
+  let editMode = false;
+  const editBtn = document.querySelector<HTMLButtonElement>('#edit-btn');
+  const saveBtn = document.querySelector<HTMLElement>('#save-btn');
+  const inputs = document.querySelectorAll<HTMLInputElement>('#goal-form input');
+  const dateGroup = document.querySelector<HTMLDivElement>('#date-group');
+
+  disabledEditor.set(true);
+  editBtn?.addEventListener('mousedown', () => {
+    console.log('asdf');
+    disabledEditor.set(!disabledEditor.get());
+    editMode = !editMode;
+
+    dateGroup?.classList.toggle('hidden', !editMode);
+    saveBtn?.classList.toggle('hidden', !editMode);
+
+    if (editMode) {
+      setTimeout(() => inputs[0].focus(), 0);
+    }
+    inputs.forEach((input) => {
+      input.disabled = !editMode;
+    });
+    editBtn?.classList.toggle('text-warning');
+  });
+</script>

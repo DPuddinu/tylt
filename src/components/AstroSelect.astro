@@ -1,0 +1,22 @@
+---
+type Props = {
+  id: string,
+  options: any[];
+  fieldKey: string;
+  label: string;
+  value?: any;
+  form: string;
+  name: string;
+};
+const {fieldKey, form, label, options, value, name, id} = Astro.props;
+---
+<select id={id} class='select select-bordered w-full max-w-xs' name={name} form={form} >
+  <option value='' disabled hidden>Pick a category</option>
+  {
+    options.map((option) => (
+      <option value={String(option[fieldKey])} selected={option[fieldKey] === value} class='text-lg'>
+        {String(option[label])}
+      </option>
+    ))
+  }
+</select>

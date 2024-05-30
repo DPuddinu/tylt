@@ -1,0 +1,12 @@
+---
+import { SignIn } from 'auth-astro/components';
+type Props = {
+  label: string;
+  className?: string;
+};
+const { className, label } = Astro.props;
+---
+
+<SignIn provider='github' options={{
+  callbackUrl: '/goals'
+}} class={`${className} rounded-3xl btn btn-primary h-10 min-h-10`}>{label}</SignIn>

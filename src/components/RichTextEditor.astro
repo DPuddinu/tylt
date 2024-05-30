@@ -1,0 +1,63 @@
+---
+import '../../node_modules/quill/dist/quill.snow.css';
+type Props = {
+  value?: string;
+  id: string;
+  placeholder: string;
+};
+const { value, id, placeholder } = Astro.props;
+---
+
+<quill-editor data-value={value} data-id={id} data-placeholder={placeholder}>
+  <div class='space-y-2'>
+    <label for={`${id}-container`} class='label-text capitalize'>{id}</label>
+    <div id='loader' class='h-24 w-full animate-pulse rounded bg-base-100'></div>
+    <div id={`${id}-container`} class='hidden bg-white'>
+      <div id={id} class='min-h-10 bg-white text-black'></div>
+    </div>
+  </div>
+</quill-editor>
+
+<script>
+  import { disabledEditor } from '@/store';
+  import Quill from 'quill';
+
+  class QuillEditor extends HTMLElement {
+    constructor() {
+      super();
+
+      const value = this.dataset.value;
+      const placeholder = this.dataset.placeholder;
+      const id = this.dataset.id;
+      const form = document.querySelector('#goal-form') as HTMLFormElement;
+      if (!id) throw new Error('Editor ID is required');
+
+      const quillEditor = document.querySelector('quill-editor') as HTMLFormElement;
+      const quill = new Quill(`#${id}`, {
+        modules: {
+          toolbar: [[{ header: [1, 2, 3, 4, 5, false] }], ['bold', 'italic', 'underline'], ['link', 'code-block']]
+        },
+        placeholder,
+        theme: 'snow'
+      });
+
+      const loader = document.querySelector('#loader');
+      loader?.remove();
+      const editorContainer = document.querySelector(`#${id}-container`);
+      editorContainer?.classList.remove('hidden');
+      disabledEditor.subscribe((disabled) => {
+        quill.enable(!disabled);
+      });
+      disabledEditor.set(false); // enable by default
+
+      if (value) quill.setContents(JSON.parse(value));
+      if (form && form.contains(quillEditor)) {
+        form.addEventListener('formdata', (event) =>
+          event.formData.append(id, JSON.stringify(quill.getContents().ops))
+        );
+      }
+    }
+  }
+
+  customElements.define('quill-editor', QuillEditor);
+</script>
