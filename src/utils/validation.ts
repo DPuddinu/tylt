@@ -12,7 +12,7 @@ export function validateGoal(formData: FormData) {
     description,
     completed,
     categoryId,
-    completionDate: new Date(completionDate),
-    dueDate: new Date(dueDate)
+    completionDate: completionDate ? new Date(completionDate) : undefined,
+    dueDate: dueDate ? new Date(dueDate) : undefined
   };
 }

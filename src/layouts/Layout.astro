@@ -41,9 +41,9 @@ const { pageName } = Astro.props;
             class='btn btn-circle border-slate-700 bg-slate-700 hover:border-slate-600 hover:bg-slate-600'>
             {user.name[0]}
           </div>
-          <div slot='content' >
+          <div slot='content'>
             <li>
-              <a class='flex p-0 active:bg-transparent h-8'>
+              <a class='flex h-8 p-0 active:bg-transparent'>
                 <SignOut />
               </a>
             </li>
@@ -62,7 +62,10 @@ const { pageName } = Astro.props;
           <ul class='menu min-h-full w-80 border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
             <li class='text-lg font-bold'><a href='/goals'>Goals</a></li>
             <li class='disabled text-lg font-bold'>
-              <a>Categories</a>
+              <a>Categories 🏗️</a>
+            </li>
+            <li class='disabled text-lg font-bold'>
+              <a>Changelogs 🏗️</a>
             </li>
           </ul>
         </div>
@@ -84,8 +87,10 @@ const { pageName } = Astro.props;
       }
 
       .content {
-        flex: 1; /* Takes as much height as possible */
+        /* flex: 1;  Takes as much height as possible */
         overflow-y: auto; /* Enables vertical scrolling if needed */
+        min-height: fit-content; /* Altezza minima basata sul contenuto */
+        max-height: 100%;
       }
 
       ::-webkit-scrollbar {
