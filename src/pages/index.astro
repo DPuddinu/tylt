@@ -1,0 +1,12 @@
+---
+import { SignIn, SignOut } from 'auth-astro/components';
+import { getSession } from 'auth-astro/server';
+const session = await getSession(Astro.request);
+console.log(session);
+---
+
+<div>
+  <SignIn provider='github'>Login</SignIn>
+  <SignOut>Logout</SignOut>
+  {session ? <div>Hello {session?.user?.name}</div> : <div>You are logged out</div>}
+</div>
