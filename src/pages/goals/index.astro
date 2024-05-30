@@ -61,6 +61,7 @@ if (!filterMode) {
 
 const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
 ---
+
 <Layout pageName='Goals'>
   <section transition:animate='slide' class='flex-container'>
     <div class='content flex max-h-full flex-col gap-4 sm:flex-row'>
@@ -77,8 +78,9 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
                 <ul>
                   {goals.map((goal) => (
                     <li class='py-2'>
-                      <a href={`/goals/${goal.id}`}>
-                        <article class='grid gap-4 rounded-box border border-base-200 bg-base-100 p-4 hover:border-base-300/50 hover:bg-base-100/80 hover:shadow'>
+                      <a href={`/goals/${goal.id}`} data-astro-reload>
+                        <article
+                          class='grid gap-4 rounded-box border border-base-200 bg-base-100 p-4 hover:border-base-300/50 hover:bg-base-100/80 hover:shadow'>
                           <header>
                             <b>{goal.title}</b>
                           </header>

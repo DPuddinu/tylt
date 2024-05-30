@@ -19,13 +19,12 @@ const isHidden = editMode ? 'hidden' : '';
 const formName = 'goal-form';
 ---
 
-<section transition:animate={transition} class='grid grow gap-4 sm:justify-center' transition:persist>
+<section transition:animate={transition} class='grid grow gap-4 sm:justify-center'>
   <div class='flex max-w-lg flex-col gap-4 sm:flex sm:flex-col'>
-    <header>
-      <h1 transition:name='title' class='text-3xl font-bold sm:text-4xl'>{title}</h1>
+    <header transition:name={title}>
+      <h1 class='text-3xl font-bold sm:text-4xl'>{title}</h1>
     </header>
     <form
-      transition:name='form'
       id={formName}
       method='post'
       class='relative flex flex-col gap-6 rounded-lg border border-base-300/50 bg-base-300 p-4 shadow'>
