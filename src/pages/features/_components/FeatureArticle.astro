@@ -6,15 +6,15 @@ type Props = {
 const { paragraph, title } = Astro.props;
 ---
 
-<article class='grid h-28'>
-  <div class='grid grid-cols-12 grid-rows-2'>
-    <div class='col-span-2 m-auto items-cener flex justify-end pr-3 w-full md:col-span-1 lg:col-span-3'>
+<article class='grid py-2'>
+  <div class='grid grid-cols-12 grid-rows-2' style='grid-template-rows: auto auto;'>
+    <div class='items-cener col-span-2 pb-2 m-auto flex w-full justify-end pr-3 lg:col-span-3'>
       <slot name='icon' />
     </div>
-    <div class='col-span-10 w-full content-center md:col-span-11 lg:col-span-9'>
-      <h3 class='line-clamp-1 text-4xl font-semibold'>{title}</h3>
+    <div class='col-span-10 w-full content-center lg:col-span-9'>
+      <h3 class='line-clamp-1 text-4xl font-semibold pb-2'>{title}</h3>
     </div>
-    <div class='col-span-10 col-start-3 w-full max-w-xl md:col-span-11 md:col-start-2 lg:col-span-9 lg:col-start-4'>
+    <div class='col-span-10 col-start-3 w-full max-w-xl md:col-start-2 lg:col-span-9 lg:col-start-4'>
       <p class='text-pretty px-1 text-base opacity-85 md:text-lg'>
         {paragraph}
       </p>
