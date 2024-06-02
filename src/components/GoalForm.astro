@@ -1,8 +1,8 @@
 ---
+import type { ValidationErrors } from '@/types/formValidation';
 import type { TransitionAnimationValue } from 'astro';
 import type { TCategory, TGoal } from 'db/config';
 import AstroSelect from './AstroSelect.astro';
-import Checkbox from './Checkbox.astro';
 import DatePicker from './DatePicker.astro';
 import RichTextEditor from './RichTextEditor.astro';
 
@@ -12,8 +12,9 @@ type Props = {
   goal?: TGoal;
   categories: TCategory[];
   transition?: TransitionAnimationValue;
+  validationErrors?: ValidationErrors;
 };
-const { categories, title, editMode = false, goal, transition = 'slide' } = Astro.props;
+const { categories, title, editMode = false, goal, transition = 'slide', validationErrors } = Astro.props;
 
 const isHidden = editMode ? 'hidden' : '';
 const formName = 'goal-form';
@@ -29,18 +30,22 @@ const formName = 'goal-form';
       method='post'
       class='relative flex flex-col gap-6 rounded-lg border border-base-300/50 bg-base-300 p-4 shadow'>
       <div class='flex justify-between gap-2'>
-        <input
-          tabindex='0'
-          autofocus
-          id='title-input'
-          disabled={editMode}
-          name='title'
-          min='3'
-          value={goal?.title}
-          placeholder='Type title...'
-          type='text'
-          class='textarea input-bordered max-h-28 w-full text-pretty rounded-lg bg-transparent px-2 py-1 text-3xl font-bold capitalize'
-        />
+        <div class="flex flex-col gap-2">
+          <input
+            tabindex='0'
+            autofocus
+            id='title-input'
+            disabled={editMode}
+            name='title'
+            min='3'
+            value={goal?.title}
+            placeholder='Type title...'
+            type='text'
+            class='textarea input-bordered max-h-28 w-full text-pretty rounded-lg bg-transparent px-2 py-1 text-3xl font-bold capitalize'
+          />
+          {validationErrors?.title && <span class='text-red-500 px-2'>{validationErrors?.title}</span>}
+        </div>
+
         <button
           type='button'
           id='edit-btn'
@@ -70,18 +75,15 @@ const formName = 'goal-form';
             label='name'
             fieldKey='id'
             id='select-category'
-            name='category'
+            name='categoryId'
             form={formName}
           />
         </div>
         <div class='grid grid-cols-2 gap-2'>
-          <DatePicker name='completion-date' label='Completion Date' value={goal ? goal.completionDate : new Date()} />
-          <DatePicker name='due-date' label='Due Date' value={goal ? goal?.dueDate : new Date()} />
+          <DatePicker name='completionDate' label='Completion Date' value={goal ? goal.completionDate : new Date()} />
+          <DatePicker name='dueDate' label='Due Date' value={goal ? goal?.dueDate : new Date()} />
         </div>
       </div>
-
-      <Checkbox label='Mark as completed' name='completed' />
-
       <footer id='save-btn' class={`${isHidden}`}>
         <button type='submit' class='btn btn-warning w-full'>Submit</button>
       </footer>

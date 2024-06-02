@@ -15,7 +15,6 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
   }
   if (!githubUser) {
     githubUser = await fetch(`https://api.github.com/users/${user.name}`).then((res) => res.json());
-    console.log('SETTING GITHUB USER');
   }
   locals.user = {
     ...user,

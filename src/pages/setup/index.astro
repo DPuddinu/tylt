@@ -1,33 +1,42 @@
 ---
+import type { ValidationErrors } from '@/types/formValidation';
+import { validate } from '@/utils/validation';
 import Layout from '@layouts/Layout.astro';
 import { Category, Settings, db, eq } from 'astro:db';
+import { ZodError, z } from 'zod';
 const { user } = Astro.locals;
-
 const [isFirstSetupDone] = await db.select().from(Settings).where(eq(Settings.authorId, user.id));
 if (isFirstSetupDone) return Astro.redirect('/goals');
 
-if (Astro.request.method == 'POST') {
+const schema = z.object({
+  name: z.string().min(3).max(20)
+});
+
+let validationErrors: ValidationErrors | undefined;
+
+if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
   try {
+    const validated = validate(formData, schema);
     await db.insert(Category).values({
-      authorId: user.id,
-      name: formData.get('name') as string
-    });
+        authorId: user.id,
+        ...validated
+      });
     await db.insert(Settings).values({
       authorId: user.id,
       setupDone: true
     });
     return Astro.redirect('/goals/new');
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
     }
   }
 }
 ---
 
 <Layout pageName='Initial Setup'>
-  <section transition:animate='slide' class='content flex w-full flex-col justify-center'>
+  <section transition:animate='none' class='flex w-full grow flex-col justify-center'>
     <header class='space-y-8 py-4'>
       <h1 class='text-center text-5xl lg:text-6xl'><strong>Hello</strong> {user.name}</h1>
       <p class='text-center text-xl font-light'>
@@ -36,15 +45,9 @@ if (Astro.request.method == 'POST') {
     </header>
     <div class='flex justify-center pt-6'>
       <form method='post' class='grid max-w-md gap-2 px-1'>
-        <input
-          name='name'
-          id='categories'
-          type='text'
-          placeholder='Category name...'
-          required
-          min='3'
-          class='input input-bordered'
-        />
+        <input name='name' id='categories' type='text' placeholder='Category name...' class='input input-bordered' />
+        {validationErrors?.name && <span class='text-red-500'>{validationErrors?.name}</span>}
+
         <button type='submit' class='btn btn-warning'>Submit</button>
       </form>
     </div>

@@ -1,8 +1,11 @@
 ---
-import { validateGoal } from '@/utils/validation';
+import type { ValidationErrors } from '@/types/formValidation';
+import { GoalSchema } from '@/types/goal.types';
+import { validate } from '@/utils/validation';
 import GoalForm from '@components/GoalForm.astro';
 import Layout from '@layouts/Layout.astro';
 import { Category, Goal, and, db, eq } from 'astro:db';
+import { ZodError } from 'zod';
 
 const { id } = Astro.params;
 const { user } = Astro.locals;
@@ -13,41 +16,37 @@ const [goal] = await db
   .select()
   .from(Goal)
   .where(and(eq(Goal.id, Number(id)), eq(Goal.authorId, user.id)));
+let validationErrors: ValidationErrors | undefined;
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
 
-  const data = validateGoal(formData);
-  const { title, description, completed, categoryId, completionDate, dueDate } = data;
   try {
+    const data = validate(formData, GoalSchema);
+    const { completionDate } = data;
     await db
       .update(Goal)
       .set({
-        title,
-        description,
-        completed,
-        categoryId,
-        completionDate,
-        dueDate
+        ...data,
+        completed: !!completionDate
       })
       .where(and(eq(Goal.authorId, user.id), eq(Goal.id, goal.id)));
-      
     return Astro.redirect('/goals/' + goal.id);
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
     }
   }
 }
 ---
 
 <Layout pageName='Goal'>
-  <GoalForm editMode goal={goal} title='Edit Goal' categories={categories} />
+  <GoalForm validationErrors={validationErrors} editMode goal={goal} title='Edit Goal' categories={categories} />
 </Layout>
 
 <script>
   import { disabledEditor } from '@/store';
-  
+
   let editMode = false;
   const editBtn = document.querySelector<HTMLButtonElement>('#edit-btn');
   const saveBtn = document.querySelector<HTMLElement>('#save-btn');
@@ -56,7 +55,6 @@ if (Astro.request.method === 'POST') {
 
   disabledEditor.set(true);
   editBtn?.addEventListener('mousedown', () => {
-    console.log('asdf');
     disabledEditor.set(!disabledEditor.get());
     editMode = !editMode;
 

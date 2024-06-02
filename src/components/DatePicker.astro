@@ -1,5 +1,4 @@
 ---
-import { getInputDateString } from '@/utils/utils';
 type Props = {
   label: string;
   name: string;
@@ -8,6 +7,10 @@ type Props = {
   min?: Date;
 };
 const { label, name, required = false, value, min } = Astro.props;
+
+export function getInputDateString(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
 ---
 
 <div class='flex flex-col gap-2'>
