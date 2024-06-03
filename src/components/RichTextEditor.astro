@@ -1,5 +1,7 @@
 ---
+import '@/styles/highlight.css';
 import '../../node_modules/quill/dist/quill.snow.css';
+
 type Props = {
   value?: string;
   id: string;
@@ -20,6 +22,7 @@ const { value, id, placeholder } = Astro.props;
 
 <script>
   import { disabledEditor } from '@/store';
+  import hljs from 'highlight.js';
   import Quill from 'quill';
 
   class QuillEditor extends HTMLElement {
@@ -35,6 +38,7 @@ const { value, id, placeholder } = Astro.props;
       const quillEditor = document.querySelector('quill-editor') as HTMLFormElement;
       const quill = new Quill(`#${id}`, {
         modules: {
+          syntax: { hljs },
           toolbar: [[{ header: [1, 2, 3, 4, 5, false] }], ['bold', 'italic', 'underline'], ['link', 'code-block']]
         },
         placeholder,
