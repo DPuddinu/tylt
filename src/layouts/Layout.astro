@@ -2,7 +2,6 @@
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
 import '@fontsource/inter';
-import { ViewTransitions } from 'astro:transitions';
 
 const { user } = Astro.locals;
 type Props = {
@@ -11,14 +10,13 @@ type Props = {
 const { pageName } = Astro.props;
 ---
 
-<html transition:animate='none'>
+<html>
   <head>
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />
     <title>{pageName}</title>
-    <ViewTransitions />
   </head>
   <body class='grid h-screen grid-rows-[auto_1fr]'>
     <header>

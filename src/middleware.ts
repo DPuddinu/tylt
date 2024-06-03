@@ -18,7 +18,7 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
   }
   locals.user = {
     ...user,
-    id: githubUser.id
+    id: String(githubUser.id)
   };
 
   return next();

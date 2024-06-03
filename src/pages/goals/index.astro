@@ -16,8 +16,8 @@ function getParam(param: string) {
 }
 
 const offset = getParam('offset');
-const from_date = getParam('from_date');
-const to_date = getParam('to_date');
+const fromDate = getParam('from_date');
+const toDate = getParam('to_date');
 const category = getParam('category');
 const expired = getParam('expired');
 const notExpired = getParam('not-expired');
@@ -25,35 +25,39 @@ const completed = getParam('completed');
 const notCompleted = getParam('not-completed');
 
 const filters: Filters = {
-  completed: completed ? completed === 'on' : undefined,
-  notCompleted: notCompleted ? notCompleted === 'on' : undefined,
-  expired: expired ? expired === 'on' : undefined,
-  notExpired: notExpired ? notExpired === 'on' : undefined,
-  from_date: from_date ?? undefined,
-  to_date: to_date ?? undefined,
-  filterCategory: Number(category) ?? undefined
+  completed: completed === 'on' || undefined,
+  notCompleted: notCompleted === 'on' || undefined,
+  expired: expired === 'on' || undefined,
+  notExpired: notExpired === 'on' || undefined,
+  from_date: fromDate || undefined,
+  to_date: toDate || undefined,
+  filterCategory: category ? Number(category) : undefined
 };
 
 const filterMode = Object.values(filters).some((filter) => filter !== undefined);
 
 let goals: TGoal[] = [];
 
-const _user = eq(Goal.authorId, user.id);
+const userFilter = eq(Goal.authorId, user.id);
 
 if (!filterMode) {
-  goals = await db.select().from(Goal).where(_user).orderBy(desc(Goal.creationDate)).limit(20).offset(0);
+  goals = await db.select().from(Goal).where(userFilter).orderBy(desc(Goal.creationDate)).limit(20).offset(0);
 } else {
-  const _fromDate = !!from_date ? gte(Goal.creationDate, new Date(from_date)) : undefined;
-  const _toDate = !!to_date ? lte(Goal.creationDate, new Date(to_date)) : undefined;
-  const _category = category ? eq(Goal.categoryId, Number(category)) : undefined;
-  const _expired = expired ? lt(Goal.dueDate, new Date()) : undefined;
-  const _notexpired = notExpired ? gt(Goal.dueDate, new Date()) : undefined;
-  const _completed = completed ? eq(Goal.completed, true) : undefined;
-  const _notcompleted = notCompleted ? eq(Goal.completed, false) : undefined;
+  const conditions = [
+    userFilter,
+    fromDate ? gte(Goal.creationDate, new Date(fromDate)) : undefined,
+    toDate ? lte(Goal.creationDate, new Date(toDate)) : undefined,
+    category ? eq(Goal.categoryId, Number(category)) : undefined,
+    expired ? lt(Goal.dueDate, new Date()) : undefined,
+    notExpired ? gt(Goal.dueDate, new Date()) : undefined,
+    completed ? eq(Goal.completed, true) : undefined,
+    notCompleted ? eq(Goal.completed, false) : undefined
+  ].filter(Boolean);
+
   goals = await db
     .select()
     .from(Goal)
-    .where(and(_user, _fromDate, _toDate, _category, _notcompleted, _completed, _expired, _notexpired))
+    .where(and(...conditions))
     .orderBy(desc(Goal.creationDate))
     .limit(20)
     .offset(offset ? Number(offset) : 0);

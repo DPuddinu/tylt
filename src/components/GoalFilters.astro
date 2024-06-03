@@ -36,10 +36,10 @@ const { from_date, to_date, filterCategory, expired, notExpired, completed, notC
         />
       </div>
       <div class='space-y-4 py-2'>
-        <Checkbox checked={!!completed} label='Completed' name='completed' />
-        <Checkbox checked={!!notCompleted} label='Not Completed' name='not-completed' />
-        <Checkbox checked={!!expired} label='Expired' name='expired' />
-        <Checkbox checked={!!notExpired} label='not-expired' name='not-expired' />
+        <Checkbox checked={completed} label='Completed' name='completed' />
+        <Checkbox checked={notCompleted} label='Not Completed' name='not-completed' />
+        <Checkbox checked={expired} label='Expired' name='expired' />
+        <Checkbox checked={notExpired} label='Not Expired' name='not-expired' />
       </div>
 
       <button type='submit' class='btn bg-base-300 hover:border-base-300 hover:bg-base-300/80'>Filter</button>
