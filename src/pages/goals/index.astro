@@ -23,7 +23,6 @@ const expired = getParam('expired');
 const notExpired = getParam('not-expired');
 const completed = getParam('completed');
 const notCompleted = getParam('not-completed');
-
 const filters: Filters = {
   completed: completed === 'on' || undefined,
   notCompleted: notCompleted === 'on' || undefined,
@@ -33,15 +32,21 @@ const filters: Filters = {
   to_date: toDate || undefined,
   filterCategory: category ? Number(category) : undefined
 };
-
+const offsetFilter = offset ? Number(offset) : 0;
 const filterMode = Object.values(filters).some((filter) => filter !== undefined);
-
 let goals: TGoal[] = [];
 
 const userFilter = eq(Goal.authorId, user.id);
+const limit = 5;
 
 if (!filterMode) {
-  goals = await db.select().from(Goal).where(userFilter).orderBy(desc(Goal.creationDate)).limit(20).offset(0);
+  goals = await db
+    .select()
+    .from(Goal)
+    .where(userFilter)
+    .orderBy(desc(Goal.creationDate))
+    .limit(limit)
+    .offset(offsetFilter);
 } else {
   const conditions = [
     userFilter,
@@ -59,15 +64,15 @@ if (!filterMode) {
     .from(Goal)
     .where(and(...conditions))
     .orderBy(desc(Goal.creationDate))
-    .limit(20)
-    .offset(offset ? Number(offset) : 0);
+    .limit(limit * (offsetFilter ?? 5))
+    .offset(offsetFilter);
 }
 
 const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
 ---
 
 <Layout pageName='Goals'>
-  <section transition:animate='slide' class='flex-container'>
+  <section transition:animate='none' class='flex-container'>
     <div class='content flex max-h-full flex-col gap-4 sm:flex-row'>
       <GoalFilterSidebar categories={categories} filters={filters} />
       <div class='flex-container flex max-w-xl flex-col gap-4 sm:grow sm:gap-4'>
@@ -77,13 +82,13 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
             <a href='/goals/new' class='btn btn-warning btn-sm rounded-full'>New</a>
           </header>
           {
-            goals.length > 0 && (
+            goals.length > 0 ? (
               <article class='flex flex-col gap-4'>
                 <ul>
                   {goals.map((goal) => (
                     <li class='py-2'>
                       <a href={`/goals/${goal.id}`} data-astro-reload>
-                        <article class='bg-base-content/15 p-4 grid gap-4 rounded-box transition-colors hover:border-base-content/10 hover:bg-base-content/10 hover:shadow'>
+                        <article class='grid gap-4 rounded-box bg-base-content/15 p-4 transition-colors hover:border-base-content/10 hover:bg-base-content/10 hover:shadow'>
                           <header>
                             <b>{goal.title}</b>
                           </header>
@@ -98,8 +103,30 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
                   ))}
                 </ul>
               </article>
+            ) : (
+              <div class="flex justify-center py-8 text-lg">No Goals</div>
             )
           }
+          <div class='flex justify-center gap-2'>
+            <form method='get' class='flex items-center justify-center'>
+              <input type='hidden' name='offset' value={offsetFilter >= limit ? offsetFilter - limit : limit} />
+              <button
+                disabled={offsetFilter === 0}
+                type='submit'
+                class={`${offsetFilter === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
+                Previous Page
+              </button>
+            </form>
+            <form method='get' class='flex items-center justify-center'>
+              <input type='hidden' name='offset' value={offsetFilter ? offsetFilter + limit : limit} />
+              <button
+                disabled={goals.length === 0}
+                type='submit'
+                class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
+                Next Page
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
