@@ -1,4 +1,5 @@
 ---
+import { GoalFormNames } from '@/api/goals/constants/upsert.constants';
 import type { ValidationErrors } from '@/types/formValidation';
 import type { TransitionAnimationValue } from 'astro';
 import type { TCategory, TGoal } from 'db/config';
@@ -8,15 +9,13 @@ import RichTextEditor from './RichTextEditor.astro';
 
 type Props = {
   title: string;
-  editMode?: boolean;
   goal?: TGoal;
   categories: TCategory[];
   transition?: TransitionAnimationValue;
   validationErrors?: ValidationErrors;
 };
-const { categories, title, editMode = false, goal, transition = 'slide', validationErrors } = Astro.props;
-
-const formName = 'goal-form';
+const { categories, title, goal, transition = 'slide', validationErrors } = Astro.props;
+const formId = 'goal-form';
 ---
 
 <section transition:animate={transition} class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
@@ -25,7 +24,7 @@ const formName = 'goal-form';
       <h1 class='text-3xl font-bold sm:text-4xl'>{title}</h1>
     </header>
     <form
-      id={formName}
+      id={formId}
       method='post'
       class='relative flex flex-col gap-6 rounded-lg border border-base-200/50 bg-base-200 p-4 shadow'>
       <div class='flex justify-between gap-2'>
@@ -34,17 +33,24 @@ const formName = 'goal-form';
             tabindex='0'
             autofocus
             id='title-input'
-            name='title'
+            name={GoalFormNames.title}
             min='3'
             value={goal?.title}
             placeholder='Type title...'
             type='text'
-            class='textarea input-bordered max-h-28 w-full truncate text-pretty rounded-lg bg-transparent px-2 py-1 text-3xl font-bold capitalize'
+            class='textarea input-bordered max-h-28 w-full truncate text-pretty rounded-lg bg-transparent px-2 py-1 text-xl font-bold capitalize'
           />
           {validationErrors?.title && <span class='px-2 text-red-500'>{validationErrors?.title}</span>}
         </div>
       </div>
-      <RichTextEditor label='description' placeholder='Add new Description...' value={goal?.description} />
+      <div>
+        <RichTextEditor
+          name={GoalFormNames.description}
+          label={GoalFormNames.description}
+          placeholder='Add new Description...'
+          value={goal?.description}
+        />
+      </div>
 
       <div id='date-group' class='space-y-4'>
         <div class='flex flex-col gap-2'>
@@ -54,18 +60,22 @@ const formName = 'goal-form';
             label='name'
             fieldKey='id'
             id='select-category'
-            name='categoryId'
-            form={formName}
+            name={GoalFormNames.categoryId}
+            form={formId}
           />
         </div>
         <div class='flex gap-2'>
-          <DatePicker name='completionDate' label='Completion Date' value={goal ? goal.completionDate : new Date()} />
-          <DatePicker name='dueDate' label='Due Date' value={goal ? goal?.dueDate : new Date()} />
+          <DatePicker
+            name={GoalFormNames.completionDate}
+            label='Completion Date'
+            value={goal ? goal.completionDate : new Date()}
+          />
+          <DatePicker name={GoalFormNames.dueDate} label='Due Date' value={goal?.dueDate} />
         </div>
       </div>
       <footer id='save-btn' class='flex justify-end gap-4'>
         <a href='/goals' class='btn btn-outline btn-error rounded-lg hover:!bg-transparent hover:!text-error'>Cancel</a>
-        <button type='submit' class='btn btn-warning rounded-lg'>Save Changes</button>
+        <button type='submit' class='btn btn-warning rounded-lg font-semibold'>{goal ? 'Update' : 'Add'} Goal</button>
       </footer>
     </form>
   </div>

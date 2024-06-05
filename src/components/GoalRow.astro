@@ -1,0 +1,28 @@
+---
+import type { TGoal } from 'db/config';
+
+type Props = {
+  goal: TGoal;
+};
+
+const { goal } = Astro.props;
+const currentLanguage = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
+---
+
+<li class='py-2'>
+  <a href={`/goals/${goal.id}`} data-astro-reload>
+    <article
+      class='grid gap-4 rounded-box bg-base-content/15 p-4 transition-colors hover:border-base-content/10 hover:bg-base-content/10 hover:shadow'>
+      <header>
+        <b>{goal.title}</b>
+      </header>
+      <footer class='text-sm font-thin'>
+        {
+          goal.completed && goal.completionDate
+            ? `Achieved on ${goal.completionDate.toLocaleDateString(currentLanguage)}`
+            : 'Not Completed'
+        }
+      </footer>
+    </article>
+  </a>
+</li>

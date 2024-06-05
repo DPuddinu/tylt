@@ -2,53 +2,53 @@
 import '@/styles/highlight.css';
 import '../../node_modules/quill/dist/quill.snow.css';
 
+
 type Props = {
   value?: string;
   label: string;
+  name: string;
   placeholder: string;
 };
-const { value, label, placeholder } = Astro.props;
+const { value, label, name, placeholder } = Astro.props;
 ---
-
-<quill-editor data-value={value} data-id={label} data-placeholder={placeholder}>
-  <div class='flex h-48 flex-col gap-2'>
-    <label for={`${label}-container`} class='label-text capitalize lg:text-base'>{label}</label>
-    <div id='loader' class='h-full w-full animate-pulse rounded bg-base-100'></div>
-    <div id={`${label}-container`} class='hidden max-w-full grow flex-col bg-white'>
-      <div id={label} class='max-w-full grow bg-white text-black'></div>
-    </div>
+<quill-editor data-value={value} data-id={name} data-placeholder={placeholder}></quill-editor>
+<div class='flex h-48 flex-col gap-2'>
+  <label for={`${label}-container`} class='label-text capitalize lg:text-base'>{label}</label>
+  <div id='loader' class='h-full w-full animate-pulse rounded bg-base-100'></div>
+  <div id={`${label}-container`} class='hidden max-w-full grow flex-col bg-white'>
+    <div id={label} class='max-w-full grow bg-white text-black'></div>
   </div>
-</quill-editor>
+</div>
 
 <script>
-  import hljs from 'highlight.js';
-  import Quill from 'quill';
+  const speedHighlight = await import('@speed-highlight/core');
+  const Quill = await import('quill');
 
   class QuillEditor extends HTMLElement {
     constructor() {
       super();
+      const { value, placeholder, id } = this.dataset;
 
-      const value = this.dataset.value;
-      const placeholder = this.dataset.placeholder;
-      const id = this.dataset.id;
       const form = document.querySelector('#goal-form') as HTMLFormElement;
       if (!id) throw new Error('Editor ID is required');
 
       const quillEditor = document.querySelector('quill-editor') as HTMLFormElement;
-      const quill = new Quill(`#${id}`, {
+      const quill = new Quill.default(`#${id}`, {
         modules: {
-          syntax: { hljs },
           toolbar: [[{ header: [1, 2, 3, 4, 5, false] }], ['bold', 'italic', 'underline'], ['link', 'code-block']]
         },
         placeholder,
         theme: 'snow'
       });
 
+      quill.on('text-change', () => {
+        speedHighlight.highlightAll();
+      });
+
       const loader = document.querySelector('#loader');
       loader?.remove();
       const editorContainer = document.querySelector(`#${id}-container`);
       editorContainer?.classList.replace('hidden', 'flex');
-
       if (value) quill.setContents(JSON.parse(value));
       if (form && form.contains(quillEditor)) {
         form.addEventListener('formdata', (event) =>

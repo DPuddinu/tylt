@@ -1,71 +1,40 @@
 ---
+import type { GoalFormParam } from '@/api/goals/constants/constants/constants';
+import { GOALS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
+import GoalFilterSidebar from '@/components/GoalFilters.astro';
 import Layout from '@/layouts/Layout.astro';
-import type { Filters } from '@/types/filters';
-import { Category, Goal, Settings, and, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
+import type { GoalFilters } from '@/types/filters';
+import GoalRow from '@components/GoalRow.astro';
+import { Category, db, eq } from 'astro:db';
 import type { TGoal } from 'db/config';
-import GoalFilterSidebar from '../../components/GoalFilters.astro';
 
 const { user } = Astro.locals;
-const currentLanguage = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
-
-const [firstSetupDone] = await db.select().from(Settings).where(eq(Settings.authorId, user.id));
-if (!firstSetupDone) return Astro.redirect('/setup');
 
 function getParam(param: string) {
   return Astro.url.searchParams.get(param);
 }
 
-const offset = getParam('offset');
-const fromDate = getParam('from_date');
-const toDate = getParam('to_date');
-const category = getParam('category');
-const expired = getParam('expired');
-const notExpired = getParam('not-expired');
-const completed = getParam('completed');
-const notCompleted = getParam('not-completed');
-const filters: Filters = {
-  completed: completed === 'on' || undefined,
-  notCompleted: notCompleted === 'on' || undefined,
-  expired: expired === 'on' || undefined,
-  notExpired: notExpired === 'on' || undefined,
-  from_date: fromDate || undefined,
-  to_date: toDate || undefined,
-  filterCategory: category ? Number(category) : undefined
+function getGoalParam(param: GoalFormParam) {
+  return getParam(param);
+}
+
+const goalFilters: GoalFilters = {
+  completed: getGoalParam('completed') === 'on' || undefined,
+  notCompleted: getGoalParam('notCompleted') === 'on' || undefined,
+  expired: getGoalParam('expired') === 'on' || undefined,
+  notExpired: getGoalParam('notExpired') === 'on' || undefined,
+  fromDate: getGoalParam('fromDate') || undefined,
+  toDate: getGoalParam('toDate') || undefined,
+  category: Number(getGoalParam('category')) || undefined
 };
-const offsetFilter = offset ? Number(offset) : 0;
-const filterMode = Object.values(filters).some((filter) => filter !== undefined);
+const offsetFilter = Number(getParam('offset')) || 0;
+
 let goals: TGoal[] = [];
 
-const userFilter = eq(Goal.authorId, user.id);
-const limit = 5;
-
-if (!filterMode) {
-  goals = await db
-    .select()
-    .from(Goal)
-    .where(userFilter)
-    .orderBy(desc(Goal.creationDate))
-    .limit(limit)
-    .offset(offsetFilter);
-} else {
-  const conditions = [
-    userFilter,
-    fromDate ? gte(Goal.creationDate, new Date(fromDate)) : undefined,
-    toDate ? lte(Goal.creationDate, new Date(toDate)) : undefined,
-    category ? eq(Goal.categoryId, Number(category)) : undefined,
-    expired ? lt(Goal.dueDate, new Date()) : undefined,
-    notExpired ? gt(Goal.dueDate, new Date()) : undefined,
-    completed ? eq(Goal.completed, true) : undefined,
-    notCompleted ? eq(Goal.completed, false) : undefined
-  ].filter(Boolean);
-
-  goals = await db
-    .select()
-    .from(Goal)
-    .where(and(...conditions))
-    .orderBy(desc(Goal.creationDate))
-    .limit(limit * (offsetFilter ?? 5))
-    .offset(offsetFilter);
+try {
+  goals = await getPaginatedGoals(user.id, offsetFilter, goalFilters);
+} catch (error) {
+  return Astro.redirect('goals/error');
 }
 
 const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
@@ -74,7 +43,7 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
 <Layout pageName='Goals'>
   <section transition:animate='none' class='flex-container'>
     <div class='content flex max-h-full flex-col gap-4 sm:flex-row'>
-      <GoalFilterSidebar categories={categories} filters={filters} />
+      <GoalFilterSidebar categories={categories} filters={goalFilters} />
       <div class='flex-container flex max-w-xl flex-col gap-4 sm:grow sm:gap-4'>
         <div class='content flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
           <header class='flex items-center justify-between'>
@@ -86,30 +55,21 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
               <article class='flex flex-col gap-4'>
                 <ul>
                   {goals.map((goal) => (
-                    <li class='py-2'>
-                      <a href={`/goals/${goal.id}`} data-astro-reload>
-                        <article class='grid gap-4 rounded-box bg-base-content/15 p-4 transition-colors hover:border-base-content/10 hover:bg-base-content/10 hover:shadow'>
-                          <header>
-                            <b>{goal.title}</b>
-                          </header>
-                          <footer class='text-sm font-thin'>
-                            {goal.completed && goal.completionDate
-                              ? `Achieved on ${goal.completionDate.toLocaleDateString(currentLanguage)}`
-                              : 'Not Completed'}
-                          </footer>
-                        </article>
-                      </a>
-                    </li>
+                    <GoalRow goal={goal} />
                   ))}
                 </ul>
               </article>
             ) : (
-              <div class="flex justify-center py-8 text-lg">No Goals</div>
+              <div class='flex justify-center py-8 text-lg'>No Goals</div>
             )
           }
           <div class='flex justify-center gap-2'>
             <form method='get' class='flex items-center justify-center'>
-              <input type='hidden' name='offset' value={offsetFilter >= limit ? offsetFilter - limit : limit} />
+              <input
+                type='hidden'
+                name='offset'
+                value={offsetFilter >= GOALS_PER_PAGE ? offsetFilter - GOALS_PER_PAGE : GOALS_PER_PAGE}
+              />
               <button
                 disabled={offsetFilter === 0}
                 type='submit'
@@ -118,7 +78,11 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
               </button>
             </form>
             <form method='get' class='flex items-center justify-center'>
-              <input type='hidden' name='offset' value={offsetFilter ? offsetFilter + limit : limit} />
+              <input
+                type='hidden'
+                name='offset'
+                value={offsetFilter ? offsetFilter + GOALS_PER_PAGE : GOALS_PER_PAGE}
+              />
               <button
                 disabled={goals.length === 0}
                 type='submit'

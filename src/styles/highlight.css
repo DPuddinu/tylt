@@ -1,114 +1,109 @@
-pre code.hljs {
+[class*='shj-lang-'] {
+  white-space: pre;
+  margin: 10px 0;
+  border-radius: 10px;
+  padding: 30px 20px;
+  background: white;
+  color: #112;
+  box-shadow: 0 0 5px #0001;
+  text-shadow: none;
+  font:
+    18px Consolas,
+    Courier New,
+    Monaco,
+    Andale Mono,
+    Ubuntu Mono,
+    monospace;
+  line-height: 24px;
+  box-sizing: border-box;
+  max-width: min(100%, 100vw);
+}
+.shj-inline {
+  margin: 0;
+  padding: 2px 5px;
+  display: inline-block;
+  border-radius: 5px;
+}
+[class*='shj-lang-']::selection,
+[class*='shj-lang-'] ::selection {
+  background: #bdf5;
+}
+[class*='shj-lang-'] > div {
+  display: flex;
+  overflow: auto;
+}
+[class*='shj-lang-'] > div :last-child {
+  flex: 1;
+  outline: none;
+}
+.shj-numbers {
+  padding-left: 5px;
+  counter-reset: line;
+}
+.shj-numbers div {
+  padding-right: 5px;
+}
+.shj-numbers div:before {
+  color: #999;
   display: block;
-  overflow-x: auto;
-  padding: 1em
+  content: counter(line);
+  opacity: 0.5;
+  text-align: right;
+  margin-right: 5px;
+  counter-increment: line;
 }
-code.hljs {
-  padding: 3px 5px
+.shj-syn-cmnt {
+  font-style: italic;
 }
-/*!
-  Theme: Tokyo-night-Dark
-  origin: https://github.com/enkia/tokyo-night-vscode-theme
-  Description: Original highlight.js style
-  Author: (c) Henri Vandersleyen <hvandersleyen@gmail.com>
-  License: see project LICENSE
-  Touched: 2022
-*/
-/*  Comment */
-.hljs-meta,
-.hljs-comment {
-  color: #565f89
+.shj-syn-err,
+.shj-syn-kwd {
+  color: #e16;
 }
-/* Red */
-/*INFO: This keyword, HTML elements, Regex group symbol, CSS units, Terminal Red */
-.hljs-tag,
-.hljs-doctag,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-template-tag,
-.hljs-selector-pseudo,
-.hljs-selector-attr,
-.hljs-variable.language_,
-.hljs-deletion {
-  color: #f7768e
+.shj-syn-num,
+.shj-syn-class {
+  color: #f60;
 }
-/*Orange */
-/*INFO: Number and Boolean constants, Language support constants */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-number,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-link {
-  color: #ff9e64
+.shj-numbers,
+.shj-syn-cmnt {
+  color: #999;
 }
-/*  Yellow */
-/* INFO:  	Function parameters, Regex character sets, Terminal Yellow */
-.hljs-built_in,
-.hljs-attribute {
-  color: #e0af68
+.shj-syn-insert,
+.shj-syn-str {
+  color: #7d8;
 }
-/* cyan */
-/* INFO: Language support functions, CSS HTML elements */
-.hljs-selector-tag {
-  color: #2ac3de
+.shj-syn-bool {
+  color: #3bf;
 }
-/* light blue */
-/* INFO: Object properties, Regex quantifiers and flags, Markdown headings, Terminal Cyan, Markdown code, Import/export keywords */
-.hljs-keyword,
-.hljs-title.function_,
-.hljs-title,
-.hljs-title.class_,
-.hljs-title.class_.inherited__,
-.hljs-subst,
-.hljs-property {
-  color: #7dcfff
+.shj-syn-type,
+.shj-syn-oper {
+  color: #5af;
 }
-/*Green*/
-/* INFO: Object literal keys, Markdown links, Terminal Green */
-.hljs-selector-tag {
-  color: #73daca
+.shj-syn-section,
+.shj-syn-func {
+  color: #84f;
 }
-/*Green(er) */
-/* INFO: Strings, CSS class names */
-.hljs-quote,
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-  color: #9ece6a
+.shj-syn-deleted,
+.shj-syn-var {
+  color: #f44;
 }
-/* Blue */
-/* INFO:  	Function names, CSS property names, Terminal Blue */
-.hljs-code,
-.hljs-formula,
-.hljs-section {
-  color: #7aa2f7
+.shj-oneline {
+  padding: 12px 10px;
 }
-/* Magenta */
-/*INFO: Control Keywords, Storage Types, Regex symbols and operators, HTML Attributes, Terminal Magenta */
-.hljs-name,
-.hljs-keyword,
-.hljs-operator,
-.hljs-keyword,
-.hljs-char.escape_,
-.hljs-attr {
-  color: #bb9af7
+.shj-lang-http.shj-oneline .shj-syn-kwd {
+  background: #25f;
+  color: #fff;
+  padding: 5px 7px;
+  border-radius: 5px;
 }
-/* white*/
-/* INFO: Variables, Class names, Terminal White */
-.hljs-punctuation {
-  color: #c0caf5
+.shj-multiline.shj-mode-header {
+  padding: 20px;
 }
-.hljs {
-  background: #1a1b26;
-  color: #9aa5ce
-}
-.hljs-emphasis {
-  font-style: italic
-}
-.hljs-strong {
-  font-weight: bold
+.shj-multiline.shj-mode-header:before {
+  content: attr(data-lang);
+  color: #58f;
+  display: block;
+  padding: 10px 20px;
+  background: #58f3;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }
