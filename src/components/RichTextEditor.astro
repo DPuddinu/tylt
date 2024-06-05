@@ -1,5 +1,4 @@
 ---
-import '@/styles/highlight.css';
 import '../../node_modules/quill/dist/quill.snow.css';
 
 type Props = {
@@ -21,8 +20,6 @@ const { value, label, name, placeholder } = Astro.props;
 </div>
 
 <script>
-  import { debounce } from '@/utils/debounce';
-  const speedHighlight = await import('@speed-highlight/core');
   const Quill = await import('quill');
 
   class QuillEditor extends HTMLElement {
@@ -40,25 +37,6 @@ const { value, label, name, placeholder } = Astro.props;
         },
         placeholder,
         theme: 'snow'
-      });
-
-      let codeBlock: HTMLDivElement | null = null;
-      quill.on('selection-change', () => {
-        setTimeout(() => {
-          codeBlock = document.querySelector('div.ql-code-block');
-          console.log(codeBlock);
-          codeBlock?.classList.add('shj-lang-js');
-        }, 0);
-      });
-      const highlight = debounce(async() => {
-        console.log('text change');
-        if (codeBlock) {
-          console.log( await speedHighlight.highlightElement(codeBlock, 'js'));
-        }
-      }, 3000);
-
-      quill.on('text-change', () => {
-        highlight();
       });
 
       const loader = document.querySelector('#loader');
