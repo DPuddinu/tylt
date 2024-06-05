@@ -11,5 +11,5 @@ const { label, name, checked = false, disabled = false, className = '' } = Astro
 
 <div class={`flex flex-row-reverse items-center justify-end gap-4 ${className}`}>
   <span class='label-text'>{label}</span>
-  <input disabled={disabled} id={name} name={name} type='checkbox' class='checkbox' checked={checked} />
+  <input disabled={disabled} id={name} name={name} type='checkbox' class='checkbox hover:border-base-content transition-colors' checked={checked} />
 </div>

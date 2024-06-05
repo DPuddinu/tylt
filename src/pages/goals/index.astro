@@ -74,7 +74,7 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
         <div class='content flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
           <header class='flex items-center justify-between'>
             <h1 class='text-xl font-medium'>Goals</h1>
-            <a href='/goals/new' class='btn btn-warning btn-sm'>New</a>
+            <a href='/goals/new' class='btn btn-warning btn-sm rounded-full'>New</a>
           </header>
           {
             goals.length > 0 && (
@@ -83,7 +83,7 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
                   {goals.map((goal) => (
                     <li class='py-2'>
                       <a href={`/goals/${goal.id}`} data-astro-reload>
-                        <article class='grid gap-4 rounded-box border border-base-200 bg-base-100 p-4 hover:border-base-300/50 hover:bg-base-100/80 hover:shadow'>
+                        <article class='bg-base-content/15 p-4 grid gap-4 rounded-box transition-colors hover:border-base-content/10 hover:bg-base-content/10 hover:shadow'>
                           <header>
                             <b>{goal.title}</b>
                           </header>

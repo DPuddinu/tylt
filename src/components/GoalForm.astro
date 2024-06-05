@@ -16,60 +16,39 @@ type Props = {
 };
 const { categories, title, editMode = false, goal, transition = 'slide', validationErrors } = Astro.props;
 
-const isHidden = editMode ? 'hidden' : '';
 const formName = 'goal-form';
 ---
 
-<section transition:animate={transition} class='grid grow gap-4 sm:justify-center'>
-  <div class='flex max-w-lg flex-col gap-4 sm:flex sm:flex-col'>
+<section transition:animate={transition} class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
+  <div class='flex grow flex-col gap-4 overflow-x-hidden sm:flex sm:flex-col'>
     <header transition:name={title}>
       <h1 class='text-3xl font-bold sm:text-4xl'>{title}</h1>
     </header>
     <form
       id={formName}
       method='post'
-      class='relative flex flex-col gap-6 rounded-lg border border-base-300/50 bg-base-300 p-4 shadow'>
+      class='relative flex flex-col gap-6 rounded-lg border border-base-200/50 bg-base-200 p-4 shadow'>
       <div class='flex justify-between gap-2'>
-        <div class="flex flex-col gap-2">
+        <div class='flex flex-col gap-2'>
           <input
             tabindex='0'
             autofocus
             id='title-input'
-            disabled={editMode}
             name='title'
             min='3'
             value={goal?.title}
             placeholder='Type title...'
             type='text'
-            class='textarea input-bordered max-h-28 w-full text-pretty rounded-lg bg-transparent px-2 py-1 text-3xl font-bold capitalize'
+            class='textarea input-bordered max-h-28 w-full truncate text-pretty rounded-lg bg-transparent px-2 py-1 text-3xl font-bold capitalize'
           />
-          {validationErrors?.title && <span class='text-red-500 px-2'>{validationErrors?.title}</span>}
+          {validationErrors?.title && <span class='px-2 text-red-500'>{validationErrors?.title}</span>}
         </div>
-
-        <button
-          type='button'
-          id='edit-btn'
-          class={`${!editMode && 'hidden'} transition-colors duration-300 hover:text-warning`}>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            stroke-width='1.5'
-            stroke='currentColor'
-            class='size-6'>
-            <path
-              stroke-linecap='round'
-              stroke-linejoin='round'
-              d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125'>
-            </path>
-          </svg>
-        </button>
       </div>
-      <RichTextEditor id='description' placeholder='Add new Description...' value={goal?.description} />
+      <RichTextEditor label='description' placeholder='Add new Description...' value={goal?.description} />
 
-      <div id='date-group' class={`${isHidden} space-y-4`}>
+      <div id='date-group' class='space-y-4'>
         <div class='flex flex-col gap-2'>
-          <label for='select-category' class='label-text'>Cagetory</label>
+          <label for='select-category' class='label-text lg:text-base'>Cagetory</label>
           <AstroSelect
             options={categories}
             label='name'
@@ -79,13 +58,14 @@ const formName = 'goal-form';
             form={formName}
           />
         </div>
-        <div class='grid grid-cols-2 gap-2'>
+        <div class='flex gap-2'>
           <DatePicker name='completionDate' label='Completion Date' value={goal ? goal.completionDate : new Date()} />
           <DatePicker name='dueDate' label='Due Date' value={goal ? goal?.dueDate : new Date()} />
         </div>
       </div>
-      <footer id='save-btn' class={`${isHidden}`}>
-        <button type='submit' class='btn btn-warning w-full'>Submit</button>
+      <footer id='save-btn' class='flex justify-end gap-4'>
+        <a href='/goals' class='btn btn-outline btn-error rounded-lg hover:!bg-transparent hover:!text-error'>Cancel</a>
+        <button type='submit' class='btn btn-warning rounded-lg'>Save Changes</button>
       </footer>
     </form>
   </div>

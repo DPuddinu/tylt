@@ -17,7 +17,7 @@ const { title } = Astro.props;
   </head>
   <body class='bg-base-300'>
     <header>
-      <div class='navbar bg-base-100 px-4'>
+      <div class='navbar px-4'>
         <div class='navbar-start'>
           <div class='dropdown'>
             <div tabindex='0' role='button' class='btn btn-ghost lg:hidden'>
@@ -30,12 +30,12 @@ const { title } = Astro.props;
                 <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h8m-8 6h16'></path>
               </svg>
             </div>
-            <ul tabindex='0' class='menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-100 p-2 shadow'>
+            <ul tabindex='0' class='menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box p-2'>
               <li><a href='/features'>Features</a></li>
               <li class='disabled'><a>Changelog</a></li>
             </ul>
           </div>
-          <a class='text-base' href='/'>TYLT</a>
+          <a class='text-base italic' href='/'>TYLT</a>
         </div>
         <div class='navbar-center hidden lg:flex'>
           <ul class='menu menu-horizontal px-1'>
@@ -44,7 +44,7 @@ const { title } = Astro.props;
           </ul>
         </div>
         <div class='navbar-end'>
-          <SignInButton label='Sign in' />
+          <SignInButton className='btn-ghost btn-sm' label='Sign in' />
         </div>
       </div>
     </header>

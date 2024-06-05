@@ -14,7 +14,7 @@ export function getInputDateString(date: Date) {
 ---
 
 <div class='flex flex-col gap-2'>
-  <label for={name} class='label-text'>{label}</label>
+  <label for={name} class='label-text lg:text-base'>{label}</label>
   <input
     required={required}
     type='date'
@@ -22,7 +22,7 @@ export function getInputDateString(date: Date) {
     name={name}
     value={value ? getInputDateString(value) : undefined}
     min={min ? getInputDateString(min) : undefined}
-    class='input input-bordered rounded-lg p-2 font-semibold hover:cursor-pointer'
+    class='input input-bordered w-fit rounded-lg p-2 font-semibold hover:cursor-pointer'
   />
 </div>
 <style>

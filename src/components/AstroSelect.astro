@@ -10,11 +10,11 @@ type Props = {
 };
 const {fieldKey, form, label, options, value, name, id} = Astro.props;
 ---
-<select id={id} class='select select-bordered w-full max-w-xs' name={name} form={form} >
+<select id={id} class='select select-bordered w-fit' name={name} form={form} >
   <option value='' disabled hidden>Pick a category</option>
   {
     options.map((option) => (
-      <option value={String(option[fieldKey])} selected={option[fieldKey] === value} class='text-lg'>
+      <option value={String(option[fieldKey])} selected={option[fieldKey] === value} >
         {String(option[label])}
       </option>
     ))

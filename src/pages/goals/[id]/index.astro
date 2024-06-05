@@ -43,30 +43,3 @@ if (Astro.request.method === 'POST') {
 <Layout pageName='Goal'>
   <GoalForm validationErrors={validationErrors} editMode goal={goal} title='Edit Goal' categories={categories} />
 </Layout>
-
-<script>
-  import { disabledEditor } from '@/store';
-
-  let editMode = false;
-  const editBtn = document.querySelector<HTMLButtonElement>('#edit-btn');
-  const saveBtn = document.querySelector<HTMLElement>('#save-btn');
-  const inputs = document.querySelectorAll<HTMLInputElement>('#goal-form input');
-  const dateGroup = document.querySelector<HTMLDivElement>('#date-group');
-
-  disabledEditor.set(true);
-  editBtn?.addEventListener('mousedown', () => {
-    disabledEditor.set(!disabledEditor.get());
-    editMode = !editMode;
-
-    dateGroup?.classList.toggle('hidden', !editMode);
-    saveBtn?.classList.toggle('hidden', !editMode);
-
-    if (editMode) {
-      setTimeout(() => inputs[0].focus(), 0);
-    }
-    inputs.forEach((input) => {
-      input.disabled = !editMode;
-    });
-    editBtn?.classList.toggle('text-warning');
-  });
-</script>

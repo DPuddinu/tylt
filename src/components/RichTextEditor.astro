@@ -4,24 +4,23 @@ import '../../node_modules/quill/dist/quill.snow.css';
 
 type Props = {
   value?: string;
-  id: string;
+  label: string;
   placeholder: string;
 };
-const { value, id, placeholder } = Astro.props;
+const { value, label, placeholder } = Astro.props;
 ---
 
-<quill-editor data-value={value} data-id={id} data-placeholder={placeholder}>
-  <div class='space-y-2'>
-    <label for={`${id}-container`} class='label-text capitalize'>{id}</label>
-    <div id='loader' class='h-24 w-full animate-pulse rounded bg-base-100'></div>
-    <div id={`${id}-container`} class='hidden bg-white'>
-      <div id={id} class='min-h-10 bg-white text-black'></div>
+<quill-editor data-value={value} data-id={label} data-placeholder={placeholder}>
+  <div class='flex h-48 flex-col gap-2'>
+    <label for={`${label}-container`} class='label-text capitalize lg:text-base'>{label}</label>
+    <div id='loader' class='h-full w-full animate-pulse rounded bg-base-100'></div>
+    <div id={`${label}-container`} class='hidden max-w-full grow flex-col bg-white'>
+      <div id={label} class='max-w-full grow bg-white text-black'></div>
     </div>
   </div>
 </quill-editor>
 
 <script>
-  import { disabledEditor } from '@/store';
   import hljs from 'highlight.js';
   import Quill from 'quill';
 
@@ -48,11 +47,7 @@ const { value, id, placeholder } = Astro.props;
       const loader = document.querySelector('#loader');
       loader?.remove();
       const editorContainer = document.querySelector(`#${id}-container`);
-      editorContainer?.classList.remove('hidden');
-      disabledEditor.subscribe((disabled) => {
-        quill.enable(!disabled);
-      });
-      disabledEditor.set(false); // enable by default
+      editorContainer?.classList.replace('hidden', 'flex');
 
       if (value) quill.setContents(JSON.parse(value));
       if (form && form.contains(quillEditor)) {
