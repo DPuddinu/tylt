@@ -31,6 +31,6 @@ export function getPaginatedGoals(userId: string, offset = 0, filters?: GoalFilt
     .from(Goal)
     .where(and(...conditions))
     .orderBy(desc(Goal.creationDate))
-    .limit(GOALS_PER_PAGE * (offset ?? 5))
+    .limit(GOALS_PER_PAGE * (offset > 0 ? offset : 1))
     .offset(offset);
 }
