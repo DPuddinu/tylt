@@ -1,6 +1,6 @@
 ---
 type Props = {
-  id: string,
+  id: string;
   options: any[];
   fieldKey: string;
   label: string;
@@ -8,15 +8,19 @@ type Props = {
   form: string;
   name: string;
 };
-const {fieldKey, form, label, options, value, name, id} = Astro.props;
+const { fieldKey, form, label, options, value, name, id } = Astro.props;
 ---
-<select id={id} class='select select-bordered w-fit' name={name} form={form} >
+
+<select id={id} class='select select-bordered w-fit' name={name} form={form}>
   <option value='' disabled hidden>Pick a category</option>
   {
     options.map((option) => (
-      <option value={String(option[fieldKey])} selected={option[fieldKey] === value} >
-        {String(option[label])}
-      </option>
+      <div>
+        {option[fieldKey]}
+        <option value={String(option[fieldKey])} selected={option[fieldKey] === value}>
+          {String(option[label])}
+        </option>
+      </div>
     ))
   }
 </select>

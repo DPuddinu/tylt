@@ -1,7 +1,6 @@
 ---
 import { GoalFormNames } from '@/api/goals/constants/upsert.constants';
 import type { ValidationErrors } from '@/types/formValidation';
-import type { TransitionAnimationValue } from 'astro';
 import type { TCategory, TGoal } from 'db/config';
 import AstroSelect from './AstroSelect.astro';
 import DatePicker from './DatePicker.astro';
@@ -11,14 +10,13 @@ type Props = {
   title: string;
   goal?: TGoal;
   categories: TCategory[];
-  transition?: TransitionAnimationValue;
   validationErrors?: ValidationErrors;
 };
-const { categories, title, goal, transition = 'slide', validationErrors } = Astro.props;
+const { categories, title, goal, validationErrors } = Astro.props;
 const formId = 'goal-form';
 ---
 
-<section transition:animate={transition} class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
+<section transition:animate='none' class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
   <div class='flex grow flex-col gap-4 overflow-x-hidden sm:flex sm:flex-col'>
     <header transition:name={title}>
       <h1 class='text-3xl font-bold sm:text-4xl'>{title}</h1>
@@ -59,6 +57,7 @@ const formId = 'goal-form';
             options={categories}
             label='name'
             fieldKey='id'
+            value={goal?.categoryId}
             id='select-category'
             name={GoalFormNames.categoryId}
             form={formId}

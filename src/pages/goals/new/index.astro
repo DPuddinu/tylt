@@ -1,11 +1,9 @@
 ---
+import { createGoal } from '@/api/goals/mutations';
 import type { ValidationErrors } from '@/types/formValidation';
-import { GoalSchema } from '@/types/goal.types';
-import { validate } from '@/utils/validation';
 import GoalForm from '@components/GoalForm.astro';
 import Layout from '@layouts/Layout.astro';
-import { Category, Goal, db, eq } from 'astro:db';
-import { ZodError } from 'zod';
+import { Category, db, eq } from 'astro:db';
 
 const { user } = Astro.locals;
 const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
@@ -14,28 +12,17 @@ let validationErrors: ValidationErrors | undefined;
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
 
-  try {
-    const data = validate(formData, GoalSchema);
-    const { description, completionDate } = data;
-    await db.insert(Goal).values({
-      authorId: user.id,
-      authorName: user.name,
-      description: description ?? '',
-      creationDate: new Date(),
-      updateDate: new Date(),
-      ...data,
-      completed: !!completionDate
-    });
-
-    return Astro.redirect('/goals');
-  } catch (error) {
-    if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors;
-    }
-  }
+  const res = await createGoal({
+    formData,
+    user,
+    onSuccess: () => Astro.redirect('/goals'),
+    onError: () => Astro.redirect('/goals/error'),
+    onValidationError: (errors) => (validationErrors = errors)
+  });
+  if (res) return res;
 }
 ---
 
-<Layout pageName='New' >
-  <GoalForm transition={'none'} title='Add New Goal' categories={categories} validationErrors={validationErrors} />
+<Layout pageName='New'>
+  <GoalForm title='Add New Goal' categories={categories} validationErrors={validationErrors} />
 </Layout>
