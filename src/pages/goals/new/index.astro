@@ -1,25 +1,33 @@
 ---
 import { createGoal } from '@/api/goals/mutations';
-import type { ValidationErrors } from '@/types/formValidation';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalInsertSchema } from '@/types/goal.types';
 import GoalForm from '@components/GoalForm.astro';
 import Layout from '@layouts/Layout.astro';
 import { Category, db, eq } from 'astro:db';
+import { ZodError } from 'zod';
 
 const { user } = Astro.locals;
 const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
 
 let validationErrors: ValidationErrors | undefined;
 if (Astro.request.method === 'POST') {
+
   const formData = await Astro.request.formData();
 
-  const res = await createGoal({
-    formData,
-    user,
-    onSuccess: () => Astro.redirect('/goals'),
-    onError: () => Astro.redirect('/goals/error'),
-    onValidationError: (errors) => (validationErrors = errors)
-  });
-  if (res) return res;
+  try {
+    const data = GoalInsertSchema.parse(formData);
+    await createGoal({
+      ...data,
+      authorId: user.id,
+      authorName: user.name,
+    });
+    return Astro.redirect('/goals');
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
+    } else return Astro.redirect('/goals/error');
+  }
 }
 ---
 

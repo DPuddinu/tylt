@@ -1,45 +1,37 @@
 ---
-import type { ValidationErrors } from '@/types/formValidation';
-import { GoalSchema } from '@/types/goal.types';
-import { validate } from '@/utils/validation';
+import { getCategories } from '@/api/categories/queries';
+import { updateGoal } from '@/api/goals/mutations';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalInsertSchema } from '@/types/goal.types';
 import GoalForm from '@components/GoalForm.astro';
 import Layout from '@layouts/Layout.astro';
-import { Category, Goal, and, db, eq } from 'astro:db';
 import { ZodError } from 'zod';
-
+import { getGoalById } from '@/api/goals/queries';
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
-const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
+const categories = await getCategories(user.id);
+const [goal] = await getGoalById(Number(id), user.id);
 
-const [goal] = await db
-  .select()
-  .from(Goal)
-  .where(and(eq(Goal.id, Number(id)), eq(Goal.authorId, user.id)));
 let validationErrors: ValidationErrors | undefined;
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
 
   try {
-    const data = validate(formData, GoalSchema);
-    const { completionDate } = data;
-    await db
-      .update(Goal)
-      .set({
-        ...data,
-        completed: !!completionDate
-      })
-      .where(and(eq(Goal.authorId, user.id), eq(Goal.id, goal.id)));
-    return Astro.redirect('/goals/' + goal.id);
+    const data = GoalInsertSchema.parse(formData);
+    await updateGoal({ ...data, userId: user.id, goalId: goal.id });
+
+    return Astro.redirect('/goals');
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    }
+    } 
+    return Astro.redirect('/goals/' + goal.id + '/error');
   }
 }
 ---
 
 <Layout pageName='Goal'>
-  <GoalForm validationErrors={validationErrors}  goal={goal} title='Edit Goal' categories={categories} />
+  <GoalForm validationErrors={validationErrors} goal={goal} title='Edit Goal' categories={categories} />
 </Layout>

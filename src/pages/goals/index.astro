@@ -1,13 +1,11 @@
 ---
-import type { GoalFormParam } from '@/api/goals/constants/constants/constants';
+import { getCategories } from '@/api/categories/queries';
 import { GOALS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/components/GoalFilters.astro';
 import Layout from '@/layouts/Layout.astro';
-import type { GoalFilters } from '@/types/filters';
+import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import GoalRow from '@components/GoalRow.astro';
-import { Category, db, eq } from 'astro:db';
-import type { TGoal } from 'db/config';
-
+import type { TCategory, TGoal } from 'db/config';
 const { user } = Astro.locals;
 
 function getParam(param: string) {
@@ -28,16 +26,23 @@ const goalFilters: GoalFilters = {
   category: Number(getGoalParam('category')) || undefined
 };
 const offsetFilter = Number(getParam('offset')) || 0;
-
+const currentPage = offsetFilter / GOALS_PER_PAGE + 1;
+let totalRows = 0;
 let goals: TGoal[] = [];
+let totalPages = 0;
+let categories: TCategory[] = [];
 
 try {
-  goals = await getPaginatedGoals(user.id, offsetFilter, goalFilters);
+  const { getGoals, getPages } = getPaginatedGoals(user.id, offsetFilter, goalFilters);
+
+  const res = await Promise.all([getGoals, getPages]);
+  goals = res[0];
+  totalRows = res[1]?.count ?? 0;
+  totalPages = Math.ceil(totalRows / GOALS_PER_PAGE);
+  categories = await getCategories(user.id);
 } catch (error) {
   return Astro.redirect('goals/error');
 }
-
-const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
 ---
 
 <Layout pageName='Goals'>
@@ -84,7 +89,7 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
                 value={offsetFilter ? offsetFilter + GOALS_PER_PAGE : GOALS_PER_PAGE}
               />
               <button
-                disabled={goals.length === 0}
+                disabled={currentPage > totalPages}
                 type='submit'
                 class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
                 Next Page

@@ -1,15 +1,17 @@
 ---
-import type { ValidationErrors } from '@/types/formValidation';
-import { validate } from '@/utils/validation';
+import { createCategory } from '@/api/categories/mutations';
+import { setSetupDone } from '@/api/setup/mutations';
+import type { ValidationErrors } from '@/types/formValidation.types';
 import Layout from '@layouts/Layout.astro';
-import { Category, Settings, db, eq } from 'astro:db';
+import { Settings, db, eq } from 'astro:db';
 import { ZodError, z } from 'zod';
+import { zfd } from 'zod-form-data';
 const { user } = Astro.locals;
 const [isFirstSetupDone] = await db.select().from(Settings).where(eq(Settings.authorId, user.id));
 if (isFirstSetupDone) return Astro.redirect('/goals');
 
-const schema = z.object({
-  name: z.string().min(3).max(20)
+const schema = zfd.formData({
+  name: zfd.text(z.string().min(3).max(20)),
 });
 
 let validationErrors: ValidationErrors | undefined;
@@ -17,15 +19,10 @@ let validationErrors: ValidationErrors | undefined;
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
   try {
-    const validated = validate(formData, schema);
-    await db.insert(Category).values({
-        authorId: user.id,
-        ...validated
-      });
-    await db.insert(Settings).values({
-      authorId: user.id,
-      setupDone: true
-    });
+    const validated = schema.parse(formData);
+    await createCategory(user.id, validated.name);
+    await setSetupDone(user.id);
+
     return Astro.redirect('/goals/new');
   } catch (error) {
     if (error instanceof ZodError) {

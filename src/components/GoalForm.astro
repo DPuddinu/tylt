@@ -1,10 +1,11 @@
 ---
-import { GoalFormNames } from '@/api/goals/constants/upsert.constants';
-import type { ValidationErrors } from '@/types/formValidation';
+
 import type { TCategory, TGoal } from 'db/config';
 import AstroSelect from './AstroSelect.astro';
 import DatePicker from './DatePicker.astro';
 import RichTextEditor from './RichTextEditor.astro';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalFormNames } from '@/types/goal.types';
 
 type Props = {
   title: string;
@@ -67,7 +68,7 @@ const formId = 'goal-form';
           <DatePicker
             name={GoalFormNames.completionDate}
             label='Completion Date'
-            value={goal ? goal.completionDate : new Date()}
+            value={goal?.completionDate ? goal.completionDate : new Date()}
           />
           <DatePicker name={GoalFormNames.dueDate} label='Due Date' value={goal?.dueDate} />
         </div>

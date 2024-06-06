@@ -1,4 +1,5 @@
 ---
+import { getSetupDone } from '@/api/setup/queries';
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
 import '@fontsource/inter';
@@ -13,7 +14,7 @@ type Props = {
 };
 const { pageName } = Astro.props;
 
-const [firstSetupDone] = await db.select().from(Settings).where(eq(Settings.authorId, user.id));
+const [firstSetupDone] = await getSetupDone(user.id);
 if (!firstSetupDone) return Astro.redirect('/setup');
 ---
 
