@@ -1,11 +1,7 @@
 ---
-import { getSetupDone } from '@/api/setup/queries';
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
 import '@fontsource/inter';
-import { Settings } from 'astro:db';
-import { eq } from 'astro:db';
-import { db } from 'astro:db';
 import { ViewTransitions } from 'astro:transitions';
 
 const { user } = Astro.locals;
@@ -13,9 +9,6 @@ type Props = {
   pageName: string;
 };
 const { pageName } = Astro.props;
-
-const [firstSetupDone] = await getSetupDone(user.id);
-if (!firstSetupDone) return Astro.redirect('/setup');
 ---
 
 <html transition:animate='none'>

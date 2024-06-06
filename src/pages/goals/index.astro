@@ -89,7 +89,7 @@ try {
                 value={offsetFilter ? offsetFilter + GOALS_PER_PAGE : GOALS_PER_PAGE}
               />
               <button
-                disabled={currentPage > totalPages}
+                disabled={currentPage >= totalPages}
                 type='submit'
                 class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
                 Next Page
