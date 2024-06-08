@@ -1,0 +1,26 @@
+---
+import { getMostUsedCategory } from '@/api/categories/queries';
+import Layout from '@layouts/Layout.astro';
+const { user } = Astro.locals;
+// const categories = await getCategories(user.id);
+const mostUsedCategory = await getMostUsedCategory(user.id);
+---
+
+<Layout pageName='Categories'>
+  <header class='pb-4'>
+    <!-- insert category form here -->
+  </header>
+  <section class='flex flex-col gap-4'>
+    <h1 class='text-xl font-medium'>Most Used Categories</h1>
+    <div class='flex flex-col gap-4'>
+      {
+        mostUsedCategory.map((category) => (
+          <div class='flex gap-2'>
+            <div>{category.categoryName}</div>
+            <div>{category.goalCount}</div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
