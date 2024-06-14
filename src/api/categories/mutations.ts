@@ -1,9 +1,13 @@
 import { Category, and, db, eq } from 'astro:db';
 import type { TCategory } from 'db/config';
 
-export function createCategory(userId: string, name: string) {
+type Payload = {
+  authorId: string;
+  name: string;
+};
+export function createCategory({ authorId, name }: Payload) {
   return db.insert(Category).values({
-    authorId: userId,
+    authorId,
     name
   });
 }

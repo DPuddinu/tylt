@@ -1,0 +1,19 @@
+---
+type Props = {
+  id: string;
+  name: string;
+  value?: string;
+  placeholder: string;
+}
+const { name, value, placeholder, id } = Astro.props;
+---
+
+<input
+  id={id}
+  name={name}
+  min='3'
+  value={value}
+  placeholder={placeholder}
+  type='text'
+  class='textarea input-bordered max-h-28 w-full truncate text-pretty rounded-lg bg-transparent px-2 py-1 text-xl font-bold capitalize'
+/>
