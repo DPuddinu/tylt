@@ -1,38 +1,84 @@
 ---
 import { updateCategory } from '@/api/categories/mutations';
 import { getCategoryById } from '@/api/categories/queries';
+import { ITEMS_PER_PAGE, getGoalByCategoryId } from '@/api/goals/queries';
 import { CategorySchema } from '@/types/categories.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
+import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/Layout.astro';
+import type { TCategory, TGoal } from 'db/config';
 import { ZodError } from 'zod';
 import CategoryForm from '../_components/CategoryForm.astro';
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
-const [category] = await getCategoryById({
-  id: Number(id),
-  userId: user.id
+function getParam(param: string) {
+  return Astro.url.searchParams.get(param);
+}
+const offsetFilter = Number(getParam('offset')) || 0;
+const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
+
+const { getGoalsByCategory, getPages } = getGoalByCategoryId({
+  categoryId: Number(id),
+  userId: user.id,
+  offset: offsetFilter
 });
 
+let goals: TGoal[] = [];
+let totalPages = 0;
+let totalRows = 0;
+
 let validationErrors: ValidationErrors | undefined;
+let category: TCategory | undefined;
+
+try {
+  const calls = await Promise.all([
+    getCategoryById({
+      id: Number(id),
+      userId: user.id
+    }),
+    getGoalsByCategory,
+    getPages
+  ]);
+
+  category = calls[0];
+  goals = calls[1];
+  totalRows = calls[2]?.count ?? 0;
+  totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
+} catch (error) {
+  return Astro.redirect('/categories/' + category.id + '/error');
+}
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
 
   try {
+    if (!category) throw new Error('Category not found');
     const data = CategorySchema.parse(formData);
     await updateCategory({ ...category, ...data });
 
-    return Astro.redirect('/categories');
+    return Astro.redirect(`/categories/${category.id}`);
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    }
-    return Astro.redirect('/categories/' + goal.id + '/error');
+    } else return Astro.redirect('/categories/' + category.id + '/error');
   }
 }
 ---
 
 <Layout pageName='Category'>
-  <CategoryForm validationErrors={validationErrors} category={category} title='Edit Category' />
+  <div class='pb-4'>
+    <CategoryForm validationErrors={validationErrors} category={category} title='Edit Category' />
+  </div>
+  <div class='flex-container max-w-xl'>
+    <GoalsList
+      title={`${category?.name} Goals`}
+      goals={goals}
+      totalRows={totalRows}
+      totalPages={totalPages}
+      offset={offsetFilter}
+      currentPage={currentPage}
+      itemsPerPage={ITEMS_PER_PAGE}
+    />
+  </div>
 </Layout>

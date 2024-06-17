@@ -1,7 +1,7 @@
 import type { GoalFilters } from '@/types/filters.types';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
 
-export const GOALS_PER_PAGE = 5;
+export const ITEMS_PER_PAGE = 5;
 
 type GetPaginatedGoalsParams = {
   userId: string;
@@ -21,7 +21,7 @@ export function getPaginatedGoals({ userId, offset = 0, filters }: GetPaginatedG
         .from(Goal)
         .where(userFilter)
         .orderBy(desc(Goal.creationDate))
-        .limit(GOALS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE)
         .offset(offset)
     };
   const { fromDate, toDate, category, expired, notExpired, notCompleted, completed } = filters;
@@ -44,7 +44,7 @@ export function getPaginatedGoals({ userId, offset = 0, filters }: GetPaginatedG
       .from(Goal)
       .where(and(...conditions))
       .orderBy(desc(Goal.creationDate))
-      .limit(GOALS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE)
       .offset(offset)
   };
 }
@@ -75,7 +75,7 @@ export function getGoalByCategoryId({ categoryId, userId, offset = 0 }: GetGoals
     .from(Goal)
     .where(and(eq(Goal.categoryId, Number(categoryId)), eq(Goal.authorId, userId)))
     .orderBy(desc(Goal.creationDate))
-    .limit(GOALS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE)
     .offset(offset);
 
   return {

@@ -11,7 +11,8 @@ export function getCategoryById({ id, userId }: GetCategoryByIdParams) {
   return db
     .select()
     .from(Category)
-    .where(and(eq(Category.id, id), eq(Category.authorId, userId)));
+    .where(and(eq(Category.id, id), eq(Category.authorId, userId)))
+    .get();
 }
 export function getMostUsedCategory(userId: string) {
   return db

@@ -1,11 +1,11 @@
 ---
 import { getCategories } from '@/api/categories/queries';
-import { GOALS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
-import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
+import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import Layout from '@/layouts/Layout.astro';
+import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
-import GoalRow from '@/pages/goals/_components/GoalRow.astro';
+import GoalsList from '@components/GoalsList.astro';
 import type { TCategory, TGoal } from 'db/config';
 const { user } = Astro.locals;
 
@@ -27,7 +27,7 @@ const goalFilters: GoalFilters = {
   category: Number(getGoalParam('category')) || undefined
 };
 const offsetFilter = Number(getParam('offset')) || 0;
-const currentPage = offsetFilter / GOALS_PER_PAGE + 1;
+const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 let totalRows = 0;
 let goals: TGoal[] = [];
 let totalPages = 0;
@@ -43,7 +43,7 @@ try {
   const res = await Promise.all([getGoals, getPages]);
   goals = res[0];
   totalRows = res[1]?.count ?? 0;
-  totalPages = Math.ceil(totalRows / GOALS_PER_PAGE);
+  totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
   categories = await getCategories(user.id);
 } catch (error) {
   return Astro.redirect('goals/error');
@@ -54,53 +54,16 @@ try {
   <section transition:animate='none' class='flex-container'>
     <div class='content flex max-h-full flex-col gap-4 sm:flex-row'>
       <GoalFilterSidebar categories={categories} filters={goalFilters} />
-      <div class='flex-container flex max-w-xl flex-col gap-4 sm:grow sm:gap-4'>
-        <div class='content flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
-          <header class='flex items-center justify-between'>
-            <h1 class='text-xl font-medium'>Goals</h1>
-          </header>
-          {
-            goals.length > 0 ? (
-              <article class='flex flex-col gap-4'>
-                <ul>
-                  {goals.map((goal) => (
-                    <GoalRow goal={goal} />
-                  ))}
-                </ul>
-              </article>
-            ) : (
-              <div class='flex justify-center py-8 text-lg'>No Goals</div>
-            )
-          }
-          <div class='flex justify-center gap-2'>
-            <form method='get' class='flex items-center justify-center'>
-              <input
-                type='hidden'
-                name='offset'
-                value={offsetFilter >= GOALS_PER_PAGE ? offsetFilter - GOALS_PER_PAGE : GOALS_PER_PAGE}
-              />
-              <button
-                disabled={offsetFilter === 0}
-                type='submit'
-                class={`${offsetFilter === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
-                Previous Page
-              </button>
-            </form>
-            <form method='get' class='flex items-center justify-center'>
-              <input
-                type='hidden'
-                name='offset'
-                value={offsetFilter ? offsetFilter + GOALS_PER_PAGE : GOALS_PER_PAGE}
-              />
-              <button
-                disabled={currentPage >= totalPages}
-                type='submit'
-                class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
-                Next Page
-              </button>
-            </form>
-          </div>
-        </div>
+      <div class='flex-container max-w-xl'>
+        <GoalsList
+          title='Goals'
+          goals={goals}
+          totalRows={totalRows}
+          totalPages={totalPages}
+          offset={offsetFilter}
+          currentPage={currentPage}
+          itemsPerPage={ITEMS_PER_PAGE}
+        />
       </div>
     </div>
   </section>

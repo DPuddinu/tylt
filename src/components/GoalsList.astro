@@ -1,0 +1,58 @@
+---
+import GoalRow from "@/pages/goals/_components/GoalRow.astro";
+import type { TCategory } from "db/config";
+
+type Props = {
+  title: string;
+  goals: any[];
+  totalRows: number;
+  totalPages: number;
+  offset: number;
+  currentPage: number;
+  itemsPerPage: number;
+};
+const {title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.props;
+---
+
+<div class='content flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
+  <header class='flex items-center justify-between'>
+    <h1 class='text-xl font-medium'>{title}</h1>
+  </header>
+  {
+    goals.length > 0 ? (
+      <article class='flex flex-col gap-4'>
+        <ul>
+          {goals.map((goal) => (
+            <GoalRow goal={goal} />
+          ))}
+        </ul>
+      </article>
+    ) : (
+      <div class='flex justify-center py-8 text-lg'>No Goals</div>
+    )
+  }
+  <div class='flex justify-center gap-2'>
+    <form method='get' class='flex items-center justify-center'>
+      <input
+        type='hidden'
+        name='offset'
+        value={offset >= itemsPerPage ? offset - itemsPerPage : itemsPerPage}
+      />
+      <button
+        disabled={offset === 0}
+        type='submit'
+        class={`${offset === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
+        Previous Page
+      </button>
+    </form>
+    <form method='get' class='flex items-center justify-center'>
+      <input type='hidden' name='offset' value={offset ? offset + itemsPerPage : itemsPerPage} />
+      <button
+        disabled={currentPage >= totalPages}
+        type='submit'
+        class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
+        Next Page
+      </button>
+    </form>
+  </div>
+</div>
