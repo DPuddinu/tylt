@@ -15,7 +15,7 @@ pnpm-debug.log*
 .vscode/
 .vercel/
 # environment variables
-.env
+.env.local
 
 # macOS-specific files
 .DS_Store
