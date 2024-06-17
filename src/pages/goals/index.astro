@@ -4,6 +4,7 @@ import { GOALS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/components/GoalFilters.astro';
 import Layout from '@/layouts/Layout.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
+import Fab from '@components/Fab.astro';
 import GoalRow from '@components/GoalRow.astro';
 import type { TCategory, TGoal } from 'db/config';
 const { user } = Astro.locals;
@@ -53,7 +54,6 @@ try {
         <div class='content flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
           <header class='flex items-center justify-between'>
             <h1 class='text-xl font-medium'>Goals</h1>
-            <a href='/goals/new' class='btn btn-warning btn-sm rounded-full'>New</a>
           </header>
           {
             goals.length > 0 ? (
@@ -100,4 +100,5 @@ try {
       </div>
     </div>
   </section>
+  <Fab href='/goals/new'>+</Fab>
 </Layout>

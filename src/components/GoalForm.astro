@@ -1,11 +1,10 @@
 ---
-
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalFormNames } from '@/types/goal.types';
 import type { TCategory, TGoal } from 'db/config';
 import AstroSelect from './AstroSelect.astro';
 import DatePicker from './DatePicker.astro';
 import RichTextEditor from './RichTextEditor.astro';
-import type { ValidationErrors } from '@/types/formValidation.types';
-import { GoalFormNames } from '@/types/goal.types';
 import TextInput from './TextInput.astro';
 
 type Props = {
@@ -19,7 +18,7 @@ const formId = 'goal-form';
 ---
 
 <section transition:animate='none' class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
-  <div class='flex grow flex-col gap-4 overflow-x-hidden sm:flex sm:flex-col'>
+  <div class='flex grow flex-col gap-4 overflow-x-hidden px-2 sm:flex sm:flex-col'>
     <header transition:name={title}>
       <h1 class='text-3xl font-bold sm:text-4xl'>{title}</h1>
     </header>
@@ -65,8 +64,14 @@ const formId = 'goal-form';
         </div>
       </div>
       <footer id='save-btn' class='flex justify-end gap-4'>
-        <a href='/goals' class='btn btn-outline btn-error rounded-lg hover:!bg-transparent hover:!text-error'>Cancel</a>
-        <button type='submit' class='btn btn-warning rounded-lg font-semibold'>{goal ? 'Update' : 'Add'} Goal</button>
+        <a
+          href='/goals'
+          class='btn btn-outline btn-error rounded-lg border-none hover:!bg-transparent hover:!text-error'>
+          Cancel
+        </a>
+        <button type='submit' class='btn btn-warning rounded-lg font-semibold'>
+          {goal ? 'Update' : 'Create'} Goal
+        </button>
       </footer>
     </form>
   </div>

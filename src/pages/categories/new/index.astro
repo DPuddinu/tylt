@@ -1,0 +1,32 @@
+---
+import { createCategory } from '@/api/categories/mutations';
+import { CategorySchema } from '@/types/categories.types';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import CategoryForm from '@components/CategoryForm.astro';
+import Layout from '@layouts/Layout.astro';
+import { ZodError } from 'zod';
+const { user } = Astro.locals;
+
+let validationErrors: ValidationErrors | undefined;
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  try {
+    const data = CategorySchema.parse(formData);
+    await createCategory({
+      authorId: user.id,
+      name: data.name
+    });
+    return Astro.redirect('/categories');
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
+    } else return Astro.redirect('/categories/error');
+  }
+}
+---
+
+<Layout pageName='New Category'>
+  <CategoryForm title='Add New Category' validationErrors={validationErrors} />
+</Layout>

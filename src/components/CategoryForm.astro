@@ -4,21 +4,33 @@ import type { TCategory } from 'db/config';
 import TextInput from './TextInput.astro';
 
 type Props = {
+  title: string;
   category?: TCategory;
   validationErrors?: ValidationErrors;
 };
-const { category, validationErrors } = Astro.props;
+const { category, validationErrors, title } = Astro.props;
 ---
+<section transition:animate='none' class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
+  <div class='flex grow flex-col gap-4 overflow-x-hidden sm:flex sm:flex-col px-2'>
+    <header transition:name={title}>
+      <h1 class='text-3xl font-bold sm:text-4xl'>{title}</h1>
+    </header>
+    <form method='post'>
+      <div class='flex flex-col gap-2'>
+        <div class='flex flex-col gap-2 '>
+          <TextInput value={category?.name} id='create-category' name='name' placeholder='Category Name' />
+          {validationErrors?.name && <span class='px-2 text-red-500'>{validationErrors?.name}</span>}
+        </div>
 
-<form method='post'>
-  <div class='flex flex-col gap-2'>
-    <label for='create-category' class='label-text lg:text-base'>Insert new Category</label>
-    <div class='flex flex-col gap-2'>
-      <div class='flex gap-2'>
-        <TextInput value={category?.name} id='create-category' name='name' placeholder='Category Name' />
-        <button class='btn'>Create</button>
+        <footer id='save-btn' class='flex justify-end gap-4'>
+          <a href='/categories' class='btn btn-outline border-none btn-error rounded-lg hover:!bg-transparent hover:!text-error'>
+            Cancel
+          </a>
+          <button type='submit' class='btn btn-warning rounded-lg font-semibold'>
+            {category ? 'Update' : 'Create'} Category
+          </button>
+        </footer>
       </div>
-      {validationErrors?.title && <span class='px-2 text-red-500'>{validationErrors?.title}</span>}
-    </div>
+    </form>
   </div>
-</form>
+</section>

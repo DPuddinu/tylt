@@ -1,64 +1,41 @@
 ---
-import { createCategory } from '@/api/categories/mutations';
 import { getMostUsedCategory } from '@/api/categories/queries';
-import { CategorySchema } from '@/types/categories.types';
-import type { ValidationErrors } from '@/types/formValidation.types';
-import CategoryForm from '@components/CategoryForm.astro';
+import Fab from '@components/Fab.astro';
 import Layout from '@layouts/Layout.astro';
-import { ZodError } from 'zod';
 const { user } = Astro.locals;
 
 const mostUsedCategory = await getMostUsedCategory(user.id);
-
-let validationErrors: ValidationErrors | undefined;
-
-if (Astro.request.method === 'POST') {
-  const formData = await Astro.request.formData();
-
-  try {
-    const data = CategorySchema.parse(formData);
-    await createCategory({
-      authorId: user.id,
-      name: data.name
-    });
-    return Astro.redirect('/categories');
-  } catch (error) {
-    if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors;
-    } else return Astro.redirect('/categories/error');
-  }
-}
-const max = mostUsedCategory[0].goalCount;
+const total = mostUsedCategory.reduce((acc, category) => acc + category.goalCount, 0);
 const percentages = mostUsedCategory.map((category) => {
-  const percent = (category.goalCount / max) * 100;
+  const percent = (category.goalCount / total) * 100;
   const formattedNum = percent % 1 === 0 ? percent : parseFloat(percent.toFixed(2));
   return formattedNum;
 });
 ---
 
 <Layout pageName='Categories'>
-  <header class='w-fit pb-8'>
-    <CategoryForm validationErrors={validationErrors} />
-  </header>
-  <section class='flex flex-col gap-4'>
-    <h1 class='text-3xl font-bold'>Most Used Categories</h1>
-    <div class='flex flex-col gap-4'>
-      {
-        mostUsedCategory.map((category, i) => (
-          <div class='grid grid-cols-4 gap-2'>
-            <div class='col-span-1'>{category.categoryName}</div>
-            <div class='col-span-1 text-end'>{percentages[i]}%</div>
-            <div class='col-span-2 flex gap-2'>
-              <div
-                class='category-bar origin-left rounded bg-red-500 object-left transition-transform'
-                style={`width: ${percentages[i]}px`}
-              />
+  <section class='card flex flex-col gap-8 bg-neutral text-neutral-content'>
+    <div class='card-body gap-4'>
+      <h1 class='card-title text-2xl font-bold'>Most Used Categories</h1>
+      <div class='flex flex-col gap-4'>
+        {
+          mostUsedCategory.map((category, i) => (
+            <div class='grid grid-cols-4 gap-2'>
+              <div class='col-span-1'>{category.categoryName}</div>
+              <div class='col-span-1 text-end'>{percentages[i]}%</div>
+              <div class='col-span-2 flex gap-2'>
+                <div
+                  class='category-bar origin-left rounded bg-red-500 object-left transition-transform'
+                  style={`width: ${percentages[i]}px`}
+                />
+              </div>
             </div>
-          </div>
-        ))
-      }
+          ))
+        }
+      </div>
     </div>
   </section>
+  <Fab href='/categories/new'>+</Fab>
 </Layout>
 <style>
   @keyframes expand {
