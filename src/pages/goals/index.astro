@@ -1,11 +1,11 @@
 ---
 import { getCategories } from '@/api/categories/queries';
 import { GOALS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
-import GoalFilterSidebar from '@/components/GoalFilters.astro';
+import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import Layout from '@/layouts/Layout.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
-import GoalRow from '@components/GoalRow.astro';
+import GoalRow from '@/pages/goals/_components/GoalRow.astro';
 import type { TCategory, TGoal } from 'db/config';
 const { user } = Astro.locals;
 
@@ -34,7 +34,11 @@ let totalPages = 0;
 let categories: TCategory[] = [];
 
 try {
-  const { getGoals, getPages } = getPaginatedGoals(user.id, offsetFilter, goalFilters);
+  const { getGoals, getPages } = getPaginatedGoals({
+    userId: user.id,
+    offset: offsetFilter,
+    filters: goalFilters
+  });
 
   const res = await Promise.all([getGoals, getPages]);
   goals = res[0];

@@ -1,11 +1,18 @@
 ---
-import { createCategory } from '@/api/categories/mutations';
+import { updateCategory } from '@/api/categories/mutations';
+import { getCategoryById } from '@/api/categories/queries';
 import { CategorySchema } from '@/types/categories.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
-import CategoryForm from '@/pages/categories/_components/CategoryForm.astro';
 import Layout from '@layouts/Layout.astro';
 import { ZodError } from 'zod';
+import CategoryForm from '../_components/CategoryForm.astro';
+const { id } = Astro.params;
 const { user } = Astro.locals;
+
+const [category] = await getCategoryById({
+  id: Number(id),
+  userId: user.id
+});
 
 let validationErrors: ValidationErrors | undefined;
 
@@ -14,19 +21,18 @@ if (Astro.request.method === 'POST') {
 
   try {
     const data = CategorySchema.parse(formData);
-    await createCategory({
-      authorId: user.id,
-      name: data.name
-    });
+    await updateCategory({ ...category, ...data });
+
     return Astro.redirect('/categories');
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    } else return Astro.redirect('/categories/error');
+    }
+    return Astro.redirect('/categories/' + goal.id + '/error');
   }
 }
 ---
 
-<Layout pageName='New Category'>
-  <CategoryForm title='Add New Category' validationErrors={validationErrors} />
+<Layout pageName='Category'>
+  <CategoryForm validationErrors={validationErrors} category={category} title='Edit Category' />
 </Layout>

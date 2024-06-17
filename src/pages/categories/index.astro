@@ -14,20 +14,24 @@ const percentages = mostUsedCategory.map((category) => {
 ---
 
 <Layout pageName='Categories'>
-  <section class='card flex flex-col gap-8 bg-neutral text-neutral-content'>
-    <div class='card-body gap-4'>
+  <section class='card flex max-w-md flex-col gap-8 bg-neutral text-neutral-content'>
+    <div class='card-body gap-8'>
       <h1 class='card-title text-2xl font-bold'>Most Used Categories</h1>
       <div class='flex flex-col gap-4'>
         {
           mostUsedCategory.map((category, i) => (
-            <div class='grid grid-cols-4 gap-2'>
-              <div class='col-span-1'>{category.categoryName}</div>
-              <div class='col-span-1 text-end'>{percentages[i]}%</div>
+            <div class='flex justify-between gap-2'>
+              <div class='col-span-1'>
+                <a href={`/categories/${category.categoryId}`} class='hover:font-bold'>
+                  {category.categoryName}
+                </a>
+              </div>
               <div class='col-span-2 flex gap-2'>
                 <div
-                  class='category-bar origin-left rounded bg-red-500 object-left transition-transform'
+                  class='category-bar origin-right rounded bg-red-500 transition-transform'
                   style={`width: ${percentages[i]}px`}
                 />
+                {percentages[i]}%
               </div>
             </div>
           ))

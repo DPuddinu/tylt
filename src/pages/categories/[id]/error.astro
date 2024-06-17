@@ -1,0 +1,6 @@
+---
+import ErrorMessage from '@components/ErrorMessage.astro';
+const { id } = Astro.params;
+---
+
+<ErrorMessage message='Something went wrong :(' fallbackUrl={`/categories/${id}`} />

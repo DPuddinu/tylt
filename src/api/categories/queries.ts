@@ -1,10 +1,17 @@
-import { Category, Goal, count, db, desc, eq } from 'astro:db';
+import { Category, Goal, and, count, db, desc, eq } from 'astro:db';
 
 export function getCategories(userId: string) {
   return db.select().from(Category).where(eq(Category.authorId, userId));
 }
-export function getCategoryById(id: number) {
-  return db.select().from(Category).where(eq(Category.id, id));
+type GetCategoryByIdParams = {
+  userId: string;
+  id: number;
+};
+export function getCategoryById({ id, userId }: GetCategoryByIdParams) {
+  return db
+    .select()
+    .from(Category)
+    .where(and(eq(Category.id, id), eq(Category.authorId, userId)));
 }
 export function getMostUsedCategory(userId: string) {
   return db
@@ -17,6 +24,5 @@ export function getMostUsedCategory(userId: string) {
     .where(eq(Category.authorId, userId))
     .leftJoin(Goal, eq(Category.id, Goal.categoryId))
     .groupBy(Category.id)
-    .orderBy(desc(count(Goal.id)))
-    .limit(10);
+    .orderBy(desc(count(Goal.id)));
 }

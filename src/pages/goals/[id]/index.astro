@@ -3,7 +3,7 @@ import { getCategories } from '@/api/categories/queries';
 import { updateGoal } from '@/api/goals/mutations';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
-import GoalForm from '@components/GoalForm.astro';
+import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import Layout from '@layouts/Layout.astro';
 import { ZodError } from 'zod';
 import { getGoalById } from '@/api/goals/queries';
@@ -11,7 +11,10 @@ const { id } = Astro.params;
 const { user } = Astro.locals;
 
 const categories = await getCategories(user.id);
-const [goal] = await getGoalById(Number(id), user.id);
+const [goal] = await getGoalById({
+  id: Number(id),
+  userId: user.id
+});
 
 let validationErrors: ValidationErrors | undefined;
 
