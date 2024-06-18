@@ -6,9 +6,8 @@ import Layout from '@layouts/MainLayout.astro';
 import SetupLayout from '@layouts/SetupLayout.astro';
 import { ZodError, z } from 'zod';
 import { zfd } from 'zod-form-data';
-const { user } = Astro.locals;
-
-const step = Astro.url.pathname.split('/')[2];
+const { setupDone, user } = Astro.locals;
+if (setupDone) return Astro.redirect('/goals');
 
 const schema = zfd.formData({
   name: zfd.text(z.string().min(3).max(20))
@@ -26,7 +25,7 @@ if (Astro.request.method === 'POST') {
     });
     await setSetupDone(user.id);
 
-    return Astro.redirect('/goals/new');
+    return Astro.redirect('/setup/2');
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
@@ -36,14 +35,8 @@ if (Astro.request.method === 'POST') {
 ---
 
 <Layout pageName='Initial Setup'>
-  <SetupLayout currentStep={Number(step)}>
+  <SetupLayout>
     <section transition:animate='none' class='flex w-full grow flex-col justify-center'>
-      <header class='space-y-8 py-4'>
-        <h1 class='text-center text-5xl lg:text-6xl'><strong>Hello</strong> {user.name}</h1>
-        <p class='text-center text-xl font-light'>
-          Before we get started, please create a category.<br /> What's your first goal about?
-        </p>
-      </header>
       <div class='flex justify-center pt-6'>
         <form method='post' class='grid max-w-md gap-2 px-1'>
           <input name='name' id='categories' type='text' placeholder='Category name...' class='input input-bordered' />

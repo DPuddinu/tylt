@@ -1,6 +1,5 @@
 ---
 const { setupDone } = Astro.locals;
-
 if (setupDone) return Astro.redirect('/goals');
 const step = Astro.url.searchParams.get('step');
 if (!step) return Astro.redirect('/setup/1');

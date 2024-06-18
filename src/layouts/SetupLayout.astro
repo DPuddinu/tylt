@@ -1,8 +1,7 @@
 ---
-type Props = {
-  currentStep: number;
-};
-const { currentStep } = Astro.props;
+const { user } = Astro.locals;
+
+const currentStep = Number(Astro.url.pathname.split('/')[2]);
 
 type Step = {
   title: string;
@@ -10,17 +9,27 @@ type Step = {
 const steps: Step[] = [{ title: 'Create category' }, { title: 'Create first goal' }];
 ---
 
-<div class='flex flex-col gap-8'>
-  <ul class='steps'>
-    {
-      steps.map((step, index) => (
-        <li
-          class={`step ${index + 1 <= currentStep ? 'step-primary' : ''} ${index + 1 === currentStep ? 'font-extrabold' : ''}`}
-          data-step={index}>
-          {step.title}
-        </li>
-      ))
-    }
-  </ul>
-  <slot />
+<div class='flex flex-col'>
+  <div class='py-4'>
+    <header class='space-y-8 py-4'>
+      <h1 class='text-center text-4xl lg:text-5xl'><strong>Hello</strong> {user.name}</h1>
+      <p class='text-center text-xl font-light'>Before we get started, we need just a couple more steps.</p>
+    </header>
+    <div class='divider'></div>
+  </div>
+
+  <main class='flex flex-col gap-4'>
+    <ul class='steps'>
+      {
+        steps.map((step, index) => (
+          <li
+            class={`step ${index + 1 <= currentStep ? 'step-primary' : ''} ${index + 1 === currentStep ? 'font-extrabold text-white' : ''}`}
+            data-step={index}>
+            {step.title}
+          </li>
+        ))
+      }
+    </ul>
+    <slot />
+  </main>
 </div>

@@ -27,11 +27,12 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
   if (!setupDone) {
     const [firstSetupDone] = await getSetupDone(locals.user.id);
     setupDone = !!firstSetupDone;
-    locals.setupDone = setupDone;
   }
 
   if (matchingRoute && url.pathname !== '/setup' && !setupDone) {
     return redirect('/setup');
   }
+  locals.setupDone = setupDone;
+
   return next();
 });

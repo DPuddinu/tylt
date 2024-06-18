@@ -1,0 +1,41 @@
+---
+import { createGoal } from '@/api/goals/mutations';
+import GoalForm from '@/pages/goals/_components/GoalForm.astro';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalInsertSchema } from '@/types/goal.types';
+import Layout from '@layouts/MainLayout.astro';
+import SetupLayout from '@layouts/SetupLayout.astro';
+import { Category, db, eq } from 'astro:db';
+import { ZodError } from 'zod';
+
+const { setupDone, user } = Astro.locals;
+if (setupDone) return Astro.redirect('/goals');
+const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
+
+let validationErrors: ValidationErrors | undefined;
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  try {
+    const data = GoalInsertSchema.parse(formData);
+    await createGoal({
+      ...data,
+      authorId: user.id,
+      authorName: user.name
+    });
+    return Astro.redirect('/goals');
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
+    } else return Astro.redirect('/goals/error');
+  }
+}
+---
+
+<Layout pageName='Initial Setup'>
+  <SetupLayout>
+    <div class='flex justify-center pt-6'>
+      <GoalForm categories={categories} validationErrors={validationErrors} />
+    </div>
+  </SetupLayout>
+</Layout>
