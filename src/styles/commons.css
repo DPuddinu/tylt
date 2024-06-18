@@ -1,0 +1,51 @@
+html {
+  scrollbar-gutter: auto !important;
+}
+.navbar {
+  height: 4.65rem;
+}
+button,
+a,
+[role='button'] {
+  animation: none !important;
+}
+.flex-container {
+  flex: 1; /* Takes up remaining space */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevents overflow */
+}
+
+.content {
+  /* flex: 1;  Takes as much height as possible */
+  overflow-y: auto; /* Enables vertical scrolling if needed */
+  min-height: fit-content; /* Altezza minima basata sul contenuto */
+  max-height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+::scrollbar {
+  width: 8px;
+  height: 8px;
+}

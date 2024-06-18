@@ -1,4 +1,5 @@
 ---
+import '@/styles/commons.css';
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
 import '@fontsource/inter';
@@ -21,9 +22,9 @@ const { pageName } = Astro.props;
     <ViewTransitions />
   </head>
   <body class='grid h-screen grid-rows-[auto_1fr]'>
-    <header>
+    <header class='sticky top-0 z-10 bg-base-300'>
       <div
-        class='navbar justify-between border border-b border-base-300 border-base-300/50 bg-base-200 p-2 pl-6 shadow-md shadow-base-300/50'>
+        class='navbar justify-between border border-b border-base-300 border-base-300/50 p-2 pl-6 shadow-md shadow-base-300/50'>
         <label for='my-drawer' class='drawer-button hover:scale-105 hover:cursor-pointer'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
@@ -62,7 +63,7 @@ const { pageName } = Astro.props;
           <ul class='menu min-h-full w-80 border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
             <li class='text-lg font-bold'><a href='/goals'>Goals</a></li>
             <li class='text-lg font-bold'>
-              <a href="/categories">Categories 🏗️</a>
+              <a href='/categories'>Categories 🏗️</a>
             </li>
             <li class='disabled text-lg font-bold'>
               <a>Changelogs 🏗️</a>
@@ -71,59 +72,5 @@ const { pageName } = Astro.props;
         </div>
       </div>
     </main>
-    <style is:global>
-      html {
-        scrollbar-gutter: auto !important;
-      }
-      button,
-      a,
-      [role='button'] {
-        animation: none !important;
-      }
-      textarea {
-        resize: none;
-      }
-
-      .flex-container {
-        flex: 1; /* Takes up remaining space */
-        display: flex;
-        flex-direction: column;
-        overflow: hidden; /* Prevents overflow */
-      }
-
-      .content {
-        /* flex: 1;  Takes as much height as possible */
-        overflow-y: auto; /* Enables vertical scrolling if needed */
-        min-height: fit-content; /* Altezza minima basata sul contenuto */
-        max-height: 100%;
-      }
-
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-
-      /* Track */
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-corner {
-        background: transparent;
-      }
-
-      /* Handle on hover */
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-      ::scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-    </style>
   </body>
 </html>
