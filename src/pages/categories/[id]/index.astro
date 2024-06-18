@@ -5,7 +5,7 @@ import { ITEMS_PER_PAGE, getGoalByCategoryId } from '@/api/goals/queries';
 import { CategorySchema } from '@/types/categories.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import GoalsList from '@components/GoalsList.astro';
-import Layout from '@layouts/Layout.astro';
+import Layout from '@layouts/MainLayout.astro';
 import type { TCategory, TGoal } from 'db/config';
 import { ZodError } from 'zod';
 import CategoryForm from '../_components/CategoryForm.astro';

@@ -1,7 +1,7 @@
 ---
 import { getMostUsedCategory } from '@/api/categories/queries';
 import Fab from '@components/Fab.astro';
-import Layout from '@layouts/Layout.astro';
+import Layout from '@layouts/MainLayout.astro';
 const { user } = Astro.locals;
 
 const mostUsedCategory = await getMostUsedCategory(user.id);

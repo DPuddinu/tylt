@@ -4,7 +4,7 @@ import { updateGoal } from '@/api/goals/mutations';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
-import Layout from '@layouts/Layout.astro';
+import Layout from '@layouts/MainLayout.astro';
 import { ZodError } from 'zod';
 import { getGoalById } from '@/api/goals/queries';
 const { id } = Astro.params;

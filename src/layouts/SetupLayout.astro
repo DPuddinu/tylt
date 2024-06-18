@@ -1,0 +1,26 @@
+---
+type Props = {
+  currentStep: number;
+};
+const { currentStep } = Astro.props;
+
+type Step = {
+  title: string;
+};
+const steps: Step[] = [{ title: 'Create category' }, { title: 'Create first goal' }];
+---
+
+<div class='flex flex-col gap-8'>
+  <ul class='steps'>
+    {
+      steps.map((step, index) => (
+        <li
+          class={`step ${index + 1 <= currentStep ? 'step-primary' : ''} ${index + 1 === currentStep ? 'font-extrabold' : ''}`}
+          data-step={index}>
+          {step.title}
+        </li>
+      ))
+    }
+  </ul>
+  <slot />
+</div>
