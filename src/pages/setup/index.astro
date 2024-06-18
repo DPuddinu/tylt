@@ -3,15 +3,13 @@ import { createCategory } from '@/api/categories/mutations';
 import { setSetupDone } from '@/api/setup/mutations';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import Layout from '@layouts/Layout.astro';
-import { Settings, db, eq } from 'astro:db';
 import { ZodError, z } from 'zod';
 import { zfd } from 'zod-form-data';
-const { user } = Astro.locals;
-const [isFirstSetupDone] = await db.select().from(Settings).where(eq(Settings.authorId, user.id));
-if (isFirstSetupDone) return Astro.redirect('/goals');
+const { user, setupDone } = Astro.locals;
+if (setupDone) return Astro.redirect('/goals');
 
 const schema = zfd.formData({
-  name: zfd.text(z.string().min(3).max(20)),
+  name: zfd.text(z.string().min(3).max(20))
 });
 
 let validationErrors: ValidationErrors | undefined;
@@ -20,7 +18,10 @@ if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
   try {
     const validated = schema.parse(formData);
-    await createCategory(user.id, validated.name);
+    await createCategory({
+      authorId: user.id,
+      name: validated.name
+    });
     await setSetupDone(user.id);
 
     return Astro.redirect('/goals/new');

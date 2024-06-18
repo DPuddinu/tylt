@@ -13,9 +13,9 @@ const { value, label, name, placeholder } = Astro.props;
 <quill-editor data-value={value} data-id={name} data-placeholder={placeholder}></quill-editor>
 <div class='flex h-48 flex-col gap-2'>
   <label for={`${label}-container`} class='label-text capitalize lg:text-base'>{label}</label>
-  <div id='loader' class='h-full w-full animate-pulse rounded'></div>
-  <div id={`${label}-container`} class='hidden max-w-full grow flex-container flex-col bg-white'>
-    <div id={label} class='max-w-full content text-black bg-white'></div>
+  <div id='loader' class='h-full w-full animate-pulse rounded bg-slate-200'></div>
+  <div id={`${label}-container`} class='flex-container hidden max-w-full grow flex-col bg-white'>
+    <div id={label} class='content max-w-full bg-white text-black'></div>
   </div>
 </div>
 

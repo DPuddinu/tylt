@@ -1,0 +1,33 @@
+---
+type Props = {
+  className?: string;
+};
+const { className = '' } = Astro.props;
+---
+
+<button
+  type='submit'
+  id='submit-btn'
+  class={`w-32 btn btn-primary ${className} disabled:!bg-primary disabled:text-base-300`}>
+  <slot />
+</button>
+<script>
+  const spinner = document.createElement('span');
+  spinner.classList.add('loading', 'loading-spinner', 'loading-md');
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>('#submit-btn');
+  buttons.forEach((button) => {
+    button.addEventListener('mousedown', () => {
+      button.textContent = '';
+      button.appendChild(spinner);
+    });
+  });
+  const forms = document.querySelectorAll<HTMLFormElement>('form');
+  forms.forEach((form) => {
+    form.addEventListener('submit', () => {
+      buttons.forEach((button) => {
+        button.setAttribute('disabled', 'true');
+      });
+    });
+  });
+</script>

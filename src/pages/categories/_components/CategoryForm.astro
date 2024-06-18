@@ -1,5 +1,6 @@
 ---
 import type { ValidationErrors } from '@/types/formValidation.types';
+import SubmitButton from '@components/SubmitButton.astro';
 import type { TCategory } from 'db/config';
 import TextInput from '../../../components/TextInput.astro';
 
@@ -10,9 +11,9 @@ type Props = {
 };
 const { category, validationErrors, title } = Astro.props;
 ---
-
 <section transition:animate='none' class='flex max-w-sm gap-4'>
   <div class='flex flex-col gap-4'>
+    <h1 class='text-4xl font-bold'>{title}</h1>
     <form method='post'>
       <div class='flex gap-2'>
         <div class='flex flex-col gap-2'>
@@ -20,9 +21,9 @@ const { category, validationErrors, title } = Astro.props;
           {validationErrors?.name && <span class='px-2 text-red-500'>{validationErrors?.name}</span>}
         </div>
 
-        <button type='submit' class='btn btn-warning rounded-lg font-semibold'>
+        <SubmitButton className='!btn-warning disabled:!bg-warning'>
           {category ? 'Update' : 'Create'}
-        </button>
+        </SubmitButton>
       </div>
     </form>
   </div>

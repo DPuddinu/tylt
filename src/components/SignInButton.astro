@@ -7,6 +7,26 @@ type Props = {
 const { className, label } = Astro.props;
 ---
 
-<SignIn provider='github' options={{
-  callbackUrl: '/goals'
-}} class={`${className} rounded-2xl btn btn-primary`}>{label}</SignIn>
+<SignIn
+  id='sign-in'
+  provider='github'
+  options={{
+    callbackUrl: '/goals'
+  }}
+  class={`${className} rounded-2xl btn btn-primary disabled:!bg-primary  disabled:text-base-300`}>
+  {label}</SignIn
+>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('#sign-in');
+  const spinner = document.createElement('span');
+  spinner.classList.add('loading', 'loading-spinner', 'loading-md');
+
+  // Add event listeners to fire confetti when a button is clicked.
+  buttons.forEach((button) => {
+    button.addEventListener('mousedown', () => {
+      button.textContent = '';
+      button.appendChild(spinner);
+    });
+  });
+</script>

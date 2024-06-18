@@ -1,10 +1,11 @@
 ---
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalFormNames } from '@/types/goal.types';
+import SubmitButton from '@components/SubmitButton.astro';
 import type { TCategory, TGoal } from 'db/config';
-import AstroSelect from '../../../components/Select.astro';
 import DatePicker from '../../../components/DatePicker.astro';
 import RichTextEditor from '../../../components/RichTextEditor.astro';
+import AstroSelect from '../../../components/Select.astro';
 import TextInput from '../../../components/TextInput.astro';
 
 type Props = {
@@ -69,9 +70,7 @@ const formId = 'goal-form';
           class='btn btn-outline btn-error rounded-lg border-none hover:!bg-transparent hover:!text-error'>
           Cancel
         </a>
-        <button type='submit' class='btn btn-warning rounded-lg font-semibold'>
-          {goal ? 'Update' : 'Create'}
-        </button>
+        <SubmitButton className='!btn-warning disabled:!bg-warning'>{goal ? 'Update' : 'Create'}</SubmitButton>
       </footer>
     </form>
   </div>

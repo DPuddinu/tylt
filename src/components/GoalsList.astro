@@ -50,7 +50,7 @@ const {title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.pro
       <button
         disabled={currentPage >= totalPages}
         type='submit'
-        class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn `}>
+        class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn btn-neutral`}>
         Next Page
       </button>
     </form>

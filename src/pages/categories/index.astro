@@ -26,12 +26,14 @@ const percentages = mostUsedCategory.map((category) => {
                   {category.categoryName}
                 </a>
               </div>
-              <div class='col-span-2 flex gap-2'>
-                <div
-                  class='category-bar origin-right rounded bg-red-500 transition-transform'
-                  style={`width: ${percentages[i]}px`}
-                />
-                {percentages[i]}%
+              <div class='flex gap-2'>
+                <div class='flex justify-end'>
+                  <div
+                    class='category-bar w-full origin-right justify-end rounded bg-red-500 transition-transform'
+                    style={`width: ${percentages[i]}px`}
+                  />
+                </div>
+                <div class="text-end w-14" >{percentages[i]}%</div>
               </div>
             </div>
           ))

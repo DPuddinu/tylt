@@ -3,6 +3,7 @@
 declare namespace App {
   interface Locals {
     user: User;
+    setupDone: boolean;
     // add props here
   }
 }
