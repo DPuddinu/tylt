@@ -21,7 +21,7 @@ const formId = 'goal-form';
 <section transition:animate='none' class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
   <div class='flex grow flex-col gap-4 overflow-x-hidden px-2 sm:flex sm:flex-col'>
     {title && <header transition:name={title}>
-      <h1 class='text-3xl font-bold sm:text-4xl'>{title}</h1>
+      <h1 class='text-4xl font-bold'>{title}</h1>
     </header>}
     <form
       id={formId}
@@ -55,7 +55,7 @@ const formId = 'goal-form';
             form={formId}
           />
         </div>
-        <div class='flex gap-2'>
+        <div class='flex gap-2 flex-wrap'>
           <DatePicker
             name={GoalFormNames.completionDate}
             label='Completion Date'
