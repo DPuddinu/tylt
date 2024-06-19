@@ -3,6 +3,7 @@ import { getCategories } from '@/api/categories/queries';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import CategoriesStore from '@/store/categories.store';
+import FilterStore from '@/store/filters.store';
 import GoalStore from '@/store/goals.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
@@ -36,15 +37,18 @@ let goals: TGoal[] = [];
 let totalPages = 0;
 let categories: TCategory[] = [];
 
-GoalStore.checkFilterChange(goalFilters);
-GoalStore.setFilters(goalFilters);
+FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
+FilterStore.setFilters(goalFilters);
+FilterStore.setCurrentPage(currentPage);
 
 try {
   const cachedGoalsCount = GoalStore.getGoalsCount();
-  const cachedGoals = GoalStore.get(currentPage);
+  const cachedGoals = GoalStore.getGoalsByPage(currentPage);
+  const cachedCategories = CategoriesStore.getAll();
+
   const { getGoals, countGoals } = getPaginatedGoals({
     userId: user.id,
-    offset: offsetFilter,
+    page: currentPage,
     filters: goalFilters
   });
   if (cachedGoals) {
@@ -58,7 +62,6 @@ try {
   }
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
 
-  const cachedCategories = CategoriesStore.get();
   if (cachedCategories) {
     categories = cachedCategories;
   } else {
@@ -72,9 +75,9 @@ try {
 
 <Layout pageName='Goals'>
   <section transition:animate='none' class='flex-container'>
-    <div class='content flex max-h-full flex-col gap-4 sm:flex-row'>
+    <div class='content flex max-h-full flex-col gap-4 sm:flex-row h-full'>
       <GoalFilterSidebar categories={categories} filters={goalFilters} />
-      <div class='flex-container max-w-xl'>
+      <div class='flex-container h-full max-w-xl'>
         <GoalsList
           title='Goals'
           goals={goals}

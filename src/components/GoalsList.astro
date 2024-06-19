@@ -1,6 +1,5 @@
 ---
-import GoalRow from "@/pages/goals/_components/GoalRow.astro";
-import type { TCategory } from "db/config";
+import GoalRow from '@/pages/goals/_components/GoalRow.astro';
 
 type Props = {
   title: string;
@@ -11,16 +10,16 @@ type Props = {
   currentPage: number;
   itemsPerPage: number;
 };
-const {title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.props;
+const { title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.props;
 ---
 
-<div class='content flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
+<div class='flex h-full w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
   <header class='flex items-center justify-between'>
     <h1 class='text-xl font-medium'>{title}</h1>
   </header>
   {
     goals.length > 0 ? (
-      <article class='flex flex-col gap-4'>
+      <article class='flex flex-col grow gap-4'>
         <ul>
           {goals.map((goal) => (
             <GoalRow goal={goal} />
@@ -31,13 +30,9 @@ const {title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.pro
       <div class='flex justify-center py-8 text-lg'>No Goals</div>
     )
   }
-  <div class='flex justify-center gap-2'>
+  <footer class='flex justify-center gap-2'>
     <form method='get' class='flex items-center justify-center'>
-      <input
-        type='hidden'
-        name='offset'
-        value={offset >= itemsPerPage ? offset - itemsPerPage : itemsPerPage}
-      />
+      <input type='hidden' name='offset' value={offset >= itemsPerPage ? offset - itemsPerPage : itemsPerPage} />
       <button
         disabled={offset === 0}
         type='submit'
@@ -54,5 +49,5 @@ const {title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.pro
         Next Page
       </button>
     </form>
-  </div>
+  </footer>
 </div>

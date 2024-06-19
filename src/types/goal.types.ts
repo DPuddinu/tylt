@@ -3,9 +3,12 @@ import { zfd } from 'zod-form-data';
 
 export const GoalInsertSchema = zfd.formData({
   title: zfd.text(
-    z.string({
-      message: 'Title is required'
-    })
+    z
+      .string({
+        message: 'Title is required'
+      })
+      .min(3)
+      .max(20)
   ),
   description: zfd.text().optional(),
   categoryId: zfd.numeric(z.number().int().positive('Category ID must be a positive integer')),

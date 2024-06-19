@@ -3,7 +3,7 @@ import type { TCategory } from 'db/config';
 class CategoriesStore {
   data: TCategory[] | undefined = undefined;
 
-  get() {
+  getAll() {
     return this.data;
   }
 

@@ -23,5 +23,7 @@ export function updateGoal(data: UpdateGoalPayload) {
       ...data,
       completed: !!completionDate
     })
-    .where(and(eq(Goal.authorId, data.userId), eq(Goal.id, data.goalId)));
+    .where(and(eq(Goal.authorId, data.userId), eq(Goal.id, data.goalId)))
+    .returning()
+    .get();
 }

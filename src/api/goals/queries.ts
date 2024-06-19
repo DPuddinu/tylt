@@ -5,12 +5,12 @@ export const ITEMS_PER_PAGE = 5;
 
 type GetPaginatedGoalsParams = {
   userId: string;
-  offset?: number;
+  page?: number;
   filters?: GoalFilters;
 };
-export function getPaginatedGoals({ userId, offset = 0, filters }: GetPaginatedGoalsParams) {
+export function getPaginatedGoals({ userId, page = 1, filters }: GetPaginatedGoalsParams) {
   const countGoals = db.select({ count: count() }).from(Goal).where(eq(Goal.authorId, userId)).get();
-
+  const offset = (page - 1) * ITEMS_PER_PAGE;
   const userFilter = eq(Goal.authorId, userId);
 
   if (!filters)
@@ -60,16 +60,17 @@ export function getGoalById({ id, userId }: getGoalByIdParams) {
   return db
     .select()
     .from(Goal)
-    .where(and(eq(Goal.id, Number(id)), eq(Goal.authorId, userId)));
+    .where(and(eq(Goal.id, Number(id)), eq(Goal.authorId, userId)))
+    .get();
 }
 
 type GetGoalsByCategoryParams = {
   categoryId: number;
   userId: string;
-  offset?: number;
+  page?: number;
 };
-export function getGoalByCategoryId({ categoryId, userId, offset = 0 }: GetGoalsByCategoryParams) {
-  const getPages = db
+export function getGoalByCategoryId({ categoryId, userId, page = 1 }: GetGoalsByCategoryParams) {
+  const getCategoriesCount = db
     .select({ count: count() })
     .from(Goal)
     .where(and(eq(Goal.categoryId, Number(categoryId)), eq(Goal.authorId, userId)))
@@ -80,10 +81,10 @@ export function getGoalByCategoryId({ categoryId, userId, offset = 0 }: GetGoals
     .where(and(eq(Goal.categoryId, Number(categoryId)), eq(Goal.authorId, userId)))
     .orderBy(desc(Goal.creationDate))
     .limit(ITEMS_PER_PAGE)
-    .offset(offset);
+    .offset((page - 1) * ITEMS_PER_PAGE);
 
   return {
-    getPages,
+    getCategoriesCount,
     getGoalsByCategory
   };
 }

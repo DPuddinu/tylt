@@ -20,10 +20,10 @@ function getParam(param: string) {
 const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
-const { getGoalsByCategory, getPages } = getGoalByCategoryId({
+const { getGoalsByCategory, getCategoriesCount } = getGoalByCategoryId({
   categoryId: Number(id),
   userId: user.id,
-  offset: offsetFilter
+  page: currentPage
 });
 
 let goals: TGoal[] = [];
@@ -40,7 +40,7 @@ try {
       userId: user.id
     }),
     getGoalsByCategory,
-    getPages
+    getCategoriesCount
   ]);
 
   category = calls[0];
