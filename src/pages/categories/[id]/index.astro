@@ -2,6 +2,7 @@
 import { updateCategory } from '@/api/categories/mutations';
 import { getCategoryById } from '@/api/categories/queries';
 import { ITEMS_PER_PAGE, getGoalByCategoryId } from '@/api/goals/queries';
+import CategoriesStore from '@/store/categories.store';
 import { CategorySchema } from '@/types/categories.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import GoalsList from '@components/GoalsList.astro';
@@ -9,6 +10,7 @@ import Layout from '@layouts/MainLayout.astro';
 import type { TCategory, TGoal } from 'db/config';
 import { ZodError } from 'zod';
 import CategoryForm from '../_components/CategoryForm.astro';
+
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
@@ -50,6 +52,7 @@ try {
 }
 
 if (Astro.request.method === 'POST') {
+  CategoriesStore.clear();
   const formData = await Astro.request.formData();
 
   try {

@@ -6,10 +6,12 @@ import CategoryForm from '@/pages/categories/_components/CategoryForm.astro';
 import Layout from '@layouts/MainLayout.astro';
 import { ZodError } from 'zod';
 const { user } = Astro.locals;
+import CategoriesStore from '@/store/categories.store';
 
 let validationErrors: ValidationErrors | undefined;
 
 if (Astro.request.method === 'POST') {
+  CategoriesStore.clear();
   const formData = await Astro.request.formData();
 
   try {

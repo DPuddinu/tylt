@@ -1,12 +1,15 @@
 ---
 import { getCategories } from '@/api/categories/queries';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
-import Layout from '@layouts/MainLayout.astro';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
+import CategoriesStore from '@/store/categories.store';
+import GoalStore from '@/store/goals.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
+import Layout from '@layouts/MainLayout.astro';
 import type { TCategory, TGoal } from 'db/config';
+
 const { user } = Astro.locals;
 
 function getParam(param: string) {
@@ -39,13 +42,38 @@ try {
     offset: offsetFilter,
     filters: goalFilters
   });
-
-  const res = await Promise.all([getGoals, getPages]);
-  goals = res[0];
-  totalRows = res[1]?.count ?? 0;
+  const cachedGoals = GoalStore.get(currentPage);
+  if (cachedGoals) {
+    goals = cachedGoals;
+    console.log('CACHED GOALS--->', goals);
+  } else {
+    goals = await getGoals;
+    GoalStore.set(currentPage, ...goals);
+    console.log('LOAD GOALS');
+  }
+  const cachedGoalsCount = GoalStore.getGoalsCount();
+  if (cachedGoalsCount) {
+    totalRows = totalPages;
+    console.log('CACHED GOALS COUNT--->', cachedGoalsCount);
+  } else {
+    const pages = await getPages;
+    totalRows = pages?.count ?? 0;
+    GoalStore.setGoalsCount(totalRows);
+    console.log('LOAD GOALS COUNT--->', totalRows);
+  }
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
-  categories = await getCategories(user.id);
+
+  const cachedCategories = CategoriesStore.get();
+  if (cachedCategories) {
+    categories = cachedCategories;
+    console.log('CACHED CATEGORIES--->', categories);
+  } else {
+    categories = await getCategories(user.id);
+    CategoriesStore.set(categories);
+    console.log('LOAD CATEGORIES--->', categories);
+  }
 } catch (error) {
+  console.log(error);
   return Astro.redirect('goals/error');
 }
 ---

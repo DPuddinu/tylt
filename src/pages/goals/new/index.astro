@@ -6,13 +6,14 @@ import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import Layout from '@layouts/MainLayout.astro';
 import { Category, db, eq } from 'astro:db';
 import { ZodError } from 'zod';
+import GoalStore from '@/store/goals.store';
 
 const { user } = Astro.locals;
 const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
 
 let validationErrors: ValidationErrors | undefined;
 if (Astro.request.method === 'POST') {
-
+  GoalStore.clear();
   const formData = await Astro.request.formData();
 
   try {

@@ -1,16 +1,31 @@
 ---
 import { getCategories } from '@/api/categories/queries';
 import { updateGoal } from '@/api/goals/mutations';
+import { getGoalById } from '@/api/goals/queries';
+import GoalForm from '@/pages/goals/_components/GoalForm.astro';
+import CategoriesStore from '@/store/categories.store';
+import GoalStore from '@/store/goals.store';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
-import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import Layout from '@layouts/MainLayout.astro';
+import type { TCategory } from 'db/config';
 import { ZodError } from 'zod';
-import { getGoalById } from '@/api/goals/queries';
+
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
-const categories = await getCategories(user.id);
+const cachedCategories = CategoriesStore.get();
+let categories: TCategory[] = [];
+
+if (cachedCategories) {
+  categories = cachedCategories;
+  console.log('CACHED CATEGORIES--->', categories);
+} else {
+  categories = await getCategories(user.id);
+  CategoriesStore.set(categories);
+  console.log('LOAD CATEGORIES--->', categories);
+}
+
 const [goal] = await getGoalById({
   id: Number(id),
   userId: user.id
@@ -19,6 +34,8 @@ const [goal] = await getGoalById({
 let validationErrors: ValidationErrors | undefined;
 
 if (Astro.request.method === 'POST') {
+  GoalStore.clear();
+
   const formData = await Astro.request.formData();
 
   try {
@@ -29,7 +46,7 @@ if (Astro.request.method === 'POST') {
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    } 
+    }
     return Astro.redirect('/goals/' + goal.id + '/error');
   }
 }
