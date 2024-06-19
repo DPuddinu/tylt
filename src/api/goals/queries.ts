@@ -9,13 +9,13 @@ type GetPaginatedGoalsParams = {
   filters?: GoalFilters;
 };
 export function getPaginatedGoals({ userId, offset = 0, filters }: GetPaginatedGoalsParams) {
-  const getPages = db.select({ count: count() }).from(Goal).where(eq(Goal.authorId, userId)).get();
+  const countGoals = db.select({ count: count() }).from(Goal).where(eq(Goal.authorId, userId)).get();
 
   const userFilter = eq(Goal.authorId, userId);
 
   if (!filters)
     return {
-      getPages,
+      countGoals,
       getGoals: db
         .select()
         .from(Goal)
@@ -38,7 +38,11 @@ export function getPaginatedGoals({ userId, offset = 0, filters }: GetPaginatedG
   ].filter(Boolean);
 
   return {
-    getPages,
+    countGoals: db
+      .select({ count: count() })
+      .from(Goal)
+      .where(and(...conditions))
+      .get(),
     getGoals: db
       .select()
       .from(Goal)

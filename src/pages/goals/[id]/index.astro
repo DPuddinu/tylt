@@ -19,11 +19,9 @@ let categories: TCategory[] = [];
 
 if (cachedCategories) {
   categories = cachedCategories;
-  console.log('CACHED CATEGORIES--->', categories);
 } else {
   categories = await getCategories(user.id);
   CategoriesStore.set(categories);
-  console.log('LOAD CATEGORIES--->', categories);
 }
 
 const [goal] = await getGoalById({

@@ -36,44 +36,36 @@ let goals: TGoal[] = [];
 let totalPages = 0;
 let categories: TCategory[] = [];
 
+GoalStore.checkFilterChange(goalFilters);
+GoalStore.setFilters(goalFilters);
+
 try {
-  const { getGoals, getPages } = getPaginatedGoals({
+  const cachedGoalsCount = GoalStore.getGoalsCount();
+  const cachedGoals = GoalStore.get(currentPage);
+  const { getGoals, countGoals } = getPaginatedGoals({
     userId: user.id,
     offset: offsetFilter,
     filters: goalFilters
   });
-  const cachedGoals = GoalStore.get(currentPage);
   if (cachedGoals) {
     goals = cachedGoals;
-    console.log('CACHED GOALS--->', goals);
+    totalRows = cachedGoalsCount;
   } else {
     goals = await getGoals;
+    totalRows = (await countGoals)?.count ?? 0;
     GoalStore.set(currentPage, ...goals);
-    console.log('LOAD GOALS');
-  }
-  const cachedGoalsCount = GoalStore.getGoalsCount();
-  if (cachedGoalsCount) {
-    totalRows = totalPages;
-    console.log('CACHED GOALS COUNT--->', cachedGoalsCount);
-  } else {
-    const pages = await getPages;
-    totalRows = pages?.count ?? 0;
     GoalStore.setGoalsCount(totalRows);
-    console.log('LOAD GOALS COUNT--->', totalRows);
   }
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
 
   const cachedCategories = CategoriesStore.get();
   if (cachedCategories) {
     categories = cachedCategories;
-    console.log('CACHED CATEGORIES--->', categories);
   } else {
     categories = await getCategories(user.id);
     CategoriesStore.set(categories);
-    console.log('LOAD CATEGORIES--->', categories);
   }
 } catch (error) {
-  console.log(error);
   return Astro.redirect('goals/error');
 }
 ---
