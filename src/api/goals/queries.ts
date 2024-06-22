@@ -1,4 +1,5 @@
 import type { GoalFilters } from '@/types/filters.types';
+import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
 
 export const ITEMS_PER_PAGE = 5;
@@ -8,6 +9,19 @@ type GetPaginatedGoalsParams = {
   page?: number;
   filters?: GoalFilters;
 };
+export async function getCompletionRate(userId: string) {
+  try {
+    const goals = await db.select().from(Goal).where(eq(Goal.authorId, userId));
+    const completedGoals = goals.filter((goal) => goal.completed);
+    return {
+      ratePercentage: toFixedDecimals(100 * (completedGoals.length / goals.length)),
+      completedGoalsCount: completedGoals.length,
+      totalGoalsCount: goals.length
+    };
+  } catch (error) {
+    throw new Error('Cannot get completion rate');
+  }
+}
 export function getPaginatedGoals({ userId, page = 1, filters }: GetPaginatedGoalsParams) {
   const countGoals = db.select({ count: count() }).from(Goal).where(eq(Goal.authorId, userId)).get();
   const offset = (page - 1) * ITEMS_PER_PAGE;

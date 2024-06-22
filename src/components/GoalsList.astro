@@ -1,5 +1,6 @@
 ---
 import GoalRow from '@/pages/goals/_components/GoalRow.astro';
+import Card from './Card.astro';
 
 type Props = {
   title: string;
@@ -13,13 +14,10 @@ type Props = {
 const { title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.props;
 ---
 
-<div class='flex w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
-  <header class='flex items-center justify-between'>
-    <h1 class='text-xl font-medium'>{title}</h1>
-  </header>
+<Card title={title}>
   {
     goals.length > 0 ? (
-      <article class='flex flex-col grow gap-4'>
+      <article class='flex grow flex-col gap-4'>
         <ul>
           {goals.map((goal) => (
             <GoalRow goal={goal} />
@@ -50,4 +48,4 @@ const { title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.pr
       </button>
     </form>
   </footer>
-</div>
+</Card>

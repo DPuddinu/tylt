@@ -1,5 +1,6 @@
 ---
 import { getMostUsedCategory } from '@/api/categories/queries';
+import { toFixedDecimals } from '@/utils/fixed-decimals';
 import Fab from '@components/Fab.astro';
 import Layout from '@layouts/MainLayout.astro';
 const { user } = Astro.locals;
@@ -8,13 +9,13 @@ const mostUsedCategory = await getMostUsedCategory(user.id);
 const total = mostUsedCategory.reduce((acc, category) => acc + category.goalCount, 0);
 const percentages = mostUsedCategory.map((category) => {
   const percent = (category.goalCount / total) * 100;
-  const formattedNum = percent % 1 === 0 ? percent : parseFloat(percent.toFixed(2));
+  const formattedNum = toFixedDecimals(percent);
   return formattedNum;
 });
 ---
 
 <Layout pageName='Categories'>
-  <section class='card flex max-w-md flex-col gap-8 bg-neutral text-neutral-content'>
+  <section class='card flex max-w-md flex-col gap-8 bg-base-200 text-neutral-content'>
     <div class='card-body gap-8'>
       <h1 class='card-title text-2xl font-bold'>Most Used Categories</h1>
       <div class='flex flex-col gap-4'>
@@ -33,7 +34,7 @@ const percentages = mostUsedCategory.map((category) => {
                     style={`width: ${percentages[i]}px`}
                   />
                 </div>
-                <div class="text-end w-14" >{percentages[i]}%</div>
+                <div class='w-14 text-end'>{percentages[i]}%</div>
               </div>
             </div>
           ))

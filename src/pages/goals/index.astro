@@ -1,11 +1,12 @@
 ---
 import { getCategories } from '@/api/categories/queries';
-import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
+import { ITEMS_PER_PAGE, getCompletionRate, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import CategoriesStore from '@/store/categories.store';
 import FilterStore from '@/store/filters.store';
 import GoalStore from '@/store/goals.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
+import Card from '@components/Card.astro';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
@@ -36,6 +37,9 @@ let totalRows = 0;
 let goals: TGoal[] = [];
 let totalPages = 0;
 let categories: TCategory[] = [];
+let completionRate: number;
+let completedGoals: number;
+let totalGoals: number;
 
 FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
 FilterStore.setFilters(goalFilters);
@@ -68,6 +72,12 @@ try {
     categories = await getCategories(user.id);
     CategoriesStore.set(categories);
   }
+
+  const { ratePercentage, completedGoalsCount, totalGoalsCount } = await getCompletionRate(user.id);
+  completionRate = ratePercentage;
+  completedGoals = completedGoalsCount;
+  totalGoals = totalGoalsCount;
+
 } catch (error) {
   return Astro.redirect('goals/error');
 }
@@ -75,9 +85,9 @@ try {
 
 <Layout pageName='Goals'>
   <section transition:animate='none' class='flex-container'>
-    <div class='content flex max-h-full flex-col gap-4 sm:flex-row h-full'>
+    <div class='content flex flex-col gap-4 lg:flex-row'>
       <GoalFilterSidebar categories={categories} filters={goalFilters} />
-      <div class='flex-container h-full max-w-xl'>
+      <div class="flex flex-col gap-4 md:flex-row grow">
         <GoalsList
           title='Goals'
           goals={goals}
@@ -87,6 +97,13 @@ try {
           currentPage={currentPage}
           itemsPerPage={ITEMS_PER_PAGE}
         />
+        <Card title='Goals completion' >
+          <div class="flex flex-col gap-4">
+            <h3>{`Completion percentage: ${completionRate}%`}</h3>
+            <h3>{`Completed Goals: ${completedGoals}`}</h3>
+            <h3>{`Total Goals: ${totalGoals}`}</h3>
+          </div>
+        </Card>
       </div>
     </div>
   </section>
