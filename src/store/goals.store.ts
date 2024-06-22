@@ -3,7 +3,9 @@ import type { TGoal } from 'db/config';
 class GoalStore {
   data: Record<number, TGoal[]> = {};
   totalCount: number | undefined = undefined;
-
+  getAll() {
+    return this.data;
+  }
   getGoalsByPage(page: number) {
     return this.data[page];
   }
@@ -12,9 +14,7 @@ class GoalStore {
   }
 
   set(page: number, ...newData: TGoal[]) {
-    if (!this.data[page]) {
-      this.data[page] = newData;
-    }
+    this.data[page] = newData;
   }
   setGoalsCount(count: number) {
     this.totalCount = count;
@@ -29,13 +29,7 @@ class GoalStore {
   }
 
   updateGoal(page: number, updatedGoal: TGoal) {
-    this.set(
-      page,
-      ...this.data[page].map((goal) => {
-        if (goal.id === updatedGoal.id) return updatedGoal;
-        return goal;
-      })
-    );
+    this.set(page, ...this.data[page].map((goal) => (goal.id === updatedGoal.id ? updatedGoal : goal)));
   }
 }
 const store = new GoalStore();
