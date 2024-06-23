@@ -15,7 +15,7 @@ const session = await getSession(Astro.request);
   session ? (
     <a
       href='/goals'
-      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black disabled:!bg-primary disabled:text-base-300`}>
+      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black hover:bg-black disabled:!bg-primary disabled:text-base-300`}>
       <Image src={Logo} alt={'github logo'} class='h-6 w-6' /> {label}
     </a>
   ) : (
@@ -25,7 +25,7 @@ const session = await getSession(Astro.request);
       options={{
         callbackUrl: '/goals'
       }}
-      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black disabled:!bg-primary disabled:text-base-300`}>
+      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black hover:bg-black disabled:!bg-primary disabled:text-base-300`}>
       <Image src={Logo} alt={'github logo'} class='h-6 w-6' /> {label}
     </SignIn>
   )

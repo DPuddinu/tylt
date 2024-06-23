@@ -13,10 +13,25 @@ export async function getCompletionRate(userId: string) {
   try {
     const goals = await db.select().from(Goal).where(eq(Goal.authorId, userId));
     const completedGoals = goals.filter((goal) => goal.completed);
+    const lastWeekGoals = goals.filter((goal) => {
+      return goal.completionDate && goal.completionDate > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    });
+    const secondLastWeekGoals = goals.filter((goal) => {
+      return (
+        goal.completionDate &&
+        goal.completionDate > new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) &&
+        goal.completionDate < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      );
+    });
+    const delta = lastWeekGoals.length - secondLastWeekGoals.length;
+
     return {
       ratePercentage: toFixedDecimals(100 * (completedGoals.length / goals.length)),
       completedGoalsCount: completedGoals.length,
-      totalGoalsCount: goals.length
+      totalGoalsCount: goals.length,
+      lastWeekGoalsCount: lastWeekGoals.length,
+      lastTwoWeekGoalsCount: secondLastWeekGoals.length,
+      deltaCount: delta
     };
   } catch (error) {
     throw new Error('Cannot get completion rate');

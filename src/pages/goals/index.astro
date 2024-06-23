@@ -38,8 +38,9 @@ let goals: TGoal[] = [];
 let totalPages = 0;
 let categories: TCategory[] = [];
 let completionRate: number;
-let completedGoals: number;
 let totalGoals: number;
+let lastWeekGoals: number;
+let delta: number;
 
 FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
 FilterStore.setFilters(goalFilters);
@@ -73,11 +74,12 @@ try {
     CategoriesStore.set(categories);
   }
 
-  const { ratePercentage, completedGoalsCount, totalGoalsCount } = await getCompletionRate(user.id);
+  const { ratePercentage, lastWeekGoalsCount, lastTwoWeekGoalsCount, totalGoalsCount, deltaCount } =
+    await getCompletionRate(user.id);
   completionRate = ratePercentage;
-  completedGoals = completedGoalsCount;
   totalGoals = totalGoalsCount;
-
+  lastWeekGoals = lastWeekGoalsCount;
+  delta = deltaCount;
 } catch (error) {
   return Astro.redirect('goals/error');
 }
@@ -87,7 +89,7 @@ try {
   <section transition:animate='none' class='flex-container'>
     <div class='content flex flex-col gap-4'>
       <GoalFilterSidebar categories={categories} filters={goalFilters} />
-      <div class="flex flex-col gap-4 md:flex-row grow">
+      <div class='flex grow flex-col gap-4 md:flex-row'>
         <GoalsList
           title='Goals'
           goals={goals}
@@ -97,11 +99,32 @@ try {
           currentPage={currentPage}
           itemsPerPage={ITEMS_PER_PAGE}
         />
-        <Card title='Goals completion' >
-          <div class="flex flex-col gap-4">
-            <h3>{`Completion percentage: ${completionRate}%`}</h3>
-            <h3>{`Completed Goals: ${completedGoals}`}</h3>
-            <h3>{`Total Goals: ${totalGoals}`}</h3>
+        <Card title='Goals Report'>
+          <div class='report flex flex-col gap-4 sm:grid sm:grid-cols-4 sm:gap-8'>
+            <div>
+              <h3 class='text-balance text-4xl sm:text-center'>
+                {`${completionRate}%`}
+              </h3>
+              <p class='text-balance text-base sm:text-center'>completed</p>
+            </div>
+            <div>
+              <h3 class='text-balance text-4xl sm:text-center'>
+                {`${totalGoals}`}
+              </h3>
+              <p class='text-balance text-base sm:text-center'>total goals</p>
+            </div>
+            <div>
+              <h3 class='text-balance text-4xl sm:text-center'>
+                {`${lastWeekGoals}`}
+              </h3>
+              <p class='text-balance text-base sm:text-center'>new goals last week</p>
+            </div>
+            <div>
+              <h3 class='text-balance text-4xl sm:text-center'>
+                {`${delta >= 0 ? '+' : '-'}${delta}`}
+              </h3>
+              <p class='text-balance text-base sm:text-center'>VS previous week</p>
+            </div>
           </div>
         </Card>
       </div>
@@ -109,3 +132,12 @@ try {
   </section>
   <Fab href='/goals/new'>+</Fab>
 </Layout>
+
+<style>
+  .report {
+    container-type: inline-size;
+    h3 {
+      font-size: clamp(1.5em, 5cqw, 2em);
+    }
+  }
+</style>
