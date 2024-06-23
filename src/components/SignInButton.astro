@@ -1,21 +1,35 @@
 ---
+import { Image } from 'astro:assets';
 import { SignIn } from 'auth-astro/components';
+import { getSession } from 'auth-astro/server';
+import Logo from '../../public/github-mark.svg';
 type Props = {
   label: string;
   className?: string;
 };
 const { className, label } = Astro.props;
+const session = await getSession(Astro.request);
 ---
 
-<SignIn
-  id='sign-in'
-  provider='github'
-  options={{
-    callbackUrl: '/goals'
-  }}
-  class={`${className} min-w-32 rounded-2xl btn btn-primary disabled:!bg-primary  disabled:text-base-300`}>
-  {label}</SignIn
->
+{
+  session ? (
+    <a
+      href='/goals'
+      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black disabled:!bg-primary disabled:text-base-300`}>
+      <Image src={Logo} alt={'github logo'} class='h-6 w-6' /> {label}
+    </a>
+  ) : (
+    <SignIn
+      id='sign-in'
+      provider='github'
+      options={{
+        callbackUrl: '/goals'
+      }}
+      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black disabled:!bg-primary disabled:text-base-300`}>
+      <Image src={Logo} alt={'github logo'} class='h-6 w-6' /> {label}
+    </SignIn>
+  )
+}
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('#sign-in');

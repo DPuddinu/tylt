@@ -2,19 +2,20 @@
 import '@/styles/commons.css';
 import SignInButton from '@components/SignInButton.astro';
 import '@fontsource/inter';
-import { ViewTransitions } from 'astro:transitions';
+import { getSession } from 'auth-astro/server';
 
+const pathName = Astro.url.pathname;
+const session = await getSession(Astro.request);
 const { title } = Astro.props;
 ---
 
-<html lang='en' transition:animate='none'>
+<html lang='en'>
   <head>
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />
     <title>{title}</title>
-    <ViewTransitions />
   </head>
   <body class='grid min-h-screen grid-rows-[auto_1fr_auto] bg-base-300'>
     <header class='sticky top-0 z-10 bg-base-300'>
@@ -32,20 +33,40 @@ const { title } = Astro.props;
               </svg>
             </div>
             <ul tabindex='0' class='menu dropdown-content menu-sm z-[1] mt-3 w-52 rounded-box bg-base-300 p-2'>
-              <li><a href='/features'>Features</a></li>
+              <li>
+                <a
+                  role='link'
+                  aria-disabled={pathName === '/features'}
+                  href={pathName === '/features' ? '#' : '/features'}>
+                  Features
+                </a>
+              </li>
               <li class='disabled'><a>Changelog</a></li>
             </ul>
           </div>
-          <a class='text-base italic' href='/'>TYLT</a>
+          <a
+            role='link'
+            aria-disabled={pathName === '/'}
+            class='text-base italic'
+            href={pathName === '/' ? undefined : '/'}>
+            TYLT
+          </a>
         </div>
         <div class='navbar-center hidden lg:flex'>
           <ul class='menu menu-horizontal px-1'>
-            <li><a href='/features'>Features</a></li>
+            <li>
+              <a
+                role='link'
+                aria-disabled={pathName === '/features'}
+                href={pathName === '/features' ? undefined : '/features'}>
+                Features
+              </a>
+            </li>
             <li class='disabled'><a>Changelog</a></li>
           </ul>
         </div>
         <div class='navbar-end'>
-          <SignInButton className='btn-ghost btn-sm' label='Sign in' />
+              <SignInButton className='btn-ghost !bg-transparent btn-sm' label='Sign in' />
         </div>
       </div>
     </header>
@@ -58,3 +79,8 @@ const { title } = Astro.props;
     </footer>
   </body>
 </html>
+<style>
+  @view-transition {
+    navigation: auto; /* enabled! */
+  }
+</style>
