@@ -2,7 +2,6 @@
 import { getCategories } from '@/api/categories/queries';
 import { ITEMS_PER_PAGE, getCompletionRate, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
-import CategoriesStore from '@/store/categories.store';
 import FilterStore from '@/store/filters.store';
 import GoalStore from '@/store/goals.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
@@ -47,35 +46,18 @@ FilterStore.setFilters(goalFilters);
 FilterStore.setCurrentPage(currentPage);
 
 try {
-  const cachedGoalsCount = GoalStore.getGoalsCount();
-  const cachedGoals = GoalStore.getGoalsByPage(currentPage);
-  const cachedCategories = CategoriesStore.getAll();
-
-  const { getGoals, countGoals } = getPaginatedGoals({
+ 
+  const { countGoals, goals: getGoals } = await getPaginatedGoals({
     userId: user.id,
     page: currentPage,
     filters: goalFilters
   });
-  if (cachedGoals) {
-    goals = cachedGoals;
-    totalRows = cachedGoalsCount;
-  } else {
-    goals = await getGoals;
-    totalRows = (await countGoals)?.count ?? 0;
-    GoalStore.set(currentPage, ...goals);
-    GoalStore.setGoalsCount(totalRows);
-  }
-  totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
+  goals = getGoals;
+  totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
+  
+  categories = await getCategories(user.id);
 
-  if (cachedCategories) {
-    categories = cachedCategories;
-  } else {
-    categories = await getCategories(user.id);
-    CategoriesStore.set(categories);
-  }
-
-  const { ratePercentage, lastWeekGoalsCount, lastTwoWeekGoalsCount, totalGoalsCount, deltaCount } =
-    await getCompletionRate(user.id);
+  const { completionRate: ratePercentage, lastWeekGoalsCount, totalGoalsCount, deltaCount } = await getCompletionRate(user.id);
   completionRate = ratePercentage;
   totalGoals = totalGoalsCount;
   lastWeekGoals = lastWeekGoalsCount;
@@ -136,7 +118,13 @@ try {
 <style>
   .report {
     container-type: inline-size;
+    div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
     h3 {
+      font-weight: bold;
       font-size: clamp(1.5em, 5cqw, 2em);
     }
   }

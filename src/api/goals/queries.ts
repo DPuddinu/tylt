@@ -1,6 +1,9 @@
+import GoalStore from '@/store/goals.store';
+import ReportStore from '@/store/report.store';
 import type { GoalFilters } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
+import type { TGoal } from 'db/config';
 
 export const ITEMS_PER_PAGE = 5;
 
@@ -10,6 +13,9 @@ type GetPaginatedGoalsParams = {
   filters?: GoalFilters;
 };
 export async function getCompletionRate(userId: string) {
+  const cachedReport = ReportStore.get();
+  if (cachedReport) return cachedReport;
+
   try {
     const goals = await db.select().from(Goal).where(eq(Goal.authorId, userId));
     const completedGoals = goals.filter((goal) => goal.completed);
@@ -24,62 +30,86 @@ export async function getCompletionRate(userId: string) {
       );
     });
     const delta = lastWeekGoals.length - secondLastWeekGoals.length;
-
-    return {
-      ratePercentage: toFixedDecimals(100 * (completedGoals.length / goals.length)),
-      completedGoalsCount: completedGoals.length,
-      totalGoalsCount: goals.length,
+    ReportStore.set({
+      completionRate: toFixedDecimals(100 * (completedGoals.length / goals.length)),
       lastWeekGoalsCount: lastWeekGoals.length,
-      lastTwoWeekGoalsCount: secondLastWeekGoals.length,
+      totalGoalsCount: goals.length,
+      deltaCount: delta
+    });
+    return {
+      completionRate: toFixedDecimals(100 * (completedGoals.length / goals.length)),
+      lastWeekGoalsCount: lastWeekGoals.length,
+      totalGoalsCount: goals.length,
       deltaCount: delta
     };
   } catch (error) {
     throw new Error('Cannot get completion rate');
   }
 }
-export function getPaginatedGoals({ userId, page = 1, filters }: GetPaginatedGoalsParams) {
-  const countGoals = db.select({ count: count() }).from(Goal).where(eq(Goal.authorId, userId)).get();
-  const offset = (page - 1) * ITEMS_PER_PAGE;
-  const userFilter = eq(Goal.authorId, userId);
 
-  if (!filters)
-    return {
-      countGoals,
-      getGoals: db
+export async function getPaginatedGoals({ userId, page = 1, filters }: GetPaginatedGoalsParams): Promise<{
+  countGoals: number;
+  goals: TGoal[];
+}> {
+  const cachedGoals = GoalStore.getGoalsByPage(page);
+  const cachedGoalsCount = GoalStore.getGoalsCount();
+  if (cachedGoals && cachedGoalsCount) return { countGoals: cachedGoalsCount, goals: cachedGoals };
+
+  try {
+    const userFilter = eq(Goal.authorId, userId);
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+    let countGoals;
+    let getGoals;
+    let calls;
+    if (!filters) {
+      countGoals = db.select({ count: count() }).from(Goal).where(eq(Goal.authorId, userId)).get();
+      getGoals = db
         .select()
         .from(Goal)
         .where(userFilter)
         .orderBy(desc(Goal.creationDate))
         .limit(ITEMS_PER_PAGE)
-        .offset(offset)
+        .offset(offset);
+    } else {
+      const { fromDate, toDate, category, expired, notExpired, notCompleted, completed } = filters;
+
+      const conditions = [
+        userFilter,
+        fromDate ? gte(Goal.creationDate, new Date(fromDate)) : undefined,
+        toDate ? lte(Goal.creationDate, new Date(toDate)) : undefined,
+        category ? eq(Goal.categoryId, Number(category)) : undefined,
+        expired ? lt(Goal.dueDate, new Date()) : undefined,
+        notExpired ? gt(Goal.dueDate, new Date()) : undefined,
+        completed ? eq(Goal.completed, true) : undefined,
+        notCompleted ? eq(Goal.completed, false) : undefined
+      ].filter(Boolean);
+
+      countGoals = db
+        .select({ count: count() })
+        .from(Goal)
+        .where(and(...conditions))
+        .get();
+      getGoals = db
+        .select()
+        .from(Goal)
+        .where(and(...conditions))
+        .orderBy(desc(Goal.creationDate))
+        .limit(ITEMS_PER_PAGE)
+        .offset(offset);
+    }
+
+    calls = await Promise.all([countGoals, getGoals]);
+    const totalGoals = calls[0]?.count ?? 0;
+    GoalStore.set(page, ...calls[1]);
+    GoalStore.setGoalsCount(totalGoals);
+
+    return {
+      countGoals: totalGoals,
+      goals: calls[1]
     };
-  const { fromDate, toDate, category, expired, notExpired, notCompleted, completed } = filters;
-
-  const conditions = [
-    userFilter,
-    fromDate ? gte(Goal.creationDate, new Date(fromDate)) : undefined,
-    toDate ? lte(Goal.creationDate, new Date(toDate)) : undefined,
-    category ? eq(Goal.categoryId, Number(category)) : undefined,
-    expired ? lt(Goal.dueDate, new Date()) : undefined,
-    notExpired ? gt(Goal.dueDate, new Date()) : undefined,
-    completed ? eq(Goal.completed, true) : undefined,
-    notCompleted ? eq(Goal.completed, false) : undefined
-  ].filter(Boolean);
-
-  return {
-    countGoals: db
-      .select({ count: count() })
-      .from(Goal)
-      .where(and(...conditions))
-      .get(),
-    getGoals: db
-      .select()
-      .from(Goal)
-      .where(and(...conditions))
-      .orderBy(desc(Goal.creationDate))
-      .limit(ITEMS_PER_PAGE)
-      .offset(offset)
-  };
+  } catch (error) {
+    throw error;
+  }
 }
 type getGoalByIdParams = {
   id: number;

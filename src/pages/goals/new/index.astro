@@ -7,6 +7,7 @@ import Layout from '@layouts/MainLayout.astro';
 import { Category, db, eq } from 'astro:db';
 import { ZodError } from 'zod';
 import GoalStore from '@/store/goals.store';
+import ReportStore from '@/store/report.store';
 
 const { user } = Astro.locals;
 const categories = await db.select().from(Category).where(eq(Category.authorId, user.id));
@@ -14,6 +15,7 @@ const categories = await db.select().from(Category).where(eq(Category.authorId, 
 let validationErrors: ValidationErrors | undefined;
 if (Astro.request.method === 'POST') {
   GoalStore.clear();
+  ReportStore.clear();
   const formData = await Astro.request.formData();
 
   try {
