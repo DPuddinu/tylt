@@ -8,13 +8,13 @@ import FeatureArticle from './_components/FeatureArticle.astro';
 ---
 
 <LandingLayout title='Features'>
-  <section transition:animate='slide' class='grid items-start gap-8'>
-    <header class="flex justify-center pt-8">
-      <h1 class='title gap-2 text-center font-bold text-balanced !leading-tight max-w-4xl' transition:name='title'>
+  <section transition:animate='fade' class='grid items-start gap-8'>
+    <header class='flex justify-center pt-8'>
+      <h1 class='title text-balanced max-w-4xl gap-2 text-center font-bold !leading-tight' transition:name='title'>
         Powerful Tools To Reach Your Goals
       </h1>
     </header>
-    <div class='gap-4 grid xl:grid-cols-3 justify-center'>
+    <div class='grid justify-center gap-4 xl:grid-cols-3'>
       <FeatureArticle
         title='Goal'
         paragraph='Easily create and manage your goals, with options to set deadlines, milestones, and reminders.'>

@@ -1,4 +1,9 @@
 ---
 import { SignOut } from 'auth-astro/components';
+type Props = {
+  className?: string;
+};
+const { className = 'w-full text-base font-semibold text-center' } = Astro.props;
 ---
-<SignOut class='w-full text-base font-semibold text-center'>Logout</SignOut>
+
+<SignOut class={className}>Logout</SignOut>

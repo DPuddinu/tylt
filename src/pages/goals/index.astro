@@ -1,13 +1,13 @@
 ---
 import { getCategories } from '@/api/categories/queries';
-import { ITEMS_PER_PAGE, getCompletionRate, getPaginatedGoals } from '@/api/goals/queries';
+import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import FilterStore from '@/store/filters.store';
 import GoalStore from '@/store/goals.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
-import Card from '@components/Card.astro';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
+import PlusIcon from '@components/icons/PlusIcon.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TCategory, TGoal } from 'db/config';
 
@@ -36,17 +36,12 @@ let totalRows = 0;
 let goals: TGoal[] = [];
 let totalPages = 0;
 let categories: TCategory[] = [];
-let completionRate: number;
-let totalGoals: number;
-let lastWeekGoals: number;
-let delta: number;
 
 FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
 FilterStore.setFilters(goalFilters);
 FilterStore.setCurrentPage(currentPage);
 
 try {
- 
   const { countGoals, goals: getGoals } = await getPaginatedGoals({
     userId: user.id,
     page: currentPage,
@@ -54,14 +49,8 @@ try {
   });
   goals = getGoals;
   totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
-  
-  categories = await getCategories(user.id);
 
-  const { completionRate: ratePercentage, lastWeekGoalsCount, totalGoalsCount, deltaCount } = await getCompletionRate(user.id);
-  completionRate = ratePercentage;
-  totalGoals = totalGoalsCount;
-  lastWeekGoals = lastWeekGoalsCount;
-  delta = deltaCount;
+  categories = await getCategories(user.id);
 } catch (error) {
   return Astro.redirect('goals/error');
 }
@@ -81,38 +70,10 @@ try {
           currentPage={currentPage}
           itemsPerPage={ITEMS_PER_PAGE}
         />
-        <Card title='Goals Report'>
-          <div class='report flex flex-col gap-4 sm:grid sm:grid-cols-4 sm:gap-8'>
-            <div>
-              <h3 class='text-balance text-4xl sm:text-center'>
-                {`${completionRate}%`}
-              </h3>
-              <p class='text-balance text-base sm:text-center'>completed</p>
-            </div>
-            <div>
-              <h3 class='text-balance text-4xl sm:text-center'>
-                {`${totalGoals}`}
-              </h3>
-              <p class='text-balance text-base sm:text-center'>total goals</p>
-            </div>
-            <div>
-              <h3 class='text-balance text-4xl sm:text-center'>
-                {`${lastWeekGoals}`}
-              </h3>
-              <p class='text-balance text-base sm:text-center'>new goals last week</p>
-            </div>
-            <div>
-              <h3 class='text-balance text-4xl sm:text-center'>
-                {`${delta >= 0 ? '+' : '-'}${delta}`}
-              </h3>
-              <p class='text-balance text-base sm:text-center'>VS previous week</p>
-            </div>
-          </div>
-        </Card>
       </div>
     </div>
   </section>
-  <Fab href='/goals/new'>+</Fab>
+  <Fab href='/goals/new'> +</Fab>
 </Layout>
 
 <style>

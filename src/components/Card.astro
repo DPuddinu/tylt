@@ -4,8 +4,10 @@ type Props = {
 };
 const { title } = Astro.props;
 ---
-
-<div class='flex h-min w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'>
+<div
+  class='flex h-min w-full flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'
+  transition:animate='fade'
+  transition:name='card'>
   <header class='flex items-center justify-between'>
     <h2 class='text-xl font-medium sm:text-2xl'>{title}</h2>
   </header>

@@ -5,7 +5,7 @@ import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
 import type { TGoal } from 'db/config';
 
-export const ITEMS_PER_PAGE = 5;
+export const ITEMS_PER_PAGE = 4;
 
 type GetPaginatedGoalsParams = {
   userId: string;
