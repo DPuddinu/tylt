@@ -10,8 +10,10 @@ type Props = {
   offset: number;
   currentPage: number;
   itemsPerPage: number;
+  queryParams: Record<string, string | null> | undefined;
 };
-const { title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.props;
+const { title, goals, totalPages, offset, currentPage, itemsPerPage, queryParams } = Astro.props;
+const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => Boolean(value));
 ---
 
 <Card title={title}>
@@ -31,6 +33,7 @@ const { title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.pr
   <footer class='flex justify-center gap-2'>
     <form method='get' class='flex items-center justify-center'>
       <input type='hidden' name='offset' value={offset >= itemsPerPage ? offset - itemsPerPage : itemsPerPage} />
+      {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
       <button
         disabled={offset === 0}
         type='submit'
@@ -40,6 +43,7 @@ const { title, goals, totalPages, offset, currentPage, itemsPerPage } = Astro.pr
     </form>
     <form method='get' class='flex items-center justify-center'>
       <input type='hidden' name='offset' value={offset ? offset + itemsPerPage : itemsPerPage} />
+      {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
       <button
         disabled={currentPage >= totalPages}
         type='submit'

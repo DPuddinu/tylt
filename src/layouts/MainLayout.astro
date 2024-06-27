@@ -60,7 +60,7 @@ const links = ['Categories', 'Goals', 'Reports'];
         <div class='drawer-side' transition:name='drawer' transition:persist>
           <label for='my-drawer' aria-label='close sidebar' class='drawer-overlay'></label>
           <ul
-            class='menu flex min-h-full w-80 flex-col border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
+            class='menu z-20 flex min-h-full w-80 flex-col border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
             <div>
               <div class='flex h-24 w-full items-center justify-center'>
                 <h3 class='text-3xl italic'>TYLT</h3>
@@ -70,7 +70,7 @@ const links = ['Categories', 'Goals', 'Reports'];
                 <li class='hidden text-lg font-bold sm:block'><a href='/goals'>Goals</a></li>
                 <li class='hidden text-lg font-bold sm:block'><a href='/categories'>Categories 🏗️</a></li>
                 <li class='hidden text-lg font-bold sm:block'><a href='/reports'>Reports 🏗️</a></li>
-                <li class='disabled text-lg font-bold'><a href=''>Settings 🏗️</a></li>
+                <li class='disabled text-lg font-bold'><a>Settings 🏗️</a></li>
                 <li class='disabled text-lg font-bold'>
                   <a>Changelogs 🏗️</a>
                 </li>
@@ -85,16 +85,26 @@ const links = ['Categories', 'Goals', 'Reports'];
     </main>
   </body>
   <footer
+    transition:name='footer'
+    transition:persist
     role='tablist'
-    class='tabs-boxed tabs grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 px-3 sm:hidden'>
+    class='tabs-boxed tabs z-30 grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 px-3 sm:hidden'>
     {
       links.map((link) => (
-        <a
-          href={`/${link.toLowerCase()}`}
-          role='tab'
-          class={`tab h-3/4 text-base font-bold ${pageName === link && 'tab-active'}`}>
-          {link}
-        </a>
+        <>
+          {link === pageName ? (
+            <a role='link' class={`tab h-3/4 text-base font-bold ${pageName === link && 'tab-active'}`}>
+              {link}
+            </a>
+          ) : (
+            <a
+              href={`/${link.toLowerCase()}`}
+              role='link'
+              class={`tab h-3/4 text-base font-bold ${pageName === link && 'tab-active'}`}>
+              {link}
+            </a>
+          )}
+        </>
       ))
     }
   </footer>

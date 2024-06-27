@@ -7,7 +7,9 @@ class CategoriesStore {
   getAll() {
     return this.data;
   }
-
+  getCategoryById(id: number) {
+    return this.data?.find((category) => category.id === id);
+  }
   set(newData: TCategory[]) {
     this.data = newData;
   }
@@ -16,6 +18,15 @@ class CategoriesStore {
   }
   getCategoriesWithGoalCount() {
     return this.categoriesWithGoalCount;
+  }
+  addCategory(category: TCategory) {
+    this.data = [category, ...(this.data ?? [])];
+  }
+
+  updateCategory(updatedCategory: TCategory) {
+    this.data = this.data?.map((category: TCategory) =>
+      category.id === updatedCategory.id ? updatedCategory : category
+    );
   }
   clear() {
     this.data = undefined;

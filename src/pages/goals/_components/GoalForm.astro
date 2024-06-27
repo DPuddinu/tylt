@@ -18,11 +18,17 @@ const { categories, title, goal, validationErrors } = Astro.props;
 const formId = 'goal-form';
 ---
 
-<section transition:animate='none' class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
+<section
+  class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'
+  transition:name='main'>
   <div class='flex grow flex-col gap-4 overflow-x-hidden px-2 sm:flex sm:flex-col'>
-    {title && <header transition:name={title}>
-      <h1 class='text-4xl font-bold'>{title}</h1>
-    </header>}
+    {
+      title && (
+        <header transition:name={title}>
+          <h1 class='text-4xl font-bold'>{title}</h1>
+        </header>
+      )
+    }
     <form
       id={formId}
       method='post'
@@ -55,7 +61,7 @@ const formId = 'goal-form';
             form={formId}
           />
         </div>
-        <div class='flex gap-2 flex-wrap'>
+        <div class='flex flex-wrap gap-2'>
           <DatePicker
             name={GoalFormNames.completionDate}
             label='Completion Date'

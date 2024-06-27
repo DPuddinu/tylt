@@ -19,15 +19,23 @@ function getParam(param: string) {
 function getGoalParam(param: GoalFormParam) {
   return getParam(param);
 }
-
+const params = {
+  completed: getGoalParam('completed'),
+  notCompleted: getGoalParam('notCompleted'),
+  expired: getGoalParam('expired'),
+  notExpired: getGoalParam('notExpired'),
+  fromDate: getGoalParam('fromDate'),
+  toDate: getGoalParam('toDate'),
+  category: getGoalParam('category')
+};
 const goalFilters: GoalFilters = {
-  completed: getGoalParam('completed') === 'on' || undefined,
-  notCompleted: getGoalParam('notCompleted') === 'on' || undefined,
-  expired: getGoalParam('expired') === 'on' || undefined,
-  notExpired: getGoalParam('notExpired') === 'on' || undefined,
-  fromDate: getGoalParam('fromDate') || undefined,
-  toDate: getGoalParam('toDate') || undefined,
-  category: Number(getGoalParam('category')) || undefined
+  completed: params.completed === 'on' || undefined,
+  notCompleted: params.notCompleted === 'on' || undefined,
+  expired: params.expired === 'on' || undefined,
+  notExpired: params.notExpired === 'on' || undefined,
+  fromDate: params.fromDate || undefined,
+  toDate: params.toDate || undefined,
+  category: Number(params.category) || undefined
 };
 const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
@@ -56,10 +64,11 @@ try {
 ---
 
 <Layout pageName='Goals'>
-  <section transition:name="card" transition:persist>
+  <section>
     <div class='flex flex-col gap-4 md:flex-row'>
       <GoalFilterSidebar categories={categories} filters={goalFilters} />
       <GoalsList
+        queryParams={params}
         title='Goals'
         goals={goals}
         totalRows={totalRows}

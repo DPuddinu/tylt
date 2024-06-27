@@ -6,17 +6,27 @@ type Payload = {
   authorId: string;
   name: string;
 };
-export function createCategory({ authorId, name }: Payload) {
-  CategoriesStore.clear();
-  return db.insert(Category).values({
-    authorId,
-    name
-  });
+export async function createCategory({ authorId, name }: Payload) {
+  const res = await db
+    .insert(Category)
+    .values({
+      authorId,
+      name
+    })
+    .returning()
+    .get();
+  CategoriesStore.addCategory(res);
 }
-export function updateCategory(category: TCategory) {
-  CategoriesStore.clear();
-  return db
-    .update(Category)
-    .set(category)
-    .where(and(eq(Category.authorId, category.authorId), eq(Category.id, category.id)));
+export async function updateCategory(category: TCategory) {
+  try {
+    const res = await db
+      .update(Category)
+      .set(category)
+      .where(and(eq(Category.authorId, category.authorId), eq(Category.id, category.id)))
+      .returning()
+      .get();
+    CategoriesStore.updateCategory(res);
+  } catch (error) {
+    throw error;
+  }
 }

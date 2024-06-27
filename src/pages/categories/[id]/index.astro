@@ -75,6 +75,7 @@ if (Astro.request.method === 'POST') {
   </div>
   <div class='flex-container max-w-xl'>
     <GoalsList
+      queryParams={undefined}
       title={`${category?.name} Goals`}
       goals={goals}
       totalRows={totalRows}
