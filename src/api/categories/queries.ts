@@ -23,8 +23,15 @@ export function getCategoryById({ id, userId }: GetCategoryByIdParams) {
     .where(and(eq(Category.id, id), eq(Category.authorId, userId)))
     .get();
 }
-export function getMostUsedCategory(userId: string) {
-  return db
+export type CategoryWithGoalCount = {
+  categoryId: number;
+  categoryName: string;
+  goalCount: number;
+};
+export async function getMostUsedCategory(userId: string) {
+  const cachedData = CategoriesStore.getCategoriesWithGoalCount();
+  if (cachedData) return cachedData;
+  const res = await db
     .select({
       categoryId: Category.id,
       categoryName: Category.name,
@@ -35,4 +42,6 @@ export function getMostUsedCategory(userId: string) {
     .leftJoin(Goal, eq(Category.id, Goal.categoryId))
     .groupBy(Category.id)
     .orderBy(desc(count(Goal.id)));
+  CategoriesStore.setCategoriesWithGoalCount(res);
+  return res;
 }
