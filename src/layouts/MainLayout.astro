@@ -9,6 +9,7 @@ type Props = {
   pageName: string;
 };
 const { pageName } = Astro.props;
+const links = ['Categories', 'Goals', 'Reports'];
 ---
 
 <html>
@@ -20,7 +21,7 @@ const { pageName } = Astro.props;
     <title>{pageName}</title>
   </head>
   <body class='grid h-screen grid-rows-[auto_1fr]'>
-    <header transition:persist class='sticky top-0 z-10 bg-base-300'>
+    <header class='bg-base-300'>
       <div
         class='navbar justify-between border border-b border-base-300 border-base-300/50 p-2 pl-6 shadow-md shadow-base-300/50'>
         <label for='my-drawer' class='drawer-button hover:scale-105 hover:cursor-pointer'>
@@ -50,13 +51,13 @@ const { pageName } = Astro.props;
         </Dropdown>
       </div>
     </header>
-    <main class='grid grid-rows-1' transition:animate='fade'>
-      <div class='drawer'>
+    <main class='flex-container z-10 grid grid-rows-1' transition:animate='fade' transition:name='main'>
+      <div class='content drawer h-full'>
         <input id='my-drawer' type='checkbox' class='drawer-toggle' />
-        <div class='flex-container drawer-content bg-base-content/5 p-8'>
+        <div class='drawer-content bg-base-content/5 p-8'>
           <slot />
         </div>
-        <div class='drawer-side z-10'>
+        <div class='drawer-side' transition:name='drawer' transition:persist>
           <label for='my-drawer' aria-label='close sidebar' class='drawer-overlay'></label>
           <ul
             class='menu flex min-h-full w-80 flex-col border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
@@ -67,7 +68,8 @@ const { pageName } = Astro.props;
               <div class='border border-base-content opacity-50'></div>
               <div class='py-4'>
                 <li class='hidden text-lg font-bold sm:block'><a href='/goals'>Goals</a></li>
-                <li class='hidden text-lg font-bold sm:block'><a href='7Categories'>Categories 🏗️</a></li>
+                <li class='hidden text-lg font-bold sm:block'><a href='/categories'>Categories 🏗️</a></li>
+                <li class='hidden text-lg font-bold sm:block'><a href='/reports'>Reports 🏗️</a></li>
                 <li class='disabled text-lg font-bold'><a href=''>Settings 🏗️</a></li>
                 <li class='disabled text-lg font-bold'>
                   <a>Changelogs 🏗️</a>
@@ -83,24 +85,18 @@ const { pageName } = Astro.props;
     </main>
   </body>
   <footer
-    transition:persist
     role='tablist'
-    class='tabs-boxed tabs fixed bottom-0 grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 sm:hidden'>
-    <a
-      href='/categories'
-      role='tab'
-      class={`tab text-base h-3/4 font-bold ${pageName === 'Categories' && 'tab-active'}`}>
-      Categories
-    </a>
-    <a href='/goals' role='tab' class={`tab text-base h-3/4 font-bold ${pageName === 'Goals' && 'tab-active'}`}>
-      Goals
-    </a>
-    <a
-      href='/goals/report'
-      role='tab'
-      class={`tab text-base  h-3/4 font-bold ${pageName === 'Report' && 'tab-active'}`}>
-      Report
-    </a>
+    class='tabs-boxed tabs grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 px-3 sm:hidden'>
+    {
+      links.map((link) => (
+        <a
+          href={`/${link.toLowerCase()}`}
+          role='tab'
+          class={`tab h-3/4 text-base font-bold ${pageName === link && 'tab-active'}`}>
+          {link}
+        </a>
+      ))
+    }
   </footer>
 </html><style>
   @view-transition {

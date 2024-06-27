@@ -7,7 +7,6 @@ import GoalStore from '@/store/goals.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
-import PlusIcon from '@components/icons/PlusIcon.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TCategory, TGoal } from 'db/config';
 
@@ -57,36 +56,19 @@ try {
 ---
 
 <Layout pageName='Goals'>
-  <section transition:animate='none' class='flex-container'>
-    <div class='content flex flex-col gap-4'>
+  <section transition:name="card" transition:persist>
+    <div class='flex flex-col gap-4 md:flex-row'>
       <GoalFilterSidebar categories={categories} filters={goalFilters} />
-      <div class='flex grow flex-col gap-4 md:flex-row'>
-        <GoalsList
-          title='Goals'
-          goals={goals}
-          totalRows={totalRows}
-          totalPages={totalPages}
-          offset={offsetFilter}
-          currentPage={currentPage}
-          itemsPerPage={ITEMS_PER_PAGE}
-        />
-      </div>
+      <GoalsList
+        title='Goals'
+        goals={goals}
+        totalRows={totalRows}
+        totalPages={totalPages}
+        offset={offsetFilter}
+        currentPage={currentPage}
+        itemsPerPage={ITEMS_PER_PAGE}
+      />
     </div>
   </section>
   <Fab href='/goals/new'> +</Fab>
 </Layout>
-
-<style>
-  .report {
-    container-type: inline-size;
-    div {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    h3 {
-      font-weight: bold;
-      font-size: clamp(1.5em, 5cqw, 2em);
-    }
-  }
-</style>

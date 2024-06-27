@@ -1,0 +1,59 @@
+---
+import { getCompletionRate } from '@/api/goals/queries';
+import Layout from '@layouts/MainLayout.astro';
+
+const { user } = Astro.locals;
+
+let completionRate: number;
+let completedCount: number;
+let totalGoals: number;
+let lastWeekGoals: number;
+let delta: number;
+
+try {
+  const {
+    completedCount: completedNumber,
+    completionRate: ratePercentage,
+    lastWeekGoalsCount,
+    totalGoalsCount,
+    deltaCount
+  } = await getCompletionRate(user.id);
+  completionRate = ratePercentage;
+  totalGoals = totalGoalsCount;
+  lastWeekGoals = lastWeekGoalsCount;
+  delta = deltaCount;
+  completedCount = completedNumber;
+} catch (error) {
+  return Astro.redirect('error');
+}
+---
+
+<Layout pageName='Reports'>
+  <div class='flex flex-col gap-4' transition:name="content">
+    <!-- <div role='tablist' class='tabs-boxed tabs max-w-sm'>
+      <a role='tab' class='tab'>Day</a>
+      <a role='tab' class='tab tab-active'>Week</a>
+      <a role='tab' class='tab'>Month</a>
+    </div> -->
+    <div class='stats stats-vertical shadow lg:stats-horizontal' transition:name='card'>
+      <div class='stat'>
+        <div class='stat-title'>Goals Completed</div>
+        <div class='stat-value'>{`${completionRate}%`}</div>
+        <div class='stat-desc'>{`${completedCount} out of ${totalGoals}`}</div>
+      </div>
+
+      <div class='stat'>
+        <div class='stat-title'>Total Goals</div>
+        <div class='stat-value'>{totalGoals}</div>
+      </div>
+
+      <div class='stat'>
+        <div class='stat-title'>New Goals Last Week</div>
+        <div class='stat-value'>{lastWeekGoals}</div>
+        <div class='stat-desc'>
+          {`${delta >= 0 ? '+' : ''}${delta} vs previous week`}
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

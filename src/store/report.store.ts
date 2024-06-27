@@ -1,4 +1,5 @@
 type Report = {
+  completedCount: number;
   completionRate: number;
   lastWeekGoalsCount: number;
   totalGoalsCount: number;

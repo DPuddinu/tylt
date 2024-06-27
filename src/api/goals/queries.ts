@@ -31,12 +31,14 @@ export async function getCompletionRate(userId: string) {
     });
     const delta = lastWeekGoals.length - secondLastWeekGoals.length;
     ReportStore.set({
+      completedCount: completedGoals.length,
       completionRate: toFixedDecimals(100 * (completedGoals.length / goals.length)),
       lastWeekGoalsCount: lastWeekGoals.length,
       totalGoalsCount: goals.length,
       deltaCount: delta
     });
     return {
+      completedCount: completedGoals.length,
       completionRate: toFixedDecimals(100 * (completedGoals.length / goals.length)),
       lastWeekGoalsCount: lastWeekGoals.length,
       totalGoalsCount: goals.length,
