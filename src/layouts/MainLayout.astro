@@ -3,8 +3,8 @@ import '@/styles/commons.css';
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
 import '@fontsource/inter';
-
 const { user } = Astro.locals;
+console.log(user);
 type Props = {
   pageName: string;
 };
@@ -68,7 +68,7 @@ const links = ['Categories', 'Goals', 'Reports'];
               <div class='border border-base-content opacity-50'></div>
               <div class='py-4'>
                 <li class='hidden text-lg font-bold sm:block'><a href='/goals'>Goals</a></li>
-                <li class='hidden text-lg font-bold sm:block'><a href='/categories'>Categories 🏗️</a></li>
+                <li class='hidden text-lg font-bold sm:block'><a href='/activities'>Categories 🏗️</a></li>
                 <li class='hidden text-lg font-bold sm:block'><a href='/reports'>Reports 🏗️</a></li>
                 <li class='disabled text-lg font-bold'><a>Settings 🏗️</a></li>
                 <li class='disabled text-lg font-bold'>

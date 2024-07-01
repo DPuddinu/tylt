@@ -1,6 +1,6 @@
 import { column, defineDb, defineTable } from 'astro:db';
 
-const Category = defineTable({
+const Activity = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
     name: column.text(),
@@ -20,7 +20,7 @@ const Goal = defineTable({
     id: column.number({ primaryKey: true }),
     authorId: column.text(),
     authorName: column.text(),
-    categoryId: column.number({ references: () => Category.columns.id }),
+    activityId: column.number({ references: () => Activity.columns.id }),
     title: column.text(),
     description: column.text(),
     creationDate: column.date(),
@@ -36,14 +36,14 @@ const Goal = defineTable({
 });
 
 export default defineDb({
-  tables: { Category, Goal, Settings }
+  tables: { Activity, Goal, Settings }
 });
 
 export type TGoal = {
   id: number;
   authorId: string;
   authorName: string;
-  categoryId: number;
+  activityId: number;
   title: string;
   description: string;
   creationDate: Date;
@@ -53,7 +53,7 @@ export type TGoal = {
   completed: boolean;
 };
 
-export type TCategory = {
+export type TActivity = {
   id: number;
   name: string;
   authorId: string;

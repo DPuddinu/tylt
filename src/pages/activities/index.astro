@@ -1,14 +1,14 @@
 ---
-import { getMostUsedCategory } from '@/api/categories/queries';
+import { getMostUsedActivity } from '@/api/activities/queries';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import Fab from '@components/Fab.astro';
 import Layout from '@layouts/MainLayout.astro';
 const { user } = Astro.locals;
 
-const mostUsedCategory = await getMostUsedCategory(user.id);
-const total = mostUsedCategory.reduce((acc, category) => acc + category.goalCount, 0);
-const percentages = mostUsedCategory.map((category) => {
-  const percent = (category.goalCount / total) * 100;
+const mostUsedActivity = await getMostUsedActivity(user.id);
+const total = mostUsedActivity.reduce((acc, activity) => acc + activity.goalCount, 0);
+const percentages = mostUsedActivity.map((activity) => {
+  const percent = (activity.goalCount / total) * 100;
   const formattedNum = toFixedDecimals(percent);
   return formattedNum;
 });
@@ -20,17 +20,17 @@ const percentages = mostUsedCategory.map((category) => {
       <h1 class='card-title text-2xl font-bold'>Most Used Categories</h1>
       <div class='flex flex-col gap-4'>
         {
-          mostUsedCategory.map((category, i) => (
+          mostUsedActivity.map((activity, i) => (
             <div class='flex justify-between gap-2'>
               <div class='col-span-1'>
-                <a href={`/categories/${category.categoryId}`} class='hover:font-bold'>
-                  {category.categoryName}
+                <a href={`/activities/${activity.activityId}`} class='hover:font-bold'>
+                  {activity.categoryName}
                 </a>
               </div>
               <div class='flex gap-2'>
                 <div class='flex justify-end'>
                   <div
-                    class='category-bar w-full origin-right justify-end rounded bg-red-500 transition-transform'
+                    class='activity-bar w-full origin-right justify-end rounded bg-red-500 transition-transform'
                     style={`width: ${percentages[i]}px`}
                   />
                 </div>
@@ -42,7 +42,7 @@ const percentages = mostUsedCategory.map((category) => {
       </div>
     </div>
   </section>
-  <Fab href='/categories/new'>+</Fab>
+  <Fab href='/activities/new'>+</Fab>
 </Layout>
 <style>
   @keyframes expand {
@@ -53,7 +53,7 @@ const percentages = mostUsedCategory.map((category) => {
       transform: scaleX(1);
     }
   }
-  .category-bar {
+  .activity-bar {
     animation: expand 1s ease-in-out;
   }
 </style>

@@ -1,11 +1,10 @@
 import { defineMiddleware } from 'astro:middleware';
 import { getSession } from 'auth-astro/server';
 import { getSetupDone } from './api/setup/queries';
+import settingsStore from './store/settings.store';
 
 let githubUser: any = null;
-let setupDone = false;
 const protectedRoutes = ['/goals', '/setup', '/categories', '/reports'];
-
 export const onRequest = defineMiddleware(async ({ redirect, request, locals, url }, next) => {
   const matchingRoute = protectedRoutes.some((route) => url.pathname.toLowerCase().includes(route.toLowerCase()));
   if (!matchingRoute) return next();
@@ -24,15 +23,17 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
     id: String(githubUser.id)
   };
 
-  if (!setupDone) {
+  if (!settingsStore.getSetupDone()) {
     const [firstSetupDone] = await getSetupDone(locals.user.id);
-    setupDone = !!firstSetupDone;
+    if (firstSetupDone) {
+      settingsStore.setSetupDone(!!firstSetupDone);
+    }
   }
 
-  if (matchingRoute && url.pathname !== '/setup' && !setupDone) {
+  if (matchingRoute && url.pathname !== '/setup' && !settingsStore.getSetupDone()) {
     return redirect('/setup');
   }
-  locals.setupDone = setupDone;
+  locals.setupDone = settingsStore.getSetupDone();
 
   return next();
 });

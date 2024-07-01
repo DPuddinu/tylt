@@ -1,4 +1,4 @@
-import { Category, Goal, Settings, db } from 'astro:db';
+import { Activity, Goal, Settings, db } from 'astro:db';
 
 export default async function () {
   await db.insert(Settings).values({
@@ -6,7 +6,7 @@ export default async function () {
     setupDone: true
   });
 
-  await db.insert(Category).values([
+  await db.insert(Activity).values([
     {
       id: 1,
       name: 'Javascript',
@@ -38,7 +38,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -51,7 +51,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Test 002',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -64,7 +64,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 003',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -77,7 +77,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 004',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -90,7 +90,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 005',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -103,7 +103,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Test 006',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -116,7 +116,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 007',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -129,7 +129,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 008',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -142,7 +142,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 009',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -155,7 +155,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Test 010',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -168,7 +168,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 011',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -181,7 +181,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 012',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -194,7 +194,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 013',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -207,7 +207,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Test 014',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -220,7 +220,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 015',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -233,7 +233,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 016',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -246,7 +246,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Test 017',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -259,7 +259,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -272,7 +272,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -285,7 +285,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -298,7 +298,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -311,7 +311,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -324,59 +324,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'John',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 2,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -389,7 +337,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -402,7 +350,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -415,7 +363,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -428,59 +376,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'John',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 2,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -493,7 +389,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -506,7 +402,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -519,7 +415,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -532,59 +428,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'John',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 2,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -597,7 +441,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -610,7 +454,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -623,7 +467,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -636,59 +480,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'John',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 2,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -701,7 +493,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -714,7 +506,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -727,7 +519,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 2,
+      activityId: 2,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -740,59 +532,7 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'John',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date(),
-      completionDate: new Date(),
-      updateDate: new Date(),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: false
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 2,
-      title: 'Submit form from outside button',
-      description:
-        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
-      creationDate: new Date('2024-03-26'),
-      completionDate: new Date('2024-03-26'),
-      updateDate: new Date('2024-03-26'),
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-      completed: true
-    },
-    {
-      authorId: '5084555',
-      authorName: 'Dario',
-      categoryId: 1,
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -805,7 +545,267 @@ export default async function () {
     {
       authorId: '5084555',
       authorName: 'John',
-      categoryId: 1,
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 2,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'John',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 2,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'John',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 2,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'John',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 2,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'John',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 2,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date('2024-03-26'),
+      completionDate: new Date('2024-03-26'),
+      updateDate: new Date('2024-03-26'),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: true
+    },
+    {
+      authorId: '5084555',
+      authorName: 'Dario',
+      activityId: 1,
+      title: 'Submit form from outside button',
+      description:
+        'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
+      creationDate: new Date(),
+      completionDate: new Date(),
+      updateDate: new Date(),
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      completed: false
+    },
+    {
+      authorId: '5084555',
+      authorName: 'John',
+      activityId: 1,
       title: 'Submit form from outside button',
       description:
         'You can submit a form from an outside button like this:\n<form id="my-form"></form>\n<button type="submit" form="my-form">submit</button>',
@@ -819,6 +819,6 @@ export default async function () {
 }
 // export default async function () {
 //   await db.insert(Settings).values([]);
-//   await db.insert(Category).values([]);
+//   await db.insert(Activity).values([]);
 //   await db.insert(Goal).values([]);
 // }

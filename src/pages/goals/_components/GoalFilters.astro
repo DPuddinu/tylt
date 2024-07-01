@@ -2,19 +2,19 @@
 import type { GoalFilters } from '@/types/filters.types';
 import Checkbox from '@components/Checkbox.astro';
 import DatePicker from '@components/DatePicker.astro';
-import type { TCategory } from 'db/config';
+import type { TActivity } from 'db/config';
 import AstroSelect from '../../../components/Select.astro';
 
 type Props = {
-  categories: TCategory[];
+  activities: TActivity[];
   filters: GoalFilters;
 };
-const { categories, filters } = Astro.props;
-const { fromDate: fromDate, toDate, category: filterCategory, expired, notExpired, completed, notCompleted } = filters;
+const { activities, filters } = Astro.props;
+const { fromDate: fromDate, toDate, activity: filterActivity, expired, notExpired, completed, notCompleted } = filters;
 ---
 
 <aside
-  transition:name="filters"
+  transition:name='filters'
   class='collapse collapse-arrow h-fit w-auto min-w-[18rem] border border-base-300/50 bg-base-200 shadow sm:collapse-open'>
   <input type='checkbox' class='sm:!cursor-default' />
   <header class='collapse-title text-xl font-medium sm:text-2xl'>Filters</header>
@@ -26,14 +26,14 @@ const { fromDate: fromDate, toDate, category: filterCategory, expired, notExpire
       </div>
 
       <div class='flex flex-col gap-2'>
-        <label for='select-category' class='label-text'>Select Category</label>
+        <label for='select-activity' class='label-text'>Select Activity</label>
         <AstroSelect
-          value={filterCategory}
-          options={categories}
+          value={filterActivity}
+          options={activities}
           label={'name'}
           fieldKey={'id'}
-          id='select-category'
-          name='category'
+          id='select-activity'
+          name='activity'
           form='filter-form'
         />
       </div>
@@ -44,7 +44,7 @@ const { fromDate: fromDate, toDate, category: filterCategory, expired, notExpire
         <Checkbox checked={notExpired} label='Not Expired' name='notExpired' />
       </div>
 
-      <div class='grid gap-2 grid-cols-3'>
+      <div class='grid grid-cols-3 gap-2'>
         <div class='col-span-1'>
           <a href='/goals' class='btn w-full bg-base-content/15 hover:border-base-100 hover:hover:bg-base-content/10'>
             Reset

@@ -1,5 +1,5 @@
 ---
-import { getCategories } from '@/api/categories/queries';
+import { getCategories } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import FilterStore from '@/store/filters.store';
@@ -8,7 +8,7 @@ import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
-import type { TCategory, TGoal } from 'db/config';
+import type { TActivity, TGoal } from 'db/config';
 
 const { user } = Astro.locals;
 
@@ -26,7 +26,7 @@ const params = {
   notExpired: getGoalParam('notExpired'),
   fromDate: getGoalParam('fromDate'),
   toDate: getGoalParam('toDate'),
-  category: getGoalParam('category')
+  activity: getGoalParam('activity')
 };
 const goalFilters: GoalFilters = {
   completed: params.completed === 'on' || undefined,
@@ -35,14 +35,14 @@ const goalFilters: GoalFilters = {
   notExpired: params.notExpired === 'on' || undefined,
   fromDate: params.fromDate || undefined,
   toDate: params.toDate || undefined,
-  category: Number(params.category) || undefined
+  activity: Number(params.activity) || undefined
 };
 const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 let totalRows = 0;
 let goals: TGoal[] = [];
 let totalPages = 0;
-let categories: TCategory[] = [];
+let activities: TActivity[] = [];
 
 FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
 FilterStore.setFilters(goalFilters);
@@ -57,7 +57,7 @@ try {
   goals = getGoals;
   totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
 
-  categories = await getCategories(user.id);
+  activities = await getCategories(user.id);
 } catch (error) {
   return Astro.redirect('goals/error');
 }
@@ -66,7 +66,7 @@ try {
 <Layout pageName='Goals'>
   <section>
     <div class='flex flex-col gap-4 md:flex-row'>
-      <GoalFilterSidebar categories={categories} filters={goalFilters} />
+      <GoalFilterSidebar activities={activities} filters={goalFilters} />
       <GoalsList
         queryParams={params}
         title='Goals'

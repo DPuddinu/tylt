@@ -1,15 +1,15 @@
 ---
-import { updateCategory } from '@/api/categories/mutations';
-import { getCategoryById } from '@/api/categories/queries';
-import { ITEMS_PER_PAGE, getGoalByCategoryId } from '@/api/goals/queries';
-import CategoriesStore from '@/store/categories.store';
-import { CategorySchema } from '@/types/categories.types';
+import { updateActivity } from '@/api/activities/mutations';
+import { getActivityById } from '@/api/activities/queries';
+import { ITEMS_PER_PAGE, getGoalByActivityId } from '@/api/goals/queries';
+import CategoriesStore from '@/store/activities.store';
+import { ActivitySchema } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
-import type { TCategory, TGoal } from 'db/config';
+import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
-import CategoryForm from '../_components/CategoryForm.astro';
+import ActivityForm from '../_components/ActivityForm.astro';
 
 const { id } = Astro.params;
 const { user } = Astro.locals;
@@ -20,8 +20,8 @@ function getParam(param: string) {
 const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
-const { getGoalsByCategory, getCategoriesCount } = getGoalByCategoryId({
-  categoryId: Number(id),
+const { getGoalsByActivity, getCategoriesCount } = getGoalByActivityId({
+  activityId: Number(id),
   userId: user.id,
   page: currentPage
 });
@@ -31,24 +31,24 @@ let totalPages = 0;
 let totalRows = 0;
 
 let validationErrors: ValidationErrors | undefined;
-let category: TCategory | undefined;
+let activity: TActivity | undefined;
 
 try {
   const calls = await Promise.all([
-    getCategoryById({
+    getActivityById({
       id: Number(id),
       userId: user.id
     }),
-    getGoalsByCategory,
+    getGoalsByActivity,
     getCategoriesCount
   ]);
 
-  category = calls[0];
+  activity = calls[0];
   goals = calls[1];
   totalRows = calls[2]?.count ?? 0;
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
 } catch (error) {
-  return Astro.redirect('/categories/' + category.id + '/error');
+  return Astro.redirect('/activities/' + activity.id + '/error');
 }
 
 if (Astro.request.method === 'POST') {
@@ -56,27 +56,27 @@ if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
 
   try {
-    if (!category) throw new Error('Category not found');
-    const data = CategorySchema.parse(formData);
-    await updateCategory({ ...category, ...data });
+    if (!activity) throw new Error('Activity not found');
+    const data = ActivitySchema.parse(formData);
+    await updateActivity({ ...activity, ...data });
 
-    return Astro.redirect(`/categories/${category.id}`);
+    return Astro.redirect(`/activities/${activity.id}`);
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    } else return Astro.redirect('/categories/' + category.id + '/error');
+    } else return Astro.redirect('/activities/' + activity.id + '/error');
   }
 }
 ---
 
-<Layout pageName='Category'>
+<Layout pageName='Activity'>
   <div class='pb-4'>
-    <CategoryForm validationErrors={validationErrors} category={category} title='Edit Category' />
+    <ActivityForm validationErrors={validationErrors} activity={activity} title='Edit Activity' />
   </div>
   <div class='flex-container max-w-xl'>
     <GoalsList
       queryParams={undefined}
-      title={`${category?.name} Goals`}
+      title={`${activity?.name} Goals`}
       goals={goals}
       totalRows={totalRows}
       totalPages={totalPages}

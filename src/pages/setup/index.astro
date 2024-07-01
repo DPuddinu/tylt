@@ -1,7 +1,124 @@
 ---
-const { setupDone } = Astro.locals;
+const { setupDone, user } = Astro.locals;
+import { createActivity } from '@/api/activities/mutations';
+import { createGoal } from '@/api/goals/mutations';
+import { setSetupDone } from '@/api/setup/mutations';
+import GoalForm from '@/pages/goals/_components/GoalForm.astro';
+import firstSetupStore from '@/store/firstSetup.store';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalInsertSchema } from '@/types/goal.types';
+import Layout from '@layouts/MainLayout.astro';
+import SetupLayout from '@layouts/SetupLayout.astro';
+import type { TActivity } from 'db/config';
+import { ZodError, z } from 'zod';
+import { zfd } from 'zod-form-data';
+
 if (setupDone) return Astro.redirect('/goals');
 const step = Astro.url.searchParams.get('step');
-if (!step) return Astro.redirect('/setup/1');
-return Astro.redirect(`/setup/${step}`);
+if (!step) return Astro.redirect('/setup?step=1');
+
+let validationErrors: ValidationErrors | undefined;
+
+let activities: TActivity[] = [];
+const schema = zfd.formData({
+  name: zfd.text(z.string().min(3).max(20))
+});
+
+try {
+  if (firstSetupStore.getStep1()) {
+    activities = [
+      {
+        id: -1,
+        name: firstSetupStore.getStep1()!.createActivityPayload.name,
+        authorId: user.id
+      }
+    ];
+  }
+  if (step === '2' && !firstSetupStore.getStep1()) return Astro.redirect('/setup?step=1');
+} catch (error) {
+  console.log(error);
+  // return Astro.redirect('/error');
+}
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  if (step === '1') {
+    try {
+      const validated = schema.parse(formData);
+      firstSetupStore.setStep1({
+        authorId: user.id,
+        name: validated.name
+      });
+
+      return Astro.redirect('/setup?step=2');
+    } catch (error) {
+      if (error instanceof ZodError) {
+        validationErrors = error.flatten().fieldErrors;
+      }
+    }
+  }
+  if (step === '2') {
+    try {
+      const data = GoalInsertSchema.parse(formData);
+      firstSetupStore.setStep2({
+        ...data,
+        authorId: user.id,
+        authorName: user.name
+      });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        validationErrors = error.flatten().fieldErrors;
+      } else return Astro.redirect('/goals/error');
+    }
+  }
+  try {
+    if (firstSetupStore.stepsCompleted()) {
+      const activity = await createActivity({
+        authorId: user.id,
+        name: firstSetupStore.getStep1()!.createActivityPayload.name
+      });
+      await createGoal({
+        ...firstSetupStore.getStep2()!.goalInsertPayload,
+        activityId: activity.id,
+        authorId: user.id,
+        authorName: user.name
+      });
+      await setSetupDone(user.id);
+      return Astro.redirect('/goals');
+    }
+  } catch (error) {}
+}
 ---
+
+<Layout pageName='Initial Setup'>
+  <SetupLayout>
+    {
+      step === '1' && (
+        <section class='flex w-full grow flex-col justify-center'>
+          <div class='flex justify-center pt-6'>
+            <form method='post' class='grid max-w-md gap-2 px-1'>
+              <input
+                name='name'
+                id='activities'
+                type='text'
+                placeholder='Activity name...'
+                class='input input-bordered'
+              />
+              {validationErrors?.name && <span class='text-red-500'>{validationErrors?.name}</span>}
+              <button type='submit' class='btn btn-warning'>
+                Submit
+              </button>
+            </form>
+          </div>
+        </section>
+      )
+    }
+    {
+      step === '2' && (
+        <div class='flex justify-center pt-6'>
+          <GoalForm activities={activities} validationErrors={validationErrors} />
+        </div>
+      )
+    }
+  </SetupLayout>
+</Layout>

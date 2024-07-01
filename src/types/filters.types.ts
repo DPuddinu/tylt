@@ -1,7 +1,7 @@
 export type GoalFilters = {
   fromDate?: string;
   toDate?: string;
-  category?: number;
+  activity?: number;
   expired?: boolean;
   notExpired?: boolean;
   completed?: boolean;
@@ -11,7 +11,7 @@ export type GoalFilters = {
 export type GoalFormParam =
   | 'fromDate'
   | 'toDate'
-  | 'category'
+  | 'activity'
   | 'expired'
   | 'notExpired'
   | 'completed'

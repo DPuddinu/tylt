@@ -2,7 +2,7 @@
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalFormNames } from '@/types/goal.types';
 import SubmitButton from '@components/SubmitButton.astro';
-import type { TCategory, TGoal } from 'db/config';
+import type { TActivity, TGoal } from 'db/config';
 import DatePicker from '../../../components/DatePicker.astro';
 import RichTextEditor from '../../../components/RichTextEditor.astro';
 import AstroSelect from '../../../components/Select.astro';
@@ -11,16 +11,14 @@ import TextInput from '../../../components/TextInput.astro';
 type Props = {
   title?: string;
   goal?: TGoal;
-  categories: TCategory[];
+  activities: TActivity[];
   validationErrors?: ValidationErrors;
 };
-const { categories, title, goal, validationErrors } = Astro.props;
+const { activities, title, goal, validationErrors } = Astro.props;
 const formId = 'goal-form';
 ---
 
-<section
-  class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'
-  transition:name='main'>
+<section class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start' transition:name='main'>
   <div class='flex grow flex-col gap-4 overflow-x-hidden px-2 sm:flex sm:flex-col'>
     {
       title && (
@@ -50,14 +48,14 @@ const formId = 'goal-form';
 
       <div id='date-group' class='space-y-4'>
         <div class='flex flex-col gap-2'>
-          <label for='select-category' class='label-text lg:text-base'>Cagetory</label>
+          <label for='select-activity' class='label-text lg:text-base'>Cagetory</label>
           <AstroSelect
-            options={categories}
+            options={activities}
             label='name'
             fieldKey='id'
-            value={goal?.categoryId}
-            id='select-category'
-            name={GoalFormNames.categoryId}
+            value={goal?.activityId}
+            id='select-activity'
+            name={GoalFormNames.activityId}
             form={formId}
           />
         </div>

@@ -11,7 +11,7 @@ export const GoalInsertSchema = zfd.formData({
       .max(20)
   ),
   description: zfd.text().optional(),
-  categoryId: zfd.numeric(z.number().int().positive('Category ID must be a positive integer')),
+  activityId: zfd.numeric(z.number().int()),
   completionDate: zfd.text(z.string().date().nullish()).transform((date) => (date ? new Date(date) : undefined)),
   dueDate: zfd.text(z.string().date().nullish()).transform((date) => (date ? new Date(date) : undefined))
 });
@@ -21,11 +21,11 @@ export type GoalInsertPayload = z.infer<typeof GoalInsertSchema> & {
   authorName: string;
 };
 
-type Key = 'title' | 'description' | 'categoryId' | 'completionDate' | 'dueDate';
+type Key = 'title' | 'description' | 'activityId' | 'completionDate' | 'dueDate';
 export const GoalFormNames: Record<Key, Key> = {
   title: 'title',
   description: 'description',
-  categoryId: 'categoryId',
+  activityId: 'activityId',
   completionDate: 'completionDate',
   dueDate: 'dueDate'
 };

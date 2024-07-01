@@ -1,0 +1,6 @@
+---
+const redirect = Astro.url.searchParams.get('redirect');
+import ErrorMessage from '@components/ErrorMessage.astro';
+---
+
+<ErrorMessage message='Something went wrong :(' fallbackUrl={redirect ?? '/'} />

@@ -1,12 +1,12 @@
 ---
 const { user } = Astro.locals;
 
-const currentStep = Number(Astro.url.pathname.split('/')[2]);
+const currentStep = Number(Astro.url.searchParams.get('step'));
 
 type Step = {
   title: string;
 };
-const steps: Step[] = [{ title: 'Create category' }, { title: 'Create first goal' }];
+const steps: Step[] = [{ title: 'Create activity' }, { title: 'Create first goal' }];
 ---
 
 <div class='flex flex-col'>

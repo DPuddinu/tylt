@@ -1,0 +1,32 @@
+---
+import { createActivity } from '@/api/activities/mutations';
+import ActivityForm from '@/pages/activities/_components/ActivityForm.astro';
+import { ActivitySchema } from '@/types/activities.types';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import Layout from '@layouts/MainLayout.astro';
+import { ZodError } from 'zod';
+const { user } = Astro.locals;
+
+let validationErrors: ValidationErrors | undefined;
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  try {
+    const data = ActivitySchema.parse(formData);
+    await createActivity({
+      authorId: user.id,
+      name: data.name
+    });
+    return Astro.redirect('/activities');
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
+    } else return Astro.redirect('/error');
+  }
+}
+---
+
+<Layout pageName='New Activity'>
+  <ActivityForm title='Create New Activity' validationErrors={validationErrors} />
+</Layout>
