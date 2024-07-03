@@ -1,5 +1,5 @@
 ---
-import { getCategories } from '@/api/activities/queries';
+import { getActivities } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import FilterStore from '@/store/filters.store';
@@ -57,7 +57,7 @@ try {
   goals = getGoals;
   totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
 
-  activities = await getCategories(user.id);
+  activities = await getActivities(user.id);
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
 }

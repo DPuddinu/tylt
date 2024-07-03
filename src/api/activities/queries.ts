@@ -1,7 +1,7 @@
 import activitiesStore from '@/store/activities.store';
 import { Activity, Goal, and, count, db, desc, eq } from 'astro:db';
 
-export async function getCategories(userId: string) {
+export async function getActivities(userId: string) {
   const cachedCategories = activitiesStore.getAll();
   if (cachedCategories) return cachedCategories;
   try {

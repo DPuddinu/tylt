@@ -6,11 +6,11 @@ import ReportStore from '@/store/report.store';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
-import { Activity, db, eq } from 'astro:db';
 import { ZodError } from 'zod';
+import { getActivities } from '@/api/activities/queries';
 
 const { user } = Astro.locals;
-const activities = await db.select().from(Activity).where(eq(Activity.authorId, user.id));
+const activities = await getActivities(user.id);
 
 let validationErrors: ValidationErrors | undefined;
 if (Astro.request.method === 'POST') {

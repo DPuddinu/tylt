@@ -1,5 +1,5 @@
 ---
-import { getCategories } from '@/api/activities/queries';
+import { getActivities } from '@/api/activities/queries';
 import { updateGoal } from '@/api/goals/mutations';
 import { getGoalById } from '@/api/goals/queries';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
@@ -22,7 +22,7 @@ let goal: TGoal | undefined;
 let validationErrors: ValidationErrors | undefined;
 
 try {
-  activities = await getCategories(user.id);
+  activities = await getActivities(user.id);
   goal = cachedGoal ? cachedGoal : await getGoalById({ id: Number(id), userId: user.id });
 } catch (error) {
   if (error instanceof ZodError) {
