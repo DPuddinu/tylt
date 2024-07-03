@@ -12,20 +12,18 @@ type Props = {
 const { activity, validationErrors, title } = Astro.props;
 ---
 
-<section class='flex max-w-sm gap-4'>
-  <div class='flex flex-col gap-4'>
-    <h1 class='text-4xl font-bold'>{title}</h1>
-    <form method='post'>
-      <div class='flex gap-2'>
-        <div class='flex flex-col gap-2'>
-          <TextInput value={activity?.name} id='create-activity' name='name' placeholder='Activity Name' />
-          {validationErrors?.name && <span class='px-2 text-red-500'>{validationErrors?.name}</span>}
-        </div>
-
-        <SubmitButton className='!btn-warning disabled:!bg-warning'>
-          {activity ? 'Update' : 'Create'}
-        </SubmitButton>
+<section class='flex max-w-sm flex-col gap-8'>
+  <h1 class='text-4xl font-bold'>{title}</h1>
+  <form method='post'>
+    <div class='flex gap-2'>
+      <div class='col-span-2 flex flex-col gap-1'>
+        <TextInput variant='300' value={activity?.name} id='create-activity' name='name' placeholder='Activity Name' />
+        {validationErrors?.name && <span class='px-2 text-red-500'>{validationErrors?.name}</span>}
       </div>
-    </form>
-  </div>
+
+      <SubmitButton className='!btn-warning disabled:!bg-warning'>
+        {activity ? 'Update' : 'Create'}
+      </SubmitButton>
+    </div>
+  </form>
 </section>

@@ -118,7 +118,7 @@ type GetGoalsByActivityParams = {
   page?: number;
 };
 export function getGoalByActivityId({ activityId, userId, page = 1 }: GetGoalsByActivityParams) {
-  const getCategoriesCount = db
+  const getActivitiesCount = db
     .select({ count: count() })
     .from(Goal)
     .where(and(eq(Goal.activityId, Number(activityId)), eq(Goal.authorId, userId)))
@@ -132,7 +132,7 @@ export function getGoalByActivityId({ activityId, userId, page = 1 }: GetGoalsBy
     .offset((page - 1) * ITEMS_PER_PAGE);
 
   return {
-    getCategoriesCount,
+    getActivitiesCount,
     getGoalsByActivity
   };
 }

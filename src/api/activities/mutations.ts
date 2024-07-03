@@ -1,4 +1,4 @@
-import CategoriesStore from '@/store/activities.store';
+import ActivitiesStore from '@/store/activities.store';
 import { Activity, and, db, eq } from 'astro:db';
 import type { TActivity } from 'db/config';
 
@@ -15,8 +15,8 @@ export async function createActivity({ authorId, name }: CreateActivityPayload) 
     })
     .returning()
     .get();
-  CategoriesStore.addActivity(res);
-  CategoriesStore.clearActivitiesWithGoalCount();
+  ActivitiesStore.addActivity(res);
+  ActivitiesStore.clearActivitiesWithGoalCount();
   return res;
 }
 export async function updateActivity(activity: TActivity) {
@@ -27,8 +27,8 @@ export async function updateActivity(activity: TActivity) {
       .where(and(eq(Activity.authorId, activity.authorId), eq(Activity.id, activity.id)))
       .returning()
       .get();
-    CategoriesStore.updateActivity(res);
-    CategoriesStore.clearActivitiesWithGoalCount();
+    ActivitiesStore.updateActivity(res);
+    ActivitiesStore.clearActivitiesWithGoalCount();
   } catch (error) {
     throw error;
   }

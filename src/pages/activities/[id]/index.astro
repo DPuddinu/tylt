@@ -2,7 +2,7 @@
 import { updateActivity } from '@/api/activities/mutations';
 import { getActivityById } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getGoalByActivityId } from '@/api/goals/queries';
-import CategoriesStore from '@/store/activities.store';
+import ActivitiesStore from '@/store/activities.store';
 import { ActivitySchema } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import GoalsList from '@components/GoalsList.astro';
@@ -20,7 +20,7 @@ function getParam(param: string) {
 const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
-const { getGoalsByActivity, getCategoriesCount } = getGoalByActivityId({
+const { getGoalsByActivity, getActivitiesCount } = getGoalByActivityId({
   activityId: Number(id),
   userId: user.id,
   page: currentPage
@@ -40,7 +40,7 @@ try {
       userId: user.id
     }),
     getGoalsByActivity,
-    getCategoriesCount
+    getActivitiesCount
   ]);
 
   activity = calls[0];
@@ -52,7 +52,7 @@ try {
 }
 
 if (Astro.request.method === 'POST') {
-  CategoriesStore.clear();
+  ActivitiesStore.clear();
   const formData = await Astro.request.formData();
 
   try {
@@ -70,7 +70,7 @@ if (Astro.request.method === 'POST') {
 ---
 
 <Layout pageName='Activity'>
-  <div class='pb-4'>
+  <div class='pb-8'>
     <ActivityForm validationErrors={validationErrors} activity={activity} title='Edit Activity' />
   </div>
   <div class='flex-container max-w-xl'>

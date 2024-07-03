@@ -4,8 +4,23 @@ type Props = {
   name: string;
   value?: string;
   placeholder: string;
+  variant?: '100' | '200' | '300' | 'default';
+};
+const { name, value, placeholder, id, variant = 'default' } = Astro.props;
+let selectedVariant = '';
+switch (variant) {
+  case '100':
+    selectedVariant = 'bg-base-100';
+    break;
+  case '200':
+    selectedVariant = 'bg-base-200';
+    break;
+  case '300':
+    selectedVariant = 'bg-base-300';
+    break;
+  default:
+    break;
 }
-const { name, value, placeholder, id } = Astro.props;
 ---
 
 <input
@@ -15,5 +30,5 @@ const { name, value, placeholder, id } = Astro.props;
   value={value}
   placeholder={placeholder}
   type='text'
-  class='textarea input-bordered max-h-28 w-full truncate text-pretty rounded-lg bg-transparent px-2 py-1 text-xl font-bold capitalize'
+  class={`textarea input-bordered max-h-28 w-full truncate text-pretty rounded-lg px-2 py-1 text-xl font-bold capitalize ${selectedVariant}`}
 />

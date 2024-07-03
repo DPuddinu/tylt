@@ -1,9 +1,13 @@
 import type { ActivityWithGoalCount } from '@/api/activities/queries';
 import type { TActivity } from 'db/config';
+export const timeFilters = ['week', 'month', 'all Time'] as const;
+export type TimeFilter = (typeof timeFilters)[number];
 
 class ActivitiesStore {
   data: TActivity[] | undefined = undefined;
+  timeFilter: TimeFilter = 'month';
   activitiesWithGoalCount: ActivityWithGoalCount[] | undefined = undefined;
+
   getAll() {
     return this.data;
   }
@@ -24,6 +28,13 @@ class ActivitiesStore {
   }
   addActivity(activity: TActivity) {
     this.data = [activity, ...(this.data ?? [])];
+  }
+  setTimeFilter(timeFilter: TimeFilter) {
+    this.timeFilter = timeFilter;
+  }
+
+  getTimeFilter() {
+    return this.timeFilter;
   }
 
   updateActivity(updatedActivity: TActivity) {
