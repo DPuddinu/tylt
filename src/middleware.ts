@@ -4,7 +4,7 @@ import { getSetupDone } from './api/setup/queries';
 import settingsStore from './store/settings.store';
 
 let githubUser: any = null;
-const protectedRoutes = ['/goals', '/setup', '/categories', '/reports'];
+const protectedRoutes = ['/goals', '/setup', '/activities', '/reports', '/error'];
 export const onRequest = defineMiddleware(async ({ redirect, request, locals, url }, next) => {
   const matchingRoute = protectedRoutes.some((route) => url.pathname.toLowerCase().includes(route.toLowerCase()));
   if (!matchingRoute) return next();

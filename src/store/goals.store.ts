@@ -30,7 +30,7 @@ class GoalStore {
       .flat()
       .find((goal) => goal.id === id);
   }
-  updateGoalById(updatedGoal: TGoal) {
+  updateGoal(updatedGoal: TGoal) {
     const keys = Object.keys(this.paginatedData);
     keys.forEach((key) => {
       const values = this.paginatedData[Number(key)];

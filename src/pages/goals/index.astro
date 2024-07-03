@@ -59,7 +59,7 @@ try {
 
   activities = await getCategories(user.id);
 } catch (error) {
-  return Astro.redirect('goals/error');
+  return Astro.redirect('error?redirect=goals');
 }
 ---
 

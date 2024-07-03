@@ -36,8 +36,7 @@ try {
   }
   if (step === '2' && !firstSetupStore.getStep1()) return Astro.redirect('/setup?step=1');
 } catch (error) {
-  console.log(error);
-  // return Astro.redirect('/error');
+  return Astro.redirect('/error?redirect=setup');
 }
 
 if (Astro.request.method === 'POST') {
@@ -68,7 +67,7 @@ if (Astro.request.method === 'POST') {
     } catch (error) {
       if (error instanceof ZodError) {
         validationErrors = error.flatten().fieldErrors;
-      } else return Astro.redirect('/goals/error');
+      } else return Astro.redirect('/error?redirect=setup');
     }
   }
   try {
@@ -86,7 +85,9 @@ if (Astro.request.method === 'POST') {
       await setSetupDone(user.id);
       return Astro.redirect('/goals');
     }
-  } catch (error) {}
+  } catch (error) {
+    return Astro.redirect('/error?redirect=setup');
+  }
 }
 ---
 

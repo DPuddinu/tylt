@@ -4,12 +4,11 @@ import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
 import '@fontsource/inter';
 const { user } = Astro.locals;
-console.log(user);
 type Props = {
   pageName: string;
 };
 const { pageName } = Astro.props;
-const links = ['Categories', 'Goals', 'Reports'];
+const links = ['Activities', 'Goals', 'Reports'];
 ---
 
 <html>

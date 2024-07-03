@@ -29,7 +29,7 @@ if (Astro.request.method === 'POST') {
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    } else return Astro.redirect('/goals/error');
+    } else return Astro.redirect('/error/error');
   }
 }
 ---

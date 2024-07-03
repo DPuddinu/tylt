@@ -48,7 +48,7 @@ try {
   totalRows = calls[2]?.count ?? 0;
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
 } catch (error) {
-  return Astro.redirect('/activities/' + activity.id + '/error');
+  return Astro.redirect(`/error?redirect=activities/${activity.id}`);
 }
 
 if (Astro.request.method === 'POST') {
@@ -64,7 +64,7 @@ if (Astro.request.method === 'POST') {
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    } else return Astro.redirect('/activities/' + activity.id + '/error');
+    } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
   }
 }
 ---

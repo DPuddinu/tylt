@@ -3,7 +3,6 @@ import { getCategories } from '@/api/activities/queries';
 import { updateGoal } from '@/api/goals/mutations';
 import { getGoalById } from '@/api/goals/queries';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
-import PaginationStore from '@/store/filters.store';
 import GoalStore from '@/store/goals.store';
 import ReportStore from '@/store/report.store';
 import type { ValidationErrors } from '@/types/formValidation.types';
@@ -15,8 +14,7 @@ import { ZodError } from 'zod';
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
-const currentPage = PaginationStore.getCurrentPage();
-const cachedGoal = GoalStore.getGoalById(currentPage, Number(id));
+const cachedGoal = GoalStore.getGoalById(Number(id));
 
 let activities: TActivity[] = [];
 let goal: TGoal | undefined;
@@ -29,7 +27,7 @@ try {
 } catch (error) {
   if (error instanceof ZodError) {
     validationErrors = error.flatten().fieldErrors;
-  } else return Astro.redirect(`/goals/${id}/error`);
+  } else return Astro.redirect(`/error?redirect=goals/${id}`);
 }
 
 if (Astro.request.method === 'POST') {
@@ -40,13 +38,13 @@ if (Astro.request.method === 'POST') {
     const data = GoalInsertSchema.parse(formData);
     const updatedGoal = await updateGoal({ ...data, userId: user.id, goalId: goal.id });
 
-    GoalStore.updateGoal(currentPage, updatedGoal);
+    GoalStore.updateGoal(updatedGoal);
     ReportStore.clear();
     return Astro.redirect('/goals');
   } catch (error) {
     if (error instanceof ZodError) {
       validationErrors = error.flatten().fieldErrors;
-    } else return Astro.redirect('/goals/' + goal.id + '/error');
+    } else return Astro.redirect(`/error?redirect=goals/${id}`);
   }
 }
 ---
