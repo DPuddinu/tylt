@@ -1,47 +1,45 @@
 import type { TGoal } from 'db/config';
+import { atom } from 'nanostores';
 
-class GoalStore {
-  paginatedData: Record<number, TGoal[]> = {};
+const paginatedData = atom<Record<number, TGoal[]>>({});
 
-  totalCount: number | undefined = undefined;
-  getAll() {
-    return this.paginatedData;
-  }
-  getGoalsByPage(page: number) {
-    return this.paginatedData[page];
-  }
-  getGoalsCount() {
-    return this.totalCount ?? 0;
-  }
+const getPaginatedData = () => paginatedData.get();
+const getGoalsByPage = (page: number) => getPaginatedData()[page];
 
-  set(page: number, ...newData: TGoal[]) {
-    this.paginatedData[page] = newData;
-  }
-  setGoalsCount(count: number) {
-    this.totalCount = count;
-  }
-
-  clear() {
-    this.paginatedData = {};
-    this.totalCount = undefined;
-  }
-  getGoalById(id: number) {
-    return Object.values(this.paginatedData)
-      .flat()
-      .find((goal) => goal.id === id);
-  }
-  updateGoal(updatedGoal: TGoal) {
-    const keys = Object.keys(this.paginatedData);
-    keys.forEach((key) => {
-      const values = this.paginatedData[Number(key)];
-      values.forEach((goal) => {
-        if (goal.id === updatedGoal.id) {
-          this.set(Number(key), ...values.map((goal) => (goal.id === updatedGoal.id ? updatedGoal : goal)));
-        }
-      });
-    });
-  }
+function getCachedGoalById(id: number) {
+  return Object.values(getPaginatedData())
+    .flat()
+    .find((goal) => goal.id === id);
 }
-const store = new GoalStore();
+function setGoals(page: number, ...newData: TGoal[]) {
+  paginatedData.set({ ...getPaginatedData(), [page]: newData });
+}
 
-export default store;
+function clear() {
+  paginatedData.set({});
+  totalCount.set(undefined);
+}
+
+function updateCachedGoal(updatedGoal: TGoal) {
+  const data = getPaginatedData();
+  const keys = Object.keys(data);
+  keys.forEach((key) => {
+    const values = data[Number(key)];
+    values.forEach((goal) => {
+      if (goal.id === updatedGoal.id) {
+        setGoals(Number(key), ...values.map((goal) => (goal.id === updatedGoal.id ? updatedGoal : goal)));
+      }
+    });
+  });
+}
+const totalCount = atom<number | undefined>(undefined);
+
+function getGoalsCount() {
+  return totalCount.get() ?? 0;
+}
+
+function setGoalsCount(count: number) {
+  totalCount.set(count);
+}
+
+export { clear, getCachedGoalById, getGoalsByPage, getGoalsCount, setGoals, setGoalsCount, updateCachedGoal };

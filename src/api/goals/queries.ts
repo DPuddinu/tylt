@@ -1,5 +1,5 @@
-import GoalStore from '@/store/goals.store';
-import ReportStore from '@/store/report.store';
+import { getCachedGoalById, getGoalsByPage, getGoalsCount, setGoals, setGoalsCount } from '@/store/goals.store';
+import reportStore from '@/store/report.store';
 import type { GoalFilters } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
@@ -13,7 +13,7 @@ type GetPaginatedGoalsParams = {
   filters?: GoalFilters;
 };
 export async function getCompletionRate(userId: string) {
-  const cachedReport = ReportStore.get();
+  const cachedReport = reportStore.get();
   if (cachedReport) return cachedReport;
 
   try {
@@ -37,7 +37,7 @@ export async function getCompletionRate(userId: string) {
       totalGoalsCount: goals.length,
       deltaCount: delta
     };
-    ReportStore.set(report);
+    reportStore.set(report);
     return report;
   } catch (error) {
     throw new Error('Cannot get completion rate');
@@ -48,8 +48,8 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
   countGoals: number;
   goals: TGoal[];
 }> {
-  const cachedGoals = GoalStore.getGoalsByPage(page);
-  const cachedGoalsCount = GoalStore.getGoalsCount();
+  const cachedGoals = getGoalsByPage(page);
+  const cachedGoalsCount = getGoalsCount();
   if (cachedGoals && cachedGoalsCount) return { countGoals: cachedGoalsCount, goals: cachedGoals };
 
   try {
@@ -83,8 +83,8 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
     const calls = await Promise.all([getCountGoals, getGoals]);
     const countGoals = calls[0]?.count ?? 0;
     const goals = calls[1];
-    GoalStore.set(page, ...goals);
-    GoalStore.setGoalsCount(countGoals);
+    setGoals(page, ...goals);
+    setGoalsCount(countGoals);
 
     return {
       countGoals,
@@ -99,8 +99,9 @@ type getGoalByIdParams = {
   userId: string;
 };
 export async function getGoalById({ id, userId }: getGoalByIdParams) {
-  const cachedGoal = GoalStore.getGoalById(id);
+  const cachedGoal = getCachedGoalById(id);
   if (cachedGoal) return cachedGoal;
+  console.log('getting goal from db');
   try {
     return await db
       .select()

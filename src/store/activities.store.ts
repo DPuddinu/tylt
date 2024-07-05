@@ -1,5 +1,6 @@
 import type { ActivityWithGoalCount } from '@/api/activities/queries';
 import type { TActivity } from 'db/config';
+import { atom } from 'nanostores';
 export const timeFilters = ['week', 'month', 'all Time'] as const;
 export type TimeFilter = (typeof timeFilters)[number];
 
@@ -46,6 +47,6 @@ class ActivitiesStore {
     this.data = undefined;
   }
 }
-const store = new ActivitiesStore();
+const store = atom(new ActivitiesStore());
 
 export default store;

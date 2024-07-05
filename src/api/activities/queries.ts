@@ -2,11 +2,13 @@ import activitiesStore, { type TimeFilter } from '@/store/activities.store';
 import { Activity, Goal, and, count, db, desc, eq, gte } from 'astro:db';
 
 export async function getActivities(userId: string) {
-  const cachedActivities = activitiesStore.getAll();
+  const store = activitiesStore.get();
+
+  const cachedActivities = store.getAll();
   if (cachedActivities) return cachedActivities;
   try {
     const activities = await db.select().from(Activity).where(eq(Activity.authorId, userId));
-    activitiesStore.set(activities);
+    store.set(activities);
     return activities;
   } catch (error) {
     throw error;
@@ -17,7 +19,9 @@ type GetActivityByIdParams = {
   id: number;
 };
 export async function getActivityById({ id, userId }: GetActivityByIdParams) {
-  const cachedData = activitiesStore.getActivityById(id);
+  const store = activitiesStore.get();
+
+  const cachedData = store.getActivityById(id);
   if (cachedData) return cachedData;
   try {
     return await db
@@ -36,12 +40,13 @@ export type ActivityWithGoalCount = {
 };
 
 export async function getMostUsedActivity({ userId, timeFilter }: { userId: string; timeFilter: TimeFilter }) {
-  const oldTimeFilter = activitiesStore.getTimeFilter();
+  const store = activitiesStore.get();
+  const oldTimeFilter = store.getTimeFilter();
   if (oldTimeFilter !== timeFilter) {
-    activitiesStore.setTimeFilter(timeFilter);
-    activitiesStore.clearActivitiesWithGoalCount();
+    store.setTimeFilter(timeFilter);
+    store.clearActivitiesWithGoalCount();
   }
-  const cachedData = activitiesStore.getActivitiesWithGoalCount();
+  const cachedData = store.getActivitiesWithGoalCount();
   if (cachedData) return cachedData;
   let timeFilterQuery;
   const oneDay = 24 * 60 * 60 * 1000;
@@ -54,7 +59,7 @@ export async function getMostUsedActivity({ userId, timeFilter }: { userId: stri
       const oneMonthAgo = new Date(new Date().getTime() - 30 * oneDay);
       timeFilterQuery = gte(Goal.creationDate, oneMonthAgo);
       break;
-    case 'allTime':
+    case 'all Time':
       timeFilterQuery = undefined;
       break;
     default:
@@ -74,7 +79,7 @@ export async function getMostUsedActivity({ userId, timeFilter }: { userId: stri
       .groupBy(Activity.id)
       .orderBy(desc(count(Goal.id)));
     const activitiesWithGoalCount = res.filter((activity) => activity.goalCount > 0);
-    activitiesStore.setActivitiesWithGoalCount(activitiesWithGoalCount);
+    store.setActivitiesWithGoalCount(activitiesWithGoalCount);
     return activitiesWithGoalCount;
   } catch (error) {
     throw error;

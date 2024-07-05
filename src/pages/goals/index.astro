@@ -3,15 +3,18 @@ import { getActivities } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import FilterStore from '@/store/filters.store';
-import GoalStore from '@/store/goals.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
+import { getSetupDone } from '@/api/setup/queries';
 
 const { user } = Astro.locals;
 
+if(!await getSetupDone(user.id)) {
+  return Astro.redirect('/setup');
+}
 function getParam(param: string) {
   return Astro.url.searchParams.get(param);
 }
@@ -44,9 +47,9 @@ let goals: TGoal[] = [];
 let totalPages = 0;
 let activities: TActivity[] = [];
 
-FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
-FilterStore.setFilters(goalFilters);
-FilterStore.setCurrentPage(currentPage);
+// FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
+// FilterStore.setFilters(goalFilters);
+// FilterStore.setCurrentPage(currentPage);
 
 try {
   const { countGoals, goals: getGoals } = await getPaginatedGoals({
