@@ -36,25 +36,4 @@ function emptySteps() {
   return firstSetupStore.get().steps.every((step) => step === undefined);
 }
 
-const setupDone = atom(false);
-
-function setCachedSetupDone() {
-  setupDone.set(true);
-}
-
-function getCachedSetupDone() {
-  return setupDone.get();
-}
-
-export {
-  emptySteps,
-  firstSetupStore,
-  getCachedSetupDone,
-  getStep1,
-  getStep2,
-  setCachedSetupDone,
-  setStep1,
-  setStep2,
-  setupDone,
-  stepsCompleted
-};
+export { emptySteps, firstSetupStore, getStep1, getStep2, setStep1, setStep2, stepsCompleted };

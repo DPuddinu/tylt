@@ -2,18 +2,17 @@
 import { getActivities } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
+import { stepsCompleted } from '@/stores/firstSetup.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
+const { user } = Astro.locals;
 import { getSetupDone } from '@/api/setup/queries';
 
-const { user } = Astro.locals;
+if(!await getSetupDone(user.id)) return Astro.redirect('/setup');
 
-if(!await getSetupDone(user.id)) {
-  return Astro.redirect('/setup');
-}
 function getParam(param: string) {
   return Astro.url.searchParams.get(param);
 }

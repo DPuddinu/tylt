@@ -14,9 +14,7 @@ import { zfd } from 'zod-form-data';
 import { getSetupDone } from '@/api/setup/queries';
 
 const { user } = Astro.locals;
-const setupDone = await getSetupDone(user.id);
-if(setupDone) return Astro.redirect('/goals');
-
+if (await getSetupDone(user.id)) return Astro.redirect('/goals');
 const step = Astro.url.searchParams.get('step');
 if (!step) return Astro.redirect('/setup?step=1');
 

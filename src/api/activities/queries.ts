@@ -1,22 +1,9 @@
-import {
-  clearCachedActivitiesWithGoalCount,
-  getCachedActivities,
-  getCachedActivitiesWithGoalCount,
-  getCachedActivityById,
-  getCachedTimeFilter,
-  setCachedActivities,
-  setCachedActivitiesWithGoalCount,
-  setCachedTimeFilter
-} from '@/store/activities.store';
 import type { TimeFilter } from '@/types/filters.types';
 import { Activity, Goal, and, count, db, desc, eq, gte } from 'astro:db';
 
 export async function getActivities(userId: string) {
-  const cachedActivities = getCachedActivities();
-  if (cachedActivities) return cachedActivities;
   try {
     const activities = await db.select().from(Activity).where(eq(Activity.authorId, userId));
-    setCachedActivities(activities);
     return activities;
   } catch (error) {
     throw error;
@@ -27,8 +14,6 @@ type GetActivityByIdParams = {
   id: number;
 };
 export async function getActivityById({ id, userId }: GetActivityByIdParams) {
-  const cachedData = getCachedActivityById(id);
-  if (cachedData) return cachedData;
   try {
     return await db
       .select()
@@ -46,13 +31,6 @@ export type ActivityWithGoalCount = {
 };
 
 export async function getMostUsedActivity({ userId, timeFilter }: { userId: string; timeFilter: TimeFilter }) {
-  const oldTimeFilter = getCachedTimeFilter();
-  if (oldTimeFilter !== timeFilter) {
-    setCachedTimeFilter(timeFilter);
-    clearCachedActivitiesWithGoalCount();
-  }
-  const cachedData = getCachedActivitiesWithGoalCount();
-  if (cachedData) return cachedData;
   let timeFilterQuery;
   const oneDay = 24 * 60 * 60 * 1000;
   switch (timeFilter) {
@@ -83,8 +61,8 @@ export async function getMostUsedActivity({ userId, timeFilter }: { userId: stri
       .leftJoin(Goal, and(eq(Activity.id, Goal.activityId), timeFilterQuery))
       .groupBy(Activity.id)
       .orderBy(desc(count(Goal.id)));
-    setCachedActivitiesWithGoalCount(res);
-    return res;
+    const activitiesWithGoalCount = res.filter((activity) => activity.goalCount > 0);
+    return activitiesWithGoalCount;
   } catch (error) {
     throw error;
   }

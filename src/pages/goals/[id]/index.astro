@@ -3,7 +3,6 @@ import { getActivities } from '@/api/activities/queries';
 import { updateGoal } from '@/api/goals/mutations';
 import { getGoalById } from '@/api/goals/queries';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
-import { updateCachedGoal } from '@/store/goals.store';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
@@ -33,9 +32,8 @@ if (Astro.request.method === 'POST') {
 
   try {
     const data = GoalInsertSchema.parse(formData);
-    const updatedGoal = await updateGoal({ ...data, userId: user.id, goalId: goal.id });
+    await updateGoal({ ...data, userId: user.id, goalId: goal.id });
 
-    updateCachedGoal({ ...updatedGoal });
     return Astro.redirect('/goals');
   } catch (error) {
     if (error instanceof ZodError) {

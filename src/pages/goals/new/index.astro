@@ -12,7 +12,6 @@ const activities = await getActivities(user.id);
 
 let validationErrors: ValidationErrors | undefined;
 if (Astro.request.method === 'POST') {
-  
   const formData = await Astro.request.formData();
 
   try {

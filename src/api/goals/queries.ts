@@ -1,5 +1,3 @@
-import { getCachedGoalById, getGoalsByPage, getGoalsCount, setGoals, setGoalsCount } from '@/store/goals.store';
-import { getCachedReport, setCachedReport } from '@/store/report.store';
 import type { GoalFilters } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
@@ -13,9 +11,6 @@ type GetPaginatedGoalsParams = {
   filters?: GoalFilters;
 };
 export async function getCompletionRate(userId: string) {
-  const cachedReport = getCachedReport();
-  if (cachedReport) return cachedReport;
-
   try {
     const goals = await db.select().from(Goal).where(eq(Goal.authorId, userId));
     const completedGoals = goals.filter((goal) => goal.completed);
@@ -37,7 +32,6 @@ export async function getCompletionRate(userId: string) {
       totalGoalsCount: goals.length,
       deltaCount: delta
     };
-    setCachedReport(report);
     return report;
   } catch (error) {
     throw new Error('Cannot get completion rate');
@@ -48,10 +42,6 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
   countGoals: number;
   goals: TGoal[];
 }> {
-  const cachedGoals = getGoalsByPage(page);
-  const cachedGoalsCount = getGoalsCount();
-  if (cachedGoals && cachedGoalsCount && !filters) return { countGoals: cachedGoalsCount, goals: cachedGoals };
-
   try {
     const userFilter = eq(Goal.authorId, userId);
     const offset = (page - 1) * ITEMS_PER_PAGE;
@@ -83,9 +73,6 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
     const calls = await Promise.all([getCountGoals, getGoals]);
     const countGoals = calls[0]?.count ?? 0;
     const goals = calls[1];
-    setGoals(page, ...goals);
-    setGoalsCount(countGoals);
-
     return {
       countGoals,
       goals
@@ -99,9 +86,6 @@ type getGoalByIdParams = {
   userId: string;
 };
 export async function getGoalById({ id, userId }: getGoalByIdParams) {
-  const cachedGoal = getCachedGoalById(id);
-  if (cachedGoal) return cachedGoal;
-  console.log('getting goal from db');
   try {
     return await db
       .select()
