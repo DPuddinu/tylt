@@ -83,9 +83,8 @@ export async function getMostUsedActivity({ userId, timeFilter }: { userId: stri
       .leftJoin(Goal, and(eq(Activity.id, Goal.activityId), timeFilterQuery))
       .groupBy(Activity.id)
       .orderBy(desc(count(Goal.id)));
-    const activitiesWithGoalCount = res.filter((activity) => activity.goalCount > 0);
-    setCachedActivitiesWithGoalCount(activitiesWithGoalCount);
-    return activitiesWithGoalCount;
+    setCachedActivitiesWithGoalCount(res);
+    return res;
   } catch (error) {
     throw error;
   }
