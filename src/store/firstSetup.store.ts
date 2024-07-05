@@ -1,28 +1,39 @@
 import type { CreateActivityPayload } from '@/api/activities/mutations';
 import type { GoalInsertPayload } from '@/types/goal.types';
+import { atom } from 'nanostores';
 
-class FirstSetupStore {
+type TFirstSetupStore = {
   steps: [
     { createActivityPayload: CreateActivityPayload } | undefined,
     { goalInsertPayload: GoalInsertPayload } | undefined
-  ] = [undefined, undefined];
+  ];
+};
+const firstSetupStore = atom<TFirstSetupStore>({
+  steps: [undefined, undefined]
+});
 
-  setStep1(createActivityPayload: CreateActivityPayload) {
-    this.steps[0] = { createActivityPayload };
-  }
-  setStep2(goalInsertPayload: GoalInsertPayload) {
-    this.steps[1] = { goalInsertPayload };
-  }
-
-  getStep1() {
-    return this.steps[0];
-  }
-  getStep2() {
-    return this.steps[1];
-  }
-  stepsCompleted() {
-    return this.steps.every((step) => step !== undefined);
-  }
+function setStep1(createActivityPayload: CreateActivityPayload) {
+  firstSetupStore.set({
+    steps: [{ createActivityPayload }, firstSetupStore.get().steps[1]]
+  });
 }
-const firstSetupStore = new FirstSetupStore();
-export default firstSetupStore;
+function setStep2(goalInsertPayload: GoalInsertPayload) {
+  firstSetupStore.set({
+    steps: [firstSetupStore.get().steps[0], { goalInsertPayload }]
+  });
+}
+
+function getStep1() {
+  return firstSetupStore.get().steps[0];
+}
+function getStep2() {
+  return firstSetupStore.get().steps[1];
+}
+function stepsCompleted() {
+  return firstSetupStore.get().steps.every((step) => step !== undefined);
+}
+function emptySteps() {
+  return firstSetupStore.get().steps.every((step) => step === undefined);
+}
+
+export { emptySteps, firstSetupStore, getStep1, getStep2, setStep1, setStep2, stepsCompleted };
