@@ -2,7 +2,6 @@
 import { updateActivity } from '@/api/activities/mutations';
 import { getActivityById } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getGoalByActivityId } from '@/api/goals/queries';
-import ActivitiesStore from '@/store/activities.store';
 import { ActivitySchema } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import GoalsList from '@components/GoalsList.astro';
@@ -52,7 +51,6 @@ try {
 }
 
 if (Astro.request.method === 'POST') {
-  ActivitiesStore.clear();
   const formData = await Astro.request.formData();
 
   try {

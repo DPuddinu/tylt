@@ -1,4 +1,4 @@
-import ActivitiesStore from '@/store/activities.store';
+import { addCachedActivity, clearCachedActivitiesWithGoalCount, updateCachedActivity } from '@/store/activities.store';
 import { Activity, and, db, eq } from 'astro:db';
 import type { TActivity } from 'db/config';
 
@@ -15,8 +15,8 @@ export async function createActivity({ authorId, name }: CreateActivityPayload) 
     })
     .returning()
     .get();
-  ActivitiesStore.addActivity(res);
-  ActivitiesStore.clearActivitiesWithGoalCount();
+  addCachedActivity(res);
+  clearCachedActivitiesWithGoalCount();
   return res;
 }
 export async function updateActivity(activity: TActivity) {
@@ -27,8 +27,8 @@ export async function updateActivity(activity: TActivity) {
       .where(and(eq(Activity.authorId, activity.authorId), eq(Activity.id, activity.id)))
       .returning()
       .get();
-    ActivitiesStore.updateActivity(res);
-    ActivitiesStore.clearActivitiesWithGoalCount();
+    updateCachedActivity(res);
+    clearCachedActivitiesWithGoalCount();
   } catch (error) {
     throw error;
   }

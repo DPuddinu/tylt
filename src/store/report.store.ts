@@ -1,3 +1,5 @@
+import { atom } from 'nanostores';
+
 type Report = {
   completedCount: number;
   completionRate: number;
@@ -5,21 +7,15 @@ type Report = {
   totalGoalsCount: number;
   deltaCount: number;
 };
-class ReportStore {
-  data: Report | undefined = undefined;
 
-  get() {
-    return this.data;
-  }
-
-  set(newData: Report) {
-    this.data = newData;
-  }
-
-  clear() {
-    this.data = undefined;
-  }
+const reportStore = atom<Report | undefined>(undefined);
+function getCachedReport() {
+  return reportStore.get();
 }
-const store = new ReportStore();
-
-export default store;
+function setCachedReport(report: Report) {
+  reportStore.set(report);
+}
+function clearCachedReport() {
+  reportStore.set(undefined);
+}
+export { clearCachedReport, getCachedReport, setCachedReport };

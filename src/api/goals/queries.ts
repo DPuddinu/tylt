@@ -1,5 +1,5 @@
 import { getCachedGoalById, getGoalsByPage, getGoalsCount, setGoals, setGoalsCount } from '@/store/goals.store';
-import reportStore from '@/store/report.store';
+import { getCachedReport, setCachedReport } from '@/store/report.store';
 import type { GoalFilters } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
@@ -13,7 +13,7 @@ type GetPaginatedGoalsParams = {
   filters?: GoalFilters;
 };
 export async function getCompletionRate(userId: string) {
-  const cachedReport = reportStore.get();
+  const cachedReport = getCachedReport();
   if (cachedReport) return cachedReport;
 
   try {
@@ -37,7 +37,7 @@ export async function getCompletionRate(userId: string) {
       totalGoalsCount: goals.length,
       deltaCount: delta
     };
-    reportStore.set(report);
+    setCachedReport(report);
     return report;
   } catch (error) {
     throw new Error('Cannot get completion rate');

@@ -1,7 +1,6 @@
 ---
 import { getMostUsedActivity } from '@/api/activities/queries';
-import type { TimeFilter } from '@/store/activities.store';
-import { timeFilters } from '@/store/activities.store';
+import { timeFilters, type TimeFilter } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import Fab from '@components/Fab.astro';
 import Layout from '@layouts/MainLayout.astro';
@@ -20,11 +19,11 @@ const percentages = mostUsedActivity.map((activity) => {
 
 <Layout pageName='Activities'>
   <div class='flex flex-col gap-4'>
-    <h1 class="text-4xl">Activities</h1>
+    <h1 class='text-4xl'>Activities</h1>
     <header role='tablist' class='tabs-boxed tabs max-w-sm'>
       {
         timeFilters.map((filter) => (
-          <a class={`capitalize tab ${filter === time ? 'tab-active' : ''}`} href={`/activities?time=${filter}`}>
+          <a class={`tab capitalize ${filter === time ? 'tab-active' : ''}`} href={`/activities?time=${filter}`}>
             {filter}
           </a>
         ))

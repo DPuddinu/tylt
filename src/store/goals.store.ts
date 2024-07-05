@@ -42,12 +42,4 @@ function setGoalsCount(count: number) {
   totalCount.set(count);
 }
 
-export {
-  invalidateGoals as clearGoals,
-  getCachedGoalById,
-  getGoalsByPage,
-  getGoalsCount,
-  setGoals,
-  setGoalsCount,
-  updateCachedGoal
-};
+export { getCachedGoalById, getGoalsByPage, getGoalsCount, invalidateGoals, setGoals, setGoalsCount, updateCachedGoal };

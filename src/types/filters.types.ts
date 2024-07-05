@@ -16,3 +16,6 @@ export type GoalFormParam =
   | 'notExpired'
   | 'completed'
   | 'notCompleted';
+
+export const timeFilters = ['week', 'month', 'all Time'] as const;
+export type TimeFilter = (typeof timeFilters)[number];
