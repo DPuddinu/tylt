@@ -1,18 +1,22 @@
 ---
-const { setupDone, user } = Astro.locals;
 import { createActivity } from '@/api/activities/mutations';
 import { createGoal } from '@/api/goals/mutations';
 import { setSetupDone } from '@/api/setup/mutations';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
-import { getStep1, getStep2, setStep1, setStep2, stepsCompleted } from '@/stores/firstSetup.store';
 import type { ValidationErrors } from '@/types/formValidation.types';
+import { getStep1, getStep2, setStep1, setStep2, stepsCompleted } from '@/store/first-setup.store';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
 import SetupLayout from '@layouts/SetupLayout.astro';
 import type { TActivity } from 'db/config';
 import { ZodError, z } from 'zod';
 import { zfd } from 'zod-form-data';
-if (setupDone) return Astro.redirect('/goals');
+import { getSetupDone } from '@/api/setup/queries';
+
+const { user } = Astro.locals;
+const setupDone = await getSetupDone(user.id);
+if(setupDone) return Astro.redirect('/goals');
+
 const step = Astro.url.searchParams.get('step');
 if (!step) return Astro.redirect('/setup?step=1');
 
