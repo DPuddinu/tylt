@@ -3,7 +3,7 @@ import { getActivities } from '@/api/activities/queries';
 import { updateGoal } from '@/api/goals/mutations';
 import { getGoalById } from '@/api/goals/queries';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
-import { getCachedGoalById, updateCachedGoal } from '@/store/goals.store';
+import { updateCachedGoal } from '@/store/goals.store';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
@@ -13,8 +13,6 @@ import { ZodError } from 'zod';
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
-const cachedGoal = getCachedGoalById(Number(id));
-
 let activities: TActivity[] = [];
 let goal: TGoal | undefined;
 
@@ -22,7 +20,7 @@ let validationErrors: ValidationErrors | undefined;
 
 try {
   activities = await getActivities(user.id);
-  goal = cachedGoal ? cachedGoal : await getGoalById({ id: Number(id), userId: user.id });
+  goal = await getGoalById({ id: Number(id), userId: user.id });
 } catch (error) {
   if (error instanceof ZodError) {
     validationErrors = error.flatten().fieldErrors;

@@ -2,7 +2,6 @@
 import { getActivities } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
-import FilterStore from '@/store/filters.store';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
@@ -46,10 +45,6 @@ let totalRows = 0;
 let goals: TGoal[] = [];
 let totalPages = 0;
 let activities: TActivity[] = [];
-
-// FilterStore.checkFilterChange({ goalFilters, onChangedFilters: () => GoalStore.clear() });
-// FilterStore.setFilters(goalFilters);
-// FilterStore.setCurrentPage(currentPage);
 
 try {
   const { countGoals, goals: getGoals } = await getPaginatedGoals({

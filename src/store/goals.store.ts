@@ -15,7 +15,7 @@ function setGoals(page: number, ...newData: TGoal[]) {
   paginatedData.set({ ...getPaginatedData(), [page]: newData });
 }
 
-function clear() {
+function invalidateGoals() {
   paginatedData.set({});
   totalCount.set(undefined);
 }
@@ -42,4 +42,12 @@ function setGoalsCount(count: number) {
   totalCount.set(count);
 }
 
-export { clear, getCachedGoalById, getGoalsByPage, getGoalsCount, setGoals, setGoalsCount, updateCachedGoal };
+export {
+  invalidateGoals as clearGoals,
+  getCachedGoalById,
+  getGoalsByPage,
+  getGoalsCount,
+  setGoals,
+  setGoalsCount,
+  updateCachedGoal
+};

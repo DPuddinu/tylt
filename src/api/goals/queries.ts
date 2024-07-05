@@ -50,7 +50,7 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
 }> {
   const cachedGoals = getGoalsByPage(page);
   const cachedGoalsCount = getGoalsCount();
-  if (cachedGoals && cachedGoalsCount) return { countGoals: cachedGoalsCount, goals: cachedGoals };
+  if (cachedGoals && cachedGoalsCount && !filters) return { countGoals: cachedGoalsCount, goals: cachedGoals };
 
   try {
     const userFilter = eq(Goal.authorId, userId);
