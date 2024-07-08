@@ -34,7 +34,7 @@ const formId = 'goal-form';
       <div class='flex justify-between gap-2'>
         <div class='flex flex-col gap-2'>
           <TextInput id='title-input' name={GoalFormNames.title} value={goal?.title} placeholder='Type title...' />
-          {validationErrors?.title && <span class='px-2 text-red-500'>{validationErrors?.title}</span>}
+          {validationErrors?.title && <span class='px-2 text-error'>{validationErrors?.title}</span>}
         </div>
       </div>
       <div>

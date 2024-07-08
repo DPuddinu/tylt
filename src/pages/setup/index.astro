@@ -2,16 +2,17 @@
 import { createActivity } from '@/api/activities/mutations';
 import { createGoal } from '@/api/goals/mutations';
 import { setSetupDone } from '@/api/setup/mutations';
+import { getSetupDone } from '@/api/setup/queries';
+import ActivityForm from '@/components/ActivityForm.astro';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
-import type { ValidationErrors } from '@/types/formValidation.types';
 import { getStep1, getStep2, setStep1, setStep2, stepsCompleted } from '@/store/first-setup.store';
+import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
 import SetupLayout from '@layouts/SetupLayout.astro';
 import type { TActivity } from 'db/config';
 import { ZodError, z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { getSetupDone } from '@/api/setup/queries';
 
 const { user } = Astro.locals;
 if (await getSetupDone(user.id)) return Astro.redirect('/goals');
@@ -22,7 +23,9 @@ let validationErrors: ValidationErrors | undefined;
 
 let activities: TActivity[] = [];
 const schema = zfd.formData({
-  name: zfd.text(z.string().min(3).max(20))
+  name: zfd.text(z.string().min(3).max(20)),
+  color: zfd.text(z.string()),
+  icon: zfd.text(z.string())
 });
 
 try {
@@ -48,11 +51,14 @@ if (Astro.request.method === 'POST') {
   if (step === '1') {
     try {
       const validated = schema.parse(formData);
+      const startIndex = validated.icon.indexOf('icons/');
+      const iconPath = validated.icon.substring(startIndex);
       setStep1({
         authorId: user.id,
-        name: validated.name
+        ...validated,
+        icon: iconPath
       });
-
+      
       return Astro.redirect('/setup?step=2');
     } catch (error) {
       if (error instanceof ZodError) {
@@ -78,7 +84,9 @@ if (Astro.request.method === 'POST') {
     if (stepsCompleted()) {
       const activity = await createActivity({
         authorId: user.id,
-        name: getStep1()!.createActivityPayload.name
+        name: getStep1()!.createActivityPayload.name,
+        color: getStep1()!.createActivityPayload.color,
+        icon: getStep1()!.createActivityPayload.icon
       });
       await createGoal({
         ...getStep2()!.goalInsertPayload,
@@ -95,29 +103,9 @@ if (Astro.request.method === 'POST') {
 }
 ---
 
-<Layout pageName='Initial Setup'>
+<Layout>
   <SetupLayout>
-    {
-      step === '1' && (
-        <section class='flex w-full grow flex-col justify-center'>
-          <div class='flex justify-center pt-6'>
-            <form method='post' class='grid max-w-md gap-2 px-1'>
-              <input
-                name='name'
-                id='activities'
-                type='text'
-                placeholder='Activity name...'
-                class='input input-bordered'
-              />
-              {validationErrors?.name && <span class='text-red-500'>{validationErrors?.name}</span>}
-              <button type='submit' class='btn btn-warning'>
-                Submit
-              </button>
-            </form>
-          </div>
-        </section>
-      )
-    }
+    {step === '1' && <ActivityForm validationErrors={validationErrors} />}
     {
       step === '2' && (
         <div class='flex justify-center pt-6'>

@@ -16,7 +16,8 @@ const session = await getSession(Astro.request);
     <a
       href='/goals'
       class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black hover:bg-black disabled:!bg-primary disabled:text-base-300`}>
-      <Image src={Logo} alt={'github logo'} class='h-6 w-6' /> {label}
+      <Image src={Logo} alt={'github logo'} class='h-6 w-6' />
+      <span class='text-base-content'>{label}</span>
     </a>
   ) : (
     <SignIn
@@ -28,7 +29,7 @@ const session = await getSession(Astro.request);
       class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black hover:bg-black disabled:!bg-primary disabled:text-base-300`}>
       <div class='flex items-center gap-2'>
         <Image src={Logo} alt={'github logo'} class='h-6 w-6' />
-        <span>{label}</span>
+        <span class='text-white'>{label}</span>
       </div>
     </SignIn>
   )
@@ -40,7 +41,7 @@ const session = await getSession(Astro.request);
   spinner.classList.add('loading', 'loading-spinner', 'loading-md');
 
   buttons.forEach((button) => {
-    button.addEventListener('mousedown', () => {
+    button.addEventListener('click', () => {
       button.textContent = '';
       button.appendChild(spinner);
     });

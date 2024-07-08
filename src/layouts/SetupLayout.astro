@@ -10,26 +10,36 @@ const steps: Step[] = [{ title: 'Create activity' }, { title: 'Create first goal
 ---
 
 <div class='flex flex-col'>
-  <div class='py-4'>
+  <div class='flex flex-col justify-center'>
     <header class='space-y-8 py-4'>
       <h1 class='text-center text-4xl lg:text-5xl'><strong>Hello</strong> {user.name}</h1>
-      <p class='text-center text-xl font-light'>Before we get started, we need just a couple more steps.</p>
+      <p class='text-balance text-center text-xl font-light'>
+        Before we get started, you need to complete a couple more steps.
+      </p>
     </header>
-    <div class='divider'></div>
+    <div class='divider w-full max-w-sm self-auto sm:self-center'></div>
   </div>
 
-  <main class='flex flex-col gap-4'>
-    <ul class='steps'>
+  <main class='flex flex-col items-center gap-4 xl:flex-row xl:justify-center xl:gap-16'>
+    <ul class='steps w-full max-w-sm xl:steps-vertical xl:min-h-56 xl:w-auto'>
       {
         steps.map((step, index) => (
           <li
-            class={`step ${index + 1 <= currentStep ? 'step-primary' : ''} ${index + 1 === currentStep ? 'font-extrabold text-white' : ''}`}
+            class:list={[
+              'step',
+              'before:!z-[-1]',
+              'after:!z-0',
+              { '!step-primary': index + 1 <= currentStep },
+              { 'font-extrabold text-white': index + 1 === currentStep }
+            ]}
             data-step={index}>
             {step.title}
           </li>
         ))
       }
     </ul>
-    <slot />
+    <div class='flex justify-center pt-4'>
+      <slot />
+    </div>
   </main>
 </div>

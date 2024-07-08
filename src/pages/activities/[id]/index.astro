@@ -8,7 +8,7 @@ import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
-import ActivityForm from '../_components/ActivityForm.astro';
+import ActivityForm from '@/components/ActivityForm.astro';
 
 const { id } = Astro.params;
 const { user } = Astro.locals;
