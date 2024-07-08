@@ -1,16 +1,13 @@
 import { Activity, and, db, eq } from 'astro:db';
 import type { TActivity } from 'db/config';
 
-export type CreateActivityPayload = {
-  authorId: string;
-  name: string;
-};
-export async function createActivity({ authorId, name }: CreateActivityPayload) {
+export type CreateActivityPayload = Omit<TActivity, 'id'>;
+export async function createActivity(payload: CreateActivityPayload) {
   const res = await db
     .insert(Activity)
     .values({
-      authorId,
-      name
+      ...payload,
+      icon: payload.icon ?? 'default'
     })
     .returning()
     .get();

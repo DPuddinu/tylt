@@ -4,7 +4,9 @@ const Activity = defineTable({
   columns: {
     id: column.number({ primaryKey: true }),
     name: column.text(),
-    authorId: column.text()
+    authorId: column.text(),
+    color: column.text(),
+    icon: column.text()
   }
 });
 const Settings = defineTable({
@@ -57,4 +59,6 @@ export type TActivity = {
   id: number;
   name: string;
   authorId: string;
+  color: string;
+  icon?: string;
 };

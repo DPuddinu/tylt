@@ -16,7 +16,7 @@ if (Astro.request.method === 'POST') {
     const data = ActivitySchema.parse(formData);
     await createActivity({
       authorId: user.id,
-      name: data.name
+      ...data
     });
     return Astro.redirect('/activities');
   } catch (error) {
