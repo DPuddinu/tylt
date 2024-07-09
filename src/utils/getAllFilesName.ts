@@ -1,10 +1,4 @@
-import * as fs from 'fs';
-
-export function getAllFiles(directoryPath: string): string[] {
-  try {
-    const files: string[] = fs.readdirSync(directoryPath);
-    return files.map((file) => 'icons/' + file);
-  } catch (error) {
-    throw error;
-  }
+export function getAllIconPaths(): string[] {
+  const icons = ['music', 'office', 'programming', 'school'];
+  return icons.map((icon) => `/icons/${icon}.svg`);
 }
