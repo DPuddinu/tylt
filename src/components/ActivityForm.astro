@@ -6,7 +6,7 @@ import InputContainer from '@components/InputContainer.astro';
 import SubmitButton from '@components/SubmitButton.astro';
 import type { TActivity } from 'db/config';
 
-const icons = getAllFiles('public/icons');
+const icons = getAllFiles('/icons');
 type Props = {
   title?: string;
   activity?: TActivity;
