@@ -5,7 +5,6 @@ import '@fontsource/inter';
 import { getSession } from 'auth-astro/server';
 
 const pathName = Astro.url.pathname;
-const session = await getSession(Astro.request);
 const { title } = Astro.props;
 ---
 
