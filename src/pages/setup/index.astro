@@ -23,7 +23,7 @@ let validationErrors: ValidationErrors | undefined;
 
 let activities: TActivity[] = [];
 const schema = zfd.formData({
-  name: zfd.text(z.string().min(3).max(20)),
+  name: zfd.text(z.string().min(3).max(30)),
   color: zfd.text(z.string()),
   icon: zfd.text(z.string())
 });
@@ -58,7 +58,7 @@ if (Astro.request.method === 'POST') {
         ...validated,
         icon: iconPath
       });
-      
+
       return Astro.redirect('/setup?step=2');
     } catch (error) {
       if (error instanceof ZodError) {
@@ -106,12 +106,6 @@ if (Astro.request.method === 'POST') {
 <Layout>
   <SetupLayout>
     {step === '1' && <ActivityForm validationErrors={validationErrors} />}
-    {
-      step === '2' && (
-        <div class='flex justify-center pt-6'>
-          <GoalForm activities={activities} validationErrors={validationErrors} />
-        </div>
-      )
-    }
+    {step === '2' && <GoalForm activities={activities} validationErrors={validationErrors} />}
   </SetupLayout>
 </Layout>

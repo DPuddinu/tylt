@@ -9,18 +9,16 @@ type Step = {
 const steps: Step[] = [{ title: 'Create activity' }, { title: 'Create first goal' }];
 ---
 
-<div class='flex flex-col'>
-  <div class='flex flex-col justify-center'>
-    <header class='space-y-8 py-4'>
-      <h1 class='text-center text-4xl lg:text-5xl'><strong>Hello</strong> {user.name}</h1>
-      <p class='text-balance text-center text-xl font-light'>
-        Before we get started, you need to complete a couple more steps.
-      </p>
-    </header>
+<section class='flex flex-col'>
+  <header class='flex flex-col justify-center gap-8 py-4'>
+    <h1 class='text-center text-4xl lg:text-5xl'><strong>Hello</strong> {user.name}</h1>
+    <p class='text-balance text-center text-xl font-light'>
+      Before we get started, you need to complete a couple more steps.
+    </p>
     <div class='divider w-full max-w-sm self-auto sm:self-center'></div>
-  </div>
+  </header>
 
-  <main class='flex flex-col items-center gap-4 xl:flex-row xl:justify-center xl:gap-16'>
+  <main class='flex flex-col items-center gap-4 xl:flex-row xl:items-start xl:justify-center xl:gap-16'>
     <ul class='steps w-full max-w-sm xl:steps-vertical xl:min-h-56 xl:w-auto'>
       {
         steps.map((step, index) => (
@@ -38,8 +36,6 @@ const steps: Step[] = [{ title: 'Create activity' }, { title: 'Create first goal
         ))
       }
     </ul>
-    <div class='flex justify-center pt-4'>
-      <slot />
-    </div>
+    <slot />
   </main>
-</div>
+</section>

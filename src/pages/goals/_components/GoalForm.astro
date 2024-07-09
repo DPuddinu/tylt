@@ -18,64 +18,56 @@ const { activities, title, goal, validationErrors } = Astro.props;
 const formId = 'goal-form';
 ---
 
-<section class='flex max-w-4xl grow gap-4 sm:w-full sm:justify-start'>
-  <div class='flex grow flex-col gap-4 overflow-x-hidden px-2 sm:flex sm:flex-col'>
-    {
-      title && (
-        <header transition:name={title}>
-          <h1 class='text-4xl font-bold'>{title}</h1>
-        </header>
-      )
-    }
-    <form
-      id={formId}
-      method='post'
-      class='relative flex flex-col gap-6 rounded-lg border border-base-200/50 bg-base-200 p-4 shadow'>
-      <div class='flex justify-between gap-2'>
-        <div class='flex flex-col gap-2'>
-          <TextInput id='title-input' name={GoalFormNames.title} value={goal?.title} placeholder='Type title...' />
-          {validationErrors?.title && <span class='px-2 text-error'>{validationErrors?.title}</span>}
-        </div>
+<section class='flex w-full flex-col gap-4 overflow-hidden px-2 max-w-sm'>
+  {
+    title && (
+      <header transition:name={title}>
+        <h1 class='text-4xl font-bold'>{title}</h1>
+      </header>
+    )
+  }
+  <form id={formId} method='post' class='flex flex-col gap-6 rounded-lg bg-base-200 p-4 shadow'>
+    <div class='flex justify-between gap-2'>
+      <div class='flex flex-col gap-2'>
+        <TextInput id='title-input' name={GoalFormNames.title} value={goal?.title} placeholder='Type title...' />
+        {validationErrors?.title && <span class='px-2 text-error'>{validationErrors?.title}</span>}
       </div>
-      <div>
-        <RichTextEditor
-          name={GoalFormNames.description}
-          label={GoalFormNames.description}
-          placeholder='Add new Description...'
-          value={goal?.description}
+    </div>
+    <RichTextEditor
+      name={GoalFormNames.description}
+      label={GoalFormNames.description}
+      placeholder='Add new Description...'
+      value={goal?.description}
+    />
+    <div id='date-group' class='space-y-4'>
+      <div class='flex flex-col gap-2'>
+        <label for='select-activity' class='label-text lg:text-base'>Cagetory</label>
+        <AstroSelect
+          options={activities}
+          label='name'
+          fieldKey='id'
+          value={goal?.activityId}
+          id='select-activity'
+          name={GoalFormNames.activityId}
+          form={formId}
         />
       </div>
-
-      <div id='date-group' class='space-y-4'>
-        <div class='flex flex-col gap-2'>
-          <label for='select-activity' class='label-text lg:text-base'>Cagetory</label>
-          <AstroSelect
-            options={activities}
-            label='name'
-            fieldKey='id'
-            value={goal?.activityId}
-            id='select-activity'
-            name={GoalFormNames.activityId}
-            form={formId}
-          />
-        </div>
-        <div class='flex flex-wrap gap-4'>
-          <DatePicker
-            name={GoalFormNames.completionDate}
-            label='Completion Date'
-            value={goal?.completionDate ? goal.completionDate : new Date()}
-          />
-          <DatePicker name={GoalFormNames.dueDate} label='Due Date' value={goal?.dueDate} />
-        </div>
+      <div class='flex flex-wrap gap-4'>
+        <DatePicker
+          name={GoalFormNames.completionDate}
+          label='Completion Date'
+          value={goal?.completionDate ? goal.completionDate : new Date()}
+        />
+        <DatePicker name={GoalFormNames.dueDate} label='Due Date' value={goal?.dueDate} />
       </div>
-      <footer id='save-btn' class='flex justify-end gap-4'>
-        <a
-          href='/goals'
-          class='btn btn-outline btn-warning rounded-lg border-none hover:!bg-transparent hover:!text-warning'>
-          Cancel
-        </a>
-        <SubmitButton className='!btn-warning disabled:!bg-warning'>{goal ? 'Update' : 'Create'}</SubmitButton>
-      </footer>
-    </form>
-  </div>
+    </div>
+    <footer id='save-btn' class='flex justify-end gap-4'>
+      <a
+        href='/goals'
+        class='btn btn-outline btn-warning rounded-lg border-none hover:!bg-transparent hover:!text-warning'>
+        Cancel
+      </a>
+      <SubmitButton className='!btn-warning disabled:!bg-warning'>{goal ? 'Update' : 'Create'}</SubmitButton>
+    </footer>
+  </form>
 </section>
