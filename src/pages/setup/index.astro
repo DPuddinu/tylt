@@ -74,31 +74,27 @@ if (Astro.request.method === 'POST') {
         authorId: user.id,
         authorName: user.name
       });
+      if (stepsCompleted()) {
+        const activity = await createActivity({
+          authorId: user.id,
+          name: getStep1()!.createActivityPayload.name,
+          color: getStep1()!.createActivityPayload.color,
+          icon: getStep1()!.createActivityPayload.icon
+        });
+        await createGoal({
+          ...getStep2()!.goalInsertPayload,
+          activityId: activity.id,
+          authorId: user.id,
+          authorName: user.name
+        });
+        await setSetupDone(user.id);
+        return Astro.redirect('/goals');
+      }
     } catch (error) {
       if (error instanceof ZodError) {
         validationErrors = error.flatten().fieldErrors;
       } else return Astro.redirect('/error?redirect=setup');
     }
-  }
-  try {
-    if (stepsCompleted()) {
-      const activity = await createActivity({
-        authorId: user.id,
-        name: getStep1()!.createActivityPayload.name,
-        color: getStep1()!.createActivityPayload.color,
-        icon: getStep1()!.createActivityPayload.icon
-      });
-      await createGoal({
-        ...getStep2()!.goalInsertPayload,
-        activityId: activity.id,
-        authorId: user.id,
-        authorName: user.name
-      });
-      await setSetupDone(user.id);
-      return Astro.redirect('/goals');
-    }
-  } catch (error) {
-    return Astro.redirect('/error?redirect=setup');
   }
 }
 ---

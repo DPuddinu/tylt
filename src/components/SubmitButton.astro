@@ -15,19 +15,15 @@ const { className = '' } = Astro.props;
   const spinner = document.createElement('span');
   spinner.classList.add('loading', 'loading-spinner', 'loading-md');
 
-  const buttons = document.querySelectorAll<HTMLButtonElement>('#submit-btn');
-  buttons.forEach((button) => {
-    button.addEventListener('mousedown', () => {
-      button.textContent = '';
-      button.appendChild(spinner);
-    });
-  });
   const forms = document.querySelectorAll<HTMLFormElement>('form');
   forms.forEach((form) => {
-    form.addEventListener('submit', () => {
-      buttons.forEach((button) => {
-        button.setAttribute('disabled', 'true');
-      });
+    form.addEventListener('submit', (e) => {
+      const submitBtn = e.submitter;
+      if (submitBtn) {
+        submitBtn.textContent = '';
+        submitBtn.appendChild(spinner);
+        submitBtn.setAttribute('disabled', 'true');
+      }
     });
   });
 </script>

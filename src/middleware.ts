@@ -1,5 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 import { getSession } from 'auth-astro/server';
+import { getSetupDone } from './api/setup/queries';
 
 const protectedRoutes = ['/goals', '/setup', '/activities', '/reports', '/error', '/changelog'];
 export const onRequest = defineMiddleware(async ({ redirect, request, locals, url }, next) => {
@@ -16,6 +17,6 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
     ...user,
     id: user.email
   };
-
+  if (!(await getSetupDone(locals.user.id)) && !url.pathname.includes('setup')) return redirect('/setup');
   return next();
 });

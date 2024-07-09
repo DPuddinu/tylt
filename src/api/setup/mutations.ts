@@ -1,8 +1,14 @@
+import { setCachedSetupDone } from '@/store/first-setup.store';
 import { Settings, db } from 'astro:db';
 
-export function setSetupDone(userId: string) {
-  return db.insert(Settings).values({
-    authorId: userId,
-    setupDone: true
-  });
+export async function setSetupDone(userId: string) {
+  try {
+    await db.insert(Settings).values({
+      authorId: userId,
+      setupDone: true
+    });
+    setCachedSetupDone();
+  } catch (error) {
+    throw error;
+  }
 }
