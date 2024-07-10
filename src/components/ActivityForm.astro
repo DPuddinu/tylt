@@ -15,7 +15,7 @@ type Props = {
 const { activity, validationErrors, title } = Astro.props;
 ---
 
-<section class='flex max-w-sm flex-col gap-8' transition:name='activity-form'>
+<section class='flex max-w-sm flex-col gap-8'>
   {title && <h1 class='text-4xl font-bold'>{title}</h1>}
 
   <form method='post'>
@@ -55,7 +55,7 @@ const { activity, validationErrors, title } = Astro.props;
           />
         </InputContainer>
 
-        <div class="flex justify-end">
+        <div class='flex justify-end'>
           <SubmitButton className='!btn-warning disabled:!bg-warning'>
             {activity ? 'Update' : 'Create'}
           </SubmitButton>
@@ -90,14 +90,14 @@ const { activity, validationErrors, title } = Astro.props;
   iconBtns.forEach((btn, i) => {
     btn.addEventListener('click', (e) => {
       const target = e.target as HTMLImageElement;
-      if(selectedIcon && target){
+      if (selectedIcon && target) {
         selectedIcon.value = target.src;
       }
       iconImgs.forEach((img, j) => {
         if (j !== i) {
-          img.classList.remove('bg-success');
+          img.classList.remove('outline', 'outline-warning');
         } else {
-          img.classList.add('bg-success');
+          img.classList.add('outline', 'outline-warning');
         }
       });
     });
