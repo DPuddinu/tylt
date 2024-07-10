@@ -5,7 +5,7 @@ import { setSetupDone } from '@/api/setup/mutations';
 import { getSetupDone } from '@/api/setup/queries';
 import ActivityForm from '@/components/ActivityForm.astro';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
-import { getStep1, getStep2, setStep1, setStep2, stepsCompleted } from '@/store/first-setup.store';
+import store from '@/store/first-setup.store';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
@@ -29,19 +29,19 @@ const schema = zfd.formData({
 });
 
 try {
-  const step1 = getStep1();
+  const step1 = store.getStep1();
   if (step1) {
     activities = [
       {
         id: -1,
-        name: getStep1()!.createActivityPayload.name,
+        name: store.getStep1()!.createActivityPayload.name,
         authorId: user.id,
-        color: getStep1()!.createActivityPayload.color,
-        icon: getStep1()!.createActivityPayload.icon
+        color: store.getStep1()!.createActivityPayload.color,
+        icon: store.getStep1()!.createActivityPayload.icon
       }
     ];
   }
-  if (step === '2' && !getStep1()) return Astro.redirect('/setup?step=1');
+  if (step === '2' && !store.getStep1()) return Astro.redirect('/setup?step=1');
 } catch (error) {
   return Astro.redirect('/error?redirect=setup');
 }
@@ -53,7 +53,7 @@ if (Astro.request.method === 'POST') {
       const validated = schema.parse(formData);
       const startIndex = validated.icon.indexOf('icons/');
       const iconPath = validated.icon.substring(startIndex);
-      setStep1({
+      store.setStep1({
         authorId: user.id,
         ...validated,
         icon: iconPath
@@ -69,20 +69,20 @@ if (Astro.request.method === 'POST') {
   if (step === '2') {
     try {
       const data = GoalInsertSchema.parse(formData);
-      setStep2({
+      store.setStep2({
         ...data,
         authorId: user.id,
         authorName: user.name
       });
-      if (stepsCompleted()) {
+      if (store.stepsCompleted()) {
         const activity = await createActivity({
           authorId: user.id,
-          name: getStep1()!.createActivityPayload.name,
-          color: getStep1()!.createActivityPayload.color,
-          icon: getStep1()!.createActivityPayload.icon
+          name: store.getStep1()!.createActivityPayload.name,
+          color: store.getStep1()!.createActivityPayload.color,
+          icon: store.getStep1()!.createActivityPayload.icon
         });
         await createGoal({
-          ...getStep2()!.goalInsertPayload,
+          ...store.getStep2()!.goalInsertPayload,
           activityId: activity.id,
           authorId: user.id,
           authorName: user.name

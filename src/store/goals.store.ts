@@ -2,6 +2,8 @@ import type { TGoal } from 'db/config';
 import { atom } from 'nanostores';
 
 const paginatedData = atom<Record<number, TGoal[]>>({});
+const totalCount = atom<number | undefined>(undefined);
+const goalsByActivityId = atom<GoalsByActivityResponse | undefined>(undefined);
 
 const getPaginatedData = () => paginatedData.get();
 const getCachedGoalsByPage = (page: number) => getPaginatedData()[page];
@@ -32,7 +34,6 @@ function updateCachedGoal(updatedGoal: TGoal) {
     });
   });
 }
-const totalCount = atom<number | undefined>(undefined);
 
 function getGoalsCount() {
   return totalCount.get() ?? 0;
@@ -42,13 +43,12 @@ function setGoalsCount(count: number) {
   totalCount.set(count);
 }
 
-type GoalsByActivityResponse = {
+export type GoalsByActivityResponse = {
   id: number;
   count: number;
   goals: TGoal[];
 };
 
-const goalsByActivityId = atom<GoalsByActivityResponse | undefined>(undefined);
 function getCachedGoalsByActivityId(id: number) {
   const cached = goalsByActivityId.get();
   if (cached?.id === id) return cached;
@@ -61,7 +61,7 @@ function invalidateGoalsByActivityId() {
   goalsByActivityId.set(undefined);
 }
 
-export {
+const store = {
   getCachedGoalById,
   getCachedGoalsByActivityId,
   getCachedGoalsByPage,
@@ -73,3 +73,4 @@ export {
   setGoalsCount,
   updateCachedGoal
 };
+export default store;

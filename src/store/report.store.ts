@@ -18,4 +18,5 @@ function setCachedReport(report: Report) {
 function clearCachedReport() {
   reportStore.set(undefined);
 }
-export { clearCachedReport, getCachedReport, setCachedReport };
+const store = { clearCachedReport, getCachedReport, setCachedReport };
+export default store;

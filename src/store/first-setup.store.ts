@@ -11,6 +11,7 @@ type TFirstSetupStore = {
 const firstSetupStore = atom<TFirstSetupStore>({
   steps: [undefined, undefined]
 });
+const setupDone = atom<boolean | undefined>(undefined);
 
 function setStep1(createActivityPayload: CreateActivityPayload) {
   firstSetupStore.set({
@@ -36,17 +37,14 @@ function emptySteps() {
   return firstSetupStore.get().steps.every((step) => step === undefined);
 }
 
-const setupDone = atom(false);
-
-function setCachedSetupDone() {
-  setupDone.set(true);
+function setCachedSetupDone(done: boolean) {
+  setupDone.set(done);
 }
 
 function getCachedSetupDone() {
   return setupDone.get();
 }
-
-export {
+const store = {
   emptySteps,
   firstSetupStore,
   getCachedSetupDone,
@@ -55,6 +53,6 @@ export {
   setCachedSetupDone,
   setStep1,
   setStep2,
-  setupDone,
   stepsCompleted
 };
+export default store;

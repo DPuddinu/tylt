@@ -8,7 +8,6 @@ import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
-import ActivityForm from '@/components/ActivityForm.astro';
 
 const { id } = Astro.params;
 const { user } = Astro.locals;
@@ -19,12 +18,6 @@ function getParam(param: string) {
 const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
-const { getGoalsByActivity, getActivitiesCount } = getGoalByActivityId({
-  activityId: Number(id),
-  userId: user.id,
-  page: currentPage
-});
-
 let goals: TGoal[] = [];
 let totalPages = 0;
 let totalRows = 0;
@@ -33,44 +26,41 @@ let validationErrors: ValidationErrors | undefined;
 let activity: TActivity | undefined;
 
 try {
-  const calls = await Promise.all([
-    getActivityById({
-      id: Number(id),
-      userId: user.id
-    }),
-    getGoalsByActivity,
-    getActivitiesCount
-  ]);
+  const { count, goals: cachedGoals } = await getGoalByActivityId({
+    activityId: Number(id),
+    userId: user.id,
+    page: currentPage
+  });
 
-  activity = calls[0];
-  goals = calls[1];
-  totalRows = calls[2]?.count ?? 0;
+  activity = await getActivityById({
+    id: Number(id),
+    userId: user.id
+  });
+  goals = cachedGoals;
+  totalRows = count;
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
 } catch (error) {
   return Astro.redirect(`/error?redirect=activities/${activity.id}`);
 }
 
-if (Astro.request.method === 'POST') {
-  const formData = await Astro.request.formData();
+// if (Astro.request.method === 'POST') {
+//   const formData = await Astro.request.formData();
 
-  try {
-    if (!activity) throw new Error('Activity not found');
-    const data = ActivitySchema.parse(formData);
-    await updateActivity({ ...activity, ...data });
+//   try {
+//     if (!activity) throw new Error('Activity not found');
+//     const data = ActivitySchema.parse(formData);
+//     await updateActivity({ ...activity, ...data });
 
-    return Astro.redirect(`/activities/${activity.id}`);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors;
-    } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
-  }
-}
+//     return Astro.redirect(`/activities/${activity.id}`);
+//   } catch (error) {
+//     if (error instanceof ZodError) {
+//       validationErrors = error.flatten().fieldErrors;
+//     } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
+//   }
+// }
 ---
 
 <Layout pageName='Activity'>
-  <div class='pb-8'>
-    <ActivityForm validationErrors={validationErrors} activity={activity} title='Edit Activity' />
-  </div>
   <div class='flex-container max-w-xl'>
     <GoalsList
       queryParams={undefined}

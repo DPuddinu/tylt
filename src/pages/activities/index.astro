@@ -1,5 +1,5 @@
 ---
-import { getMostUsedActivity } from '@/api/activities/queries';
+import { getGoalsWithActivities } from '@/api/activities/queries';
 import { timeFilters, type TimeFilter } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import Fab from '@components/Fab.astro';
@@ -8,7 +8,7 @@ import Layout from '@layouts/MainLayout.astro';
 const time = Astro.url.searchParams.get('time');
 if (!time) return Astro.redirect('/activities?time=month');
 
-const mostUsedActivity = await getMostUsedActivity({ userId: Astro.locals.user.id, timeFilter: time as TimeFilter });
+const mostUsedActivity = await getGoalsWithActivities({ userId: Astro.locals.user.id, timeFilter: time as TimeFilter });
 const total = mostUsedActivity.reduce((acc, activity) => acc + activity.goalCount, 0);
 const percentages = mostUsedActivity.map((activity) => {
   const percent = (activity.goalCount / total) * 100;

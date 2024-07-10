@@ -99,11 +99,11 @@ const links = ['Activities', 'Goals', 'Reports'];
                 </a>
               ) : (
                 <a
+                  data-astro-prefetch
                   href={`/${link.toLowerCase()}`}
                   role='link'
                   class={`tab h-3/4 text-base font-bold ${pageName === link && 'tab-active'}`}>
                   {link}
-                  data-astro-prefetch
                 </a>
               )}
             </>

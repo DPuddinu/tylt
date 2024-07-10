@@ -1,12 +1,4 @@
-import {
-  getCachedGoalById,
-  getCachedGoalsByActivityId,
-  getCachedGoalsByPage,
-  getGoalsCount,
-  setCachedGoalsByActivityId,
-  setGoals,
-  setGoalsCount
-} from '@/store/goals.store';
+import store, { type GoalsByActivityResponse } from '@/store/goals.store';
 import type { GoalFilters } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
@@ -51,8 +43,8 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
   countGoals: number;
   goals: TGoal[];
 }> {
-  const cachedGoals = getCachedGoalsByPage(page);
-  const cachedPagesCount = getGoalsCount();
+  const cachedGoals = store.getCachedGoalsByPage(page);
+  const cachedPagesCount = store.getGoalsCount();
   if (cachedGoals && cachedPagesCount) {
     return {
       countGoals: cachedPagesCount,
@@ -91,8 +83,8 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
     const countGoals = calls[0]?.count ?? 0;
     const goals = calls[1];
 
-    setGoalsCount(countGoals);
-    setGoals(page, ...goals);
+    store.setGoalsCount(countGoals);
+    store.setGoals(page, ...goals);
 
     return {
       countGoals,
@@ -107,7 +99,7 @@ type getGoalByIdParams = {
   userId: string;
 };
 export async function getGoalById({ id, userId }: getGoalByIdParams) {
-  const cachedGoal = getCachedGoalById(id);
+  const cachedGoal = store.getCachedGoalById(id);
   if (cachedGoal) {
     return cachedGoal;
   }
@@ -128,8 +120,12 @@ type GetGoalsByActivityParams = {
   userId: string;
   page?: number;
 };
-export async function getGoalByActivityId({ activityId, userId, page = 1 }: GetGoalsByActivityParams) {
-  const cachedGoalsByActivityId = getCachedGoalsByActivityId(activityId);
+export async function getGoalByActivityId({
+  activityId,
+  userId,
+  page = 1
+}: GetGoalsByActivityParams): Promise<GoalsByActivityResponse> {
+  const cachedGoalsByActivityId = store.getCachedGoalsByActivityId(activityId);
   if (cachedGoalsByActivityId) {
     return cachedGoalsByActivityId;
   }
@@ -147,10 +143,11 @@ export async function getGoalByActivityId({ activityId, userId, page = 1 }: GetG
       .limit(ITEMS_PER_PAGE)
       .offset((page - 1) * ITEMS_PER_PAGE);
     if (getActivitiesCount?.count)
-      setCachedGoalsByActivityId({ id: activityId, count: getActivitiesCount.count, goals: getGoalsByActivity });
+      store.setCachedGoalsByActivityId({ id: activityId, count: getActivitiesCount.count, goals: getGoalsByActivity });
     return {
-      getActivitiesCount,
-      getGoalsByActivity
+      count: getActivitiesCount?.count ?? 0,
+      goals: getGoalsByActivity,
+      id: activityId
     };
   } catch (error) {
     throw error;

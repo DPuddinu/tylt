@@ -1,4 +1,5 @@
 ---
+import { getGoalsWithActivities, type ActivityWithGoalCount } from '@/api/activities/queries';
 import { getCompletionRate } from '@/api/goals/queries';
 import Layout from '@layouts/MainLayout.astro';
 
@@ -9,7 +10,7 @@ let completedCount: number;
 let totalGoals: number;
 let lastWeekGoals: number;
 let delta: number;
-
+// let goalsWithActivities: ActivityWithGoalCount[];
 try {
   const {
     completedCount: completedNumber,
@@ -23,37 +24,53 @@ try {
   lastWeekGoals = lastWeekGoalsCount;
   delta = deltaCount;
   completedCount = completedNumber;
+
+  // goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
 } catch (error) {
   return Astro.redirect('error?redirect=reports');
 }
 ---
 
 <Layout pageName='Reports'>
-  <div class='flex flex-col gap-4' transition:name="content">
+  <div class='flex flex-col gap-4' transition:name='content'>
     <!-- <div role='tablist' class='tabs-boxed tabs max-w-sm'>
       <a role='tab' class='tab'>Day</a>
       <a role='tab' class='tab tab-active'>Week</a>
       <a role='tab' class='tab'>Month</a>
     </div> -->
-    <div class='stats stats-vertical shadow lg:stats-horizontal bg-base-200' transition:name='card'>
+    <div class='stats stats-vertical w-full sm:w-fit bg-base-200 shadow lg:stats-horizontal' transition:name='card'>
       <div class='stat'>
         <div class='stat-title'>Goals Completed</div>
         <div class='stat-value'>{`${completionRate}%`}</div>
-        <div class='stat-desc'>{`${completedCount} out of ${totalGoals}`}</div>
+        <div class='stat-desc min-h-5'>{`${completedCount} out of ${totalGoals}`}</div>
       </div>
 
       <div class='stat'>
         <div class='stat-title'>Total Goals</div>
         <div class='stat-value'>{totalGoals}</div>
+        <div class='stat-desc min-h-5'></div>
       </div>
 
       <div class='stat'>
         <div class='stat-title'>New Goals Last Week</div>
         <div class='stat-value'>{lastWeekGoals}</div>
-        <div class='stat-desc'>
+        <div class='stat-desc min-h-5'>
           {`${delta >= 0 ? '+' : ''}${delta} vs previous week`}
         </div>
       </div>
     </div>
+    <!-- <div class='flex flex-wrap gap-4'>
+      {
+        goalsWithActivities.map((data) => (
+          <div class='w-fit rounded-lg p-4 min-w-40 text-xl text-black' style={`background-color: ${data.color}`}>
+            <div class="flex gap-2">
+              <img alt={`${data.activityName} icon`} src={`${data.icon}`} height='24' width='24'/>
+              {data.activityName}
+            </div>
+            <p class="text-sm">{data.goalCount} goals</p>
+          </div>
+        ))
+      }
+    </div> -->
   </div>
 </Layout>
