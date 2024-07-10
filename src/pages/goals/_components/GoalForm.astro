@@ -3,10 +3,10 @@ import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalFormNames } from '@/types/goal.types';
 import SubmitButton from '@components/SubmitButton.astro';
 import type { TActivity, TGoal } from 'db/config';
-import DatePicker from '../../../components/DatePicker.astro';
-import RichTextEditor from '../../../components/RichTextEditor.astro';
-import AstroSelect from '../../../components/Select.astro';
-import TextInput from '../../../components/TextInput.astro';
+import DatePicker from '@/components/DatePicker.astro';
+import RichTextEditor from '@/components/RichTextEditor.astro';
+import AstroSelect from '@/components/Select.astro';
+import TextInput from '@/components/TextInput.astro';
 
 type Props = {
   title?: string;
@@ -26,7 +26,7 @@ const formId = 'goal-form';
       </header>
     )
   }
-  <form id={formId} method='post' class='flex flex-col gap-6 rounded-lg bg-base-200 p-4 shadow'>
+  <form id={formId} method='post' class='flex flex-col gap-6 rounded-lg bg-base-200 p-4'>
     <div class='flex justify-between gap-2'>
       <div class='flex flex-col gap-2'>
         <TextInput id='title-input' name={GoalFormNames.title} value={goal?.title} placeholder='Type title...' />

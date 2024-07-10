@@ -10,5 +10,5 @@ const { label, errors = [], HTMLFor } = Astro.props;
 <div class='flex flex-col gap-1'>
   <label for={HTMLFor}>{label}</label>
   <slot />
-  {errors.map((error) => <span class='h-6 px-2 text-error'>{error}</span>)}
+  {errors.map((error) => <span class='h-6 text-error'>{error}</span>)}
 </div>

@@ -1,41 +1,62 @@
 ---
-const { user } = Astro.locals;
-
 const currentStep = Number(Astro.url.searchParams.get('step'));
-
+import Prose from '../components/Prose.astro';
 type Step = {
   title: string;
+  descriptionHeader: string;
+  descriptionBody: string;
 };
-const steps: Step[] = [{ title: 'Create activity' }, { title: 'Create first goal' }];
+const steps: Step[] = [
+  {
+    title: 'First activity',
+    descriptionHeader: 'Create First Activity',
+    descriptionBody:
+      'Please enter a subject associated with a goal you want to track.<br/>Example: Workout, Reading, Learning, etc.'
+  },
+  {
+    title: 'First goal',
+    descriptionHeader: 'Create First Goal',
+    descriptionBody:
+      'Please enter a goal, aim or purpose you want to track.Example: Squat 100kg, Read 10 pages, Learn 10 new words in Spanish, etc.'
+  }
+];
 ---
 
-<section class='flex flex-col'>
-  <header class='flex flex-col justify-center gap-8 py-4'>
-    <h1 class='text-center text-4xl lg:text-5xl'><strong>Hello</strong> {user.name}</h1>
-    <p class='text-balance text-center text-xl font-light'>
-      Before we get started, you need to complete a couple more steps.
-    </p>
-    <div class='divider w-full max-w-sm self-auto sm:self-center'></div>
-  </header>
-
-  <main class='flex flex-col items-center gap-4 xl:flex-row xl:items-start xl:justify-center xl:gap-16'>
-    <ul class='steps w-full max-w-sm xl:steps-vertical xl:min-h-56 xl:w-auto'>
-      {
-        steps.map((step, index) => (
+<section class='flex flex-col gap-8 md:flex-row'>
+  <ul class='flex max-w-sm gap-8 md:flex-col md:p-4'>
+    {
+      steps.map((step, index) => (
+        <div class='flex items-center gap-4'>
+          <div
+            class='h-8 min-h-8 w-8 min-w-8 content-center text-balance rounded-full text-center font-bold text-black'
+            class:list={[
+              { 'bg-base-content/50': index + 1 !== currentStep },
+              { 'bg-success font-extrabold': index + 1 === currentStep },
+              { 'font-extrabold text-opacity-60': index + 1 > currentStep }
+            ]}>
+            <span>{index + 1}</span>
+          </div>
           <li
             class:list={[
-              'step',
-              'before:!z-[-1]',
-              'after:!z-0',
               { '!step-primary': index + 1 <= currentStep },
-              { 'font-extrabold text-white': index + 1 === currentStep }
+              { 'font-extrabold': index + 1 === currentStep }
             ]}
             data-step={index}>
             {step.title}
           </li>
-        ))
-      }
-    </ul>
-    <slot />
-  </main>
+        </div>
+      ))
+    }
+  </ul>
+  <Prose>
+    <main class='flex max-w-sm flex-col gap-8 rounded bg-base-200 shadow'>
+      <div class='flex flex-col flex-container gap-2 text-balance p-4 pb-0'>
+        <h1 class='break-words'>
+          {steps[currentStep - 1].descriptionHeader}
+        </h1>
+        <p class='text-base-content/70' set:html={steps[currentStep - 1].descriptionBody} />
+      </div>
+      <slot />
+    </main>
+  </Prose>
 </section>
