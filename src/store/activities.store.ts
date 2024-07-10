@@ -25,9 +25,6 @@ function updateCachedActivity(updatedActivity: TActivity) {
     activities?.map((activity: TActivity) => (activity.id === updatedActivity.id ? updatedActivity : activity))
   );
 }
-function clearCachedActivities() {
-  activitiesStore.set(undefined);
-}
 
 // ACTIVITIES WITH GOAL COUNT
 const activitiesWithGoalCount = atom<ActivityWithGoalCount[] | undefined>(undefined);
@@ -36,9 +33,6 @@ function getCachedActivitiesWithGoalCount() {
 }
 function setCachedActivitiesWithGoalCount(activities: ActivityWithGoalCount[]) {
   activitiesWithGoalCount.set(activities);
-}
-function clearCachedActivitiesWithGoalCount() {
-  activitiesWithGoalCount.set(undefined);
 }
 
 // TIME FILTER
@@ -49,15 +43,18 @@ function getCachedTimeFilter() {
 function setCachedTimeFilter(filter: TimeFilter) {
   activitiesTimeFilter.set(filter);
 }
+function invalidateActivities() {
+  activitiesStore.set(undefined);
+  activitiesWithGoalCount.set(undefined);
+}
 
 export {
   addCachedActivity,
-  clearCachedActivities,
-  clearCachedActivitiesWithGoalCount,
   getCachedActivities,
   getCachedActivitiesWithGoalCount,
   getCachedActivityById,
   getCachedTimeFilter,
+  invalidateActivities,
   setCachedActivities,
   setCachedActivitiesWithGoalCount,
   setCachedTimeFilter,

@@ -1,3 +1,12 @@
+import {
+  getCachedGoalById,
+  getCachedGoalsByActivityId,
+  getCachedGoalsByPage,
+  getGoalsCount,
+  setCachedGoalsByActivityId,
+  setGoals,
+  setGoalsCount
+} from '@/store/goals.store';
 import type { GoalFilters } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
@@ -42,6 +51,14 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
   countGoals: number;
   goals: TGoal[];
 }> {
+  const cachedGoals = getCachedGoalsByPage(page);
+  const cachedPagesCount = getGoalsCount();
+  if (cachedGoals && cachedPagesCount) {
+    return {
+      countGoals: cachedPagesCount,
+      goals: cachedGoals
+    };
+  }
   try {
     const userFilter = eq(Goal.authorId, userId);
     const offset = (page - 1) * ITEMS_PER_PAGE;
@@ -73,6 +90,10 @@ export async function getPaginatedGoals({ userId, page = 1, filters }: GetPagina
     const calls = await Promise.all([getCountGoals, getGoals]);
     const countGoals = calls[0]?.count ?? 0;
     const goals = calls[1];
+
+    setGoalsCount(countGoals);
+    setGoals(page, ...goals);
+
     return {
       countGoals,
       goals
@@ -86,6 +107,11 @@ type getGoalByIdParams = {
   userId: string;
 };
 export async function getGoalById({ id, userId }: getGoalByIdParams) {
+  const cachedGoal = getCachedGoalById(id);
+  if (cachedGoal) {
+    return cachedGoal;
+  }
+
   try {
     return await db
       .select()
@@ -102,22 +128,31 @@ type GetGoalsByActivityParams = {
   userId: string;
   page?: number;
 };
-export function getGoalByActivityId({ activityId, userId, page = 1 }: GetGoalsByActivityParams) {
-  const getActivitiesCount = db
-    .select({ count: count() })
-    .from(Goal)
-    .where(and(eq(Goal.activityId, Number(activityId)), eq(Goal.authorId, userId)))
-    .get();
-  const getGoalsByActivity = db
-    .select()
-    .from(Goal)
-    .where(and(eq(Goal.activityId, Number(activityId)), eq(Goal.authorId, userId)))
-    .orderBy(desc(Goal.creationDate))
-    .limit(ITEMS_PER_PAGE)
-    .offset((page - 1) * ITEMS_PER_PAGE);
-
-  return {
-    getActivitiesCount,
-    getGoalsByActivity
-  };
+export async function getGoalByActivityId({ activityId, userId, page = 1 }: GetGoalsByActivityParams) {
+  const cachedGoalsByActivityId = getCachedGoalsByActivityId(activityId);
+  if (cachedGoalsByActivityId) {
+    return cachedGoalsByActivityId;
+  }
+  try {
+    const getActivitiesCount = await db
+      .select({ count: count() })
+      .from(Goal)
+      .where(and(eq(Goal.activityId, Number(activityId)), eq(Goal.authorId, userId)))
+      .get();
+    const getGoalsByActivity = await db
+      .select()
+      .from(Goal)
+      .where(and(eq(Goal.activityId, Number(activityId)), eq(Goal.authorId, userId)))
+      .orderBy(desc(Goal.creationDate))
+      .limit(ITEMS_PER_PAGE)
+      .offset((page - 1) * ITEMS_PER_PAGE);
+    if (getActivitiesCount?.count)
+      setCachedGoalsByActivityId({ id: activityId, count: getActivitiesCount.count, goals: getGoalsByActivity });
+    return {
+      getActivitiesCount,
+      getGoalsByActivity
+    };
+  } catch (error) {
+    throw error;
+  }
 }
