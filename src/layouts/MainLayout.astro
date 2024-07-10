@@ -66,11 +66,13 @@ const links = ['Activities', 'Goals', 'Reports'];
               </div>
               <div class='border border-base-content opacity-50'></div>
               <div class='py-4'>
-                <li class='hidden text-lg font-bold sm:block'><a href='/goals'>Goals</a></li>
-                <li class='hidden text-lg font-bold sm:block'><a href='/activities'>Activities 🏗️</a></li>
-                <li class='hidden text-lg font-bold sm:block'><a href='/reports'>Reports 🏗️</a></li>
+                <li class='hidden text-lg font-bold sm:block'><a data-astro-prefetch href='/goals'>Goals</a></li>
+                <li class='hidden text-lg font-bold sm:block'>
+                  <a data-astro-prefetch href='/activities'>Activities 🏗️</a>
+                </li>
+                <li class='hidden text-lg font-bold sm:block'><a data-astro-prefetch href='/reports'>Reports 🏗️</a></li>
                 <li class='text-lg font-bold'>
-                  <a href='/changelog'>Changelog</a>
+                  <a data-astro-prefetch href='/changelog'>Changelog</a>
                 </li>
                 <li class='disabled text-lg font-bold'><a>Settings 🏗️</a></li>
               </div>
@@ -101,6 +103,7 @@ const links = ['Activities', 'Goals', 'Reports'];
                   role='link'
                   class={`tab h-3/4 text-base font-bold ${pageName === link && 'tab-active'}`}>
                   {link}
+                  data-astro-prefetch
                 </a>
               )}
             </>

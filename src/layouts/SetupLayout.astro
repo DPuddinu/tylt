@@ -11,13 +11,13 @@ const steps: Step[] = [
     title: 'First activity',
     descriptionHeader: 'Create First Activity',
     descriptionBody:
-      'Please enter a subject associated with a goal you want to track.<br/>Example: Workout, Reading, Learning, etc.'
+      'Please enter a subject associated with a goal you want to track.<br/><b>Example:</b> Workout, reading, learning, etc.'
   },
   {
     title: 'First goal',
     descriptionHeader: 'Create First Goal',
     descriptionBody:
-      'Please enter a goal, aim or purpose you want to track.Example: Squat 100kg, Read 10 pages, Learn 10 new words in Spanish, etc.'
+      'Please enter a goal, aim or purpose you want to track.<br/><b>Example:</b> Squat 100kg, read 10 pages, learn 10 new words in Spanish, etc.'
   }
 ];
 ---
@@ -36,11 +36,7 @@ const steps: Step[] = [
             ]}>
             <span>{index + 1}</span>
           </div>
-          <li
-            class:list={[
-              { 'font-extrabold': index + 1 === currentStep }
-            ]}
-            data-step={index}>
+          <li class:list={[{ 'font-extrabold': index + 1 === currentStep }]} data-step={index}>
             {step.title}
           </li>
         </div>

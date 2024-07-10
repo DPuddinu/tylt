@@ -1,12 +1,12 @@
 ---
-import type { ValidationErrors } from '@/types/formValidation.types';
-import { GoalFormNames } from '@/types/goal.types';
-import SubmitButton from '@components/SubmitButton.astro';
-import type { TActivity, TGoal } from 'db/config';
 import DatePicker from '@/components/DatePicker.astro';
 import RichTextEditor from '@/components/RichTextEditor.astro';
 import AstroSelect from '@/components/Select.astro';
 import TextInput from '@/components/TextInput.astro';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalFormNames } from '@/types/goal.types';
+import SubmitButton from '@components/SubmitButton.astro';
+import type { TActivity, TGoal } from 'db/config';
 
 type Props = {
   title?: string;
@@ -18,7 +18,7 @@ const { activities, title, goal, validationErrors } = Astro.props;
 const formId = 'goal-form';
 ---
 
-<section class='flex w-full flex-col gap-4 overflow-hidden px-2 max-w-sm'>
+<section class='flex w-full max-w-sm flex-col gap-4 overflow-hidden px-2'>
   {
     title && (
       <header transition:name={title}>

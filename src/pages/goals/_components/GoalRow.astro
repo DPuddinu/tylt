@@ -10,7 +10,7 @@ const currentLanguage = Astro.request.headers.get('Accept-Language')?.substring(
 ---
 
 <li class='py-2'>
-  <a href={`/goals/${goal.id}`} data-astro-reload>
+  <a href={`/goals/${goal.id}`} data-astro-reload data-astro-prefetch>
     <article
       class='grid gap-4 rounded-box bg-base-content/15 p-4 transition-colors hover:border-base-content/10 hover:bg-base-content/10 hover:shadow'>
       <header>

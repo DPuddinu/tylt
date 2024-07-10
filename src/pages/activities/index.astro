@@ -1,9 +1,9 @@
 ---
 import { getMostUsedActivity } from '@/api/activities/queries';
+import { timeFilters, type TimeFilter } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import Fab from '@components/Fab.astro';
 import Layout from '@layouts/MainLayout.astro';
-import { timeFilters, type TimeFilter } from '@/types/filters.types';
 
 const time = Astro.url.searchParams.get('time');
 if (!time) return Astro.redirect('/activities?time=month');
@@ -23,7 +23,10 @@ const percentages = mostUsedActivity.map((activity) => {
     <header role='tablist' class='tabs-boxed tabs max-w-sm'>
       {
         timeFilters.map((filter) => (
-          <a class={`tab capitalize ${filter === time ? 'tab-active' : ''}`} href={`/activities?time=${filter}`}>
+          <a
+            data-astro-prefetch
+            class={`tab capitalize ${filter === time ? 'tab-active' : ''}`}
+            href={`/activities?time=${filter}`}>
             {filter}
           </a>
         ))

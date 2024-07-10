@@ -32,7 +32,7 @@ const { activity, validationErrors, title } = Astro.props;
         </InputContainer>
 
         <InputContainer HTMLFor='select-icon-btn' label='Select icon' errors={validationErrors?.icon}>
-          <div class='flex gap-2'>
+          <div class='flex gap-2 flex-wrap'>
             {
               icons.map((path) => (
                 <button type='button' class='icon-select-btn'>
