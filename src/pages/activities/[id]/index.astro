@@ -4,11 +4,11 @@ import { getActivityById } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getGoalByActivityId } from '@/api/goals/queries';
 import { ActivitySchema } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
+import ActivityForm from '@components/ActivityForm.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
-
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
@@ -43,28 +43,66 @@ try {
   return Astro.redirect(`/error?redirect=activities/${activity.id}`);
 }
 
-// if (Astro.request.method === 'POST') {
-//   const formData = await Astro.request.formData();
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
 
-//   try {
-//     if (!activity) throw new Error('Activity not found');
-//     const data = ActivitySchema.parse(formData);
-//     await updateActivity({ ...activity, ...data });
+  try {
+    if (!activity) throw new Error('Activity not found');
+    const data = ActivitySchema.parse(formData);
+    await updateActivity({ ...activity, ...data });
 
-//     return Astro.redirect(`/activities/${activity.id}`);
-//   } catch (error) {
-//     if (error instanceof ZodError) {
-//       validationErrors = error.flatten().fieldErrors;
-//     } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
-//   }
-// }
+    return Astro.redirect(`/activities/${activity.id}`);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
+    } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
+  }
+}
 ---
 
 <Layout pageName='Activity'>
-  <div class='flex-container max-w-xl'>
+  <div class='flex-container gap-4'>
+    <div class='flex justify-between'>
+      <h1 class='text-3xl font-bold text-base-content'>{activity?.name}</h1>
+      <div class='content-center'>
+        <button id='edit-activity' class='active:scale105' popovertarget='edit-activity-dialog'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke-width='1.5'
+            stroke='currentColor'
+            class='size-6 active:scale-105 active:text-warning'>
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125'>
+            </path>
+          </svg>
+        </button>
+        <div
+          id='edit-activity-dialog'
+          popover
+          class='relative mb-0 h-dvh w-dvw overflow-hidden rounded-t-lg bg-transparent'>
+          <div
+            class='absolute bottom-0 left-0 z-20 h-[60dvh] w-full rounded-lg border-t border-t-base-300 bg-base-200 p-4 text-base-content'>
+            <header class='p-4'><h2 class='text-3xl font-bold'>Edit Activity</h2></header>
+            <ActivityForm activity={activity} validationErrors={validationErrors}>
+              <button
+                type='button'
+                popovertarget='edit-activity-dialog'
+                id='cancel-edit-btn'
+                class='btn btn-ghost text-warning'>
+                Cancel
+              </button>
+            </ActivityForm>
+          </div>
+        </div>
+      </div>
+    </div>
     <GoalsList
       queryParams={undefined}
-      title={`${activity?.name} Goals`}
+      title={`Goals`}
       goals={goals}
       totalRows={totalRows}
       totalPages={totalPages}
@@ -74,3 +112,12 @@ try {
     />
   </div>
 </Layout>
+<script>
+  const cancelEditBtn = document.querySelector<HTMLButtonElement>('#edit-activity');
+</script>
+<style>
+  [popover]::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    filter: blur(4px);
+  }
+</style>

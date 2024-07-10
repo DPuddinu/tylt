@@ -15,11 +15,11 @@ type Props = {
 const { activity, validationErrors, title } = Astro.props;
 ---
 
-<section class='flex max-w-sm flex-col gap-8'>
+<section class='flex  flex-col gap-8'>
   {title && <h1 class='text-4xl font-bold'>{title}</h1>}
 
   <form method='post'>
-    <div class='flex flex-col gap-4 rounded border border-base-200 bg-base-200 p-4 shadow'>
+    <div class='flex flex-col gap-4 rounded border border-base-200 bg-base-200 p-4'>
       <div class='col-span-2 flex flex-col gap-4'>
         <InputContainer HTMLFor='name' label='Activity name' errors={validationErrors?.name}>
           <TextInput
@@ -32,11 +32,19 @@ const { activity, validationErrors, title } = Astro.props;
         </InputContainer>
 
         <InputContainer HTMLFor='select-icon-btn' label='Select icon' errors={validationErrors?.icon}>
-          <div class='flex gap-2 flex-wrap'>
+          <div class='flex flex-wrap gap-2'>
             {
               icons.map((path) => (
                 <button type='button' class='icon-select-btn'>
-                  <img src={path} alt='icon' class='h-12 w-12 rounded-lg bg-base-content p-1' />
+                  <img
+                    src={path}
+                    alt='icon'
+                    class:list={[
+                      { outline: activity?.icon && path.includes(activity.icon) },
+                      { 'outline-warning': activity?.icon && path.includes(activity.icon) }
+                    ]}
+                    class='h-12 w-12 rounded-lg bg-base-content p-1'
+                  />
                 </button>
               ))
             }
@@ -55,7 +63,8 @@ const { activity, validationErrors, title } = Astro.props;
           />
         </InputContainer>
 
-        <div class='flex justify-end'>
+        <div class='flex justify-end gap-4'>
+          <slot/>
           <SubmitButton className='!btn-warning disabled:!bg-warning'>
             {activity ? 'Update' : 'Create'}
           </SubmitButton>
