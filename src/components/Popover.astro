@@ -1,11 +1,12 @@
 ---
 type Props = {
   title: string;
+  id: string;
 };
-const { title } = Astro.props;
+const { id, title } = Astro.props;
 ---
 
-<div id='edit-activity-dialog' popover class='mb-0 w-dvw overflow-hidden bg-transparent p-0'>
+<div id={id} popover class='mb-0 w-dvw overflow-hidden bg-transparent p-0'>
   <div class='md:fixed md:bottom-0 md:right-0 md:h-dvh'>
     <div
       class='rounded-t-lg border-t border-t-base-300 bg-base-200 p-4 text-base-content md:h-full md:w-[40dvw] md:max-w-md md:border-l md:border-l-base-300'>

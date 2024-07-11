@@ -1,13 +1,20 @@
 ---
 import { getActivities } from '@/api/activities/queries';
+import { createGoal } from '@/api/goals/mutations';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import { getSetupDone } from '@/api/setup/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
+import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalInsertSchema } from '@/types/goal.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
+import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
+import { ZodError } from 'zod';
+
 const { user } = Astro.locals;
 
 if (!(await getSetupDone(user.id))) return Astro.redirect('/setup');
@@ -57,6 +64,25 @@ try {
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
 }
+
+let validationErrors: ValidationErrors | undefined;
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  try {
+    const data = GoalInsertSchema.parse(formData);
+    await createGoal({
+      ...data,
+      authorId: user.id,
+      authorName: user.name
+    });
+    return Astro.redirect('/goals');
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
+    } else return Astro.redirect('/error/error');
+  }
+}
 ---
 
 <Layout pageName='Goals'>
@@ -75,5 +101,8 @@ try {
       />
     </div>
   </section>
-  <Fab href='/goals/new'> +</Fab>
+  <Popover id='new-goal-dialog' title='New Goal'>
+    <GoalForm activities={activities} validationErrors={validationErrors} />
+  </Popover>
+  <Fab popoverTarget='new-goal-dialog'>+</Fab>
 </Layout>

@@ -1,9 +1,16 @@
 ---
+import { createActivity } from '@/api/activities/mutations';
 import { getGoalsWithActivities } from '@/api/activities/queries';
+import { ActivitySchema } from '@/types/activities.types';
 import { timeFilters, type TimeFilter } from '@/types/filters.types';
+import type { ValidationErrors } from '@/types/formValidation.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
+import ActivityForm from '@components/ActivityForm.astro';
 import Fab from '@components/Fab.astro';
+import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
+import { ZodError } from 'zod';
+const { user } = Astro.locals;
 
 const time = Astro.url.searchParams.get('time');
 if (!time) return Astro.redirect('/activities?time=month');
@@ -15,10 +22,29 @@ const percentages = mostUsedActivity.map((activity) => {
   const formattedNum = toFixedDecimals(percent);
   return formattedNum;
 });
+
+let validationErrors: ValidationErrors | undefined;
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  try {
+    const data = ActivitySchema.parse(formData);
+    await createActivity({
+      authorId: user.id,
+      ...data
+    });
+    return Astro.redirect('/activities');
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors;
+    } else return Astro.redirect('/error?redirect=activities');
+  }
+}
 ---
 
 <Layout pageName='Activities'>
-  <div class='flex w-full sm:max-w-sm flex-col gap-4' >
+  <div class='flex w-full flex-col gap-4 sm:max-w-sm'>
     <h1 class='text-4xl'>Activities</h1>
     <header role='tablist' class='tabs-boxed tabs'>
       {
@@ -48,9 +74,9 @@ const percentages = mostUsedActivity.map((activity) => {
                   </div>
                 </div>
                 <div class='flex gap-2'>
-                  <div class='flex justify-end items-center'>
+                  <div class='flex items-center justify-end'>
                     <div
-                      class='activity-bar w-full origin-right justify-end rounded transition-transform h-6'
+                      class='activity-bar h-6 w-full origin-right justify-end rounded transition-transform'
                       style={`width: ${percentages[i]}px; background-color: ${activity.color}`}
                     />
                   </div>
@@ -63,8 +89,11 @@ const percentages = mostUsedActivity.map((activity) => {
         </div>
       </div>
     </section>
+    <Popover id='new-activity-dialog' title='New Activity'>
+      <ActivityForm validationErrors={validationErrors} />
+    </Popover>
   </div>
-  <Fab href='/activities/new'>+</Fab>
+  <Fab popoverTarget='new-activity-dialog'>+</Fab>
 </Layout>
 <style>
   @keyframes expand {

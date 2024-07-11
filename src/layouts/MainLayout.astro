@@ -50,13 +50,13 @@ const links = ['Activities', 'Goals', 'Reports'];
         </Dropdown>
       </div>
     </header>
-    <main class='flex-container z-10' transition:animate='none'>
+    <main class='flex-container z-10' transition:animate='fade' transition:name='main'>
       <div class='content drawer h-full'>
         <input id='my-drawer' type='checkbox' class='drawer-toggle' />
-        <div class='drawer-content p-8'>
+        <div class='drawer-content p-8' transition:name='drawer'>
           <slot />
         </div>
-        <div class='drawer-side' transition:animate='none'>
+        <div class='drawer-side' transition:name='drawer'>
           <label for='my-drawer' aria-label='close sidebar' class='drawer-overlay'></label>
           <ul
             class='menu z-20 flex min-h-full w-80 grow flex-col border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
@@ -85,7 +85,7 @@ const links = ['Activities', 'Goals', 'Reports'];
     {
       pageName && (
         <footer
-          transition:name='footer'
+          transition:animate='fade'
           transition:persist
           role='tablist'
           class='tabs-boxed tabs grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 px-3 sm:hidden'>
