@@ -50,13 +50,13 @@ const links = ['Activities', 'Goals', 'Reports'];
         </Dropdown>
       </div>
     </header>
-    <main class='flex-container z-10' transition:animate='fade' transition:name='main'>
+    <main class='flex-container z-10' transition:animate='none'>
       <div class='content drawer h-full'>
         <input id='my-drawer' type='checkbox' class='drawer-toggle' />
         <div class='drawer-content p-8'>
           <slot />
         </div>
-        <div class='drawer-side' transition:name='drawer' transition:persist>
+        <div class='drawer-side' transition:animate='none'>
           <label for='my-drawer' aria-label='close sidebar' class='drawer-overlay'></label>
           <ul
             class='menu z-20 flex min-h-full w-80 grow flex-col border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
@@ -71,9 +71,7 @@ const links = ['Activities', 'Goals', 'Reports'];
                   <a data-astro-prefetch href='/activities'>Activities 🏗️</a>
                 </li>
                 <li class='hidden text-lg font-bold sm:block'><a data-astro-prefetch href='/reports'>Reports 🏗️</a></li>
-                <li class='text-lg font-bold'>
-                  <a data-astro-prefetch href='/changelog'>Changelog</a>
-                </li>
+                <li class='text-lg font-bold'><a data-astro-prefetch href='/changelog'>Changelog</a></li>
                 <li class='disabled text-lg font-bold'><a>Settings 🏗️</a></li>
               </div>
             </div>
@@ -112,7 +110,8 @@ const links = ['Activities', 'Goals', 'Reports'];
       )
     }
   </body>
-</html><style>
+</html>
+<style>
   @view-transition {
     navigation: auto; /* enabled! */
   }
