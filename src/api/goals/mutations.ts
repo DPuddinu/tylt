@@ -1,3 +1,4 @@
+import activitiesStore from '@/store/activities.store';
 import store from '@/store/goals.store';
 import reportStore from '@/store/report.store';
 import { type GoalInsertPayload } from '@/types/goal.types';
@@ -5,7 +6,8 @@ import { Goal, and, db, eq } from 'astro:db';
 
 export function createGoal(data: GoalInsertPayload) {
   store.invalidateGoals();
-  reportStore.clearCachedReport();
+  reportStore.invalidateReport();
+  activitiesStore.invalidateActivities();
   return db.insert(Goal).values({
     description: data.description ?? '',
     creationDate: new Date(),
@@ -21,7 +23,9 @@ type UpdateGoalPayload = Omit<GoalInsertPayload, 'authorId' | 'authorName'> & {
 };
 export function updateGoal(data: UpdateGoalPayload) {
   store.invalidateGoals();
-  reportStore.clearCachedReport();
+  reportStore.invalidateReport();
+  activitiesStore.invalidateActivities();
+
   const { completionDate } = data;
   return db
     .update(Goal)
