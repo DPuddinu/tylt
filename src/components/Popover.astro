@@ -1,0 +1,22 @@
+---
+type Props = {
+  title: string;
+};
+const { title } = Astro.props;
+---
+
+<div id='edit-activity-dialog' popover class='mb-0 w-dvw overflow-hidden bg-transparent p-0'>
+  <div class='md:fixed md:bottom-0 md:right-0 md:h-dvh'>
+    <div
+      class='rounded-t-lg border-t border-t-base-300 bg-base-200 p-4 text-base-content md:h-full md:w-[40dvw] md:max-w-md md:border-l md:border-l-base-300'>
+      <header class='p-4'><h2 class='text-3xl font-bold'>{title}</h2></header>
+      <slot />
+    </div>
+  </div>
+</div>
+<style>
+  [popover]::backdrop {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+  }
+</style>
