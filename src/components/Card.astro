@@ -6,7 +6,7 @@ type Props = {
 const { title, transitionName = 'card' } = Astro.props;
 ---
 <div
-  class='flex h-min w-full md:max-w-sm flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'
+  class='flex h-min w-full md:max-w-[50%] flex-col gap-4 rounded-box border border-base-300/50 bg-base-200 p-4 shadow'
   transition:animate='fade'
   transition:name={transitionName}>
   <header class='flex items-center justify-between'>

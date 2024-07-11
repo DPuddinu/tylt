@@ -18,7 +18,7 @@ const { activities, title, goal, validationErrors } = Astro.props;
 const formId = 'goal-form';
 ---
 
-<section class='flex w-full max-w-sm flex-col gap-4 overflow-hidden'>
+<section class='flex w-full sm:max-w-sm flex-col gap-4 overflow-hidden'>
   {
     title && (
       <header transition:name={title}>
@@ -28,7 +28,7 @@ const formId = 'goal-form';
   }
   <form id={formId} method='post' class='flex flex-col gap-6 rounded-lg bg-base-200 p-4'>
     <div class='flex justify-between gap-2'>
-      <div class='flex flex-col gap-2'>
+      <div class='flex flex-col grow gap-2'>
         <TextInput id='title-input' name={GoalFormNames.title} value={goal?.title} placeholder='Type title...' />
         {validationErrors?.title && <span class='px-2 text-error'>{validationErrors?.title}</span>}
       </div>
@@ -62,11 +62,7 @@ const formId = 'goal-form';
       </div>
     </div>
     <footer id='save-btn' class='flex justify-end gap-4'>
-      <a
-        href='/goals'
-        class='btn btn-outline btn-warning rounded-lg border-none hover:!bg-transparent hover:!text-warning'>
-        Cancel
-      </a>
+      <slot/>
       <SubmitButton className='!btn-warning disabled:!bg-warning'>{goal ? 'Update' : 'Create'}</SubmitButton>
     </footer>
   </form>
