@@ -18,14 +18,15 @@ const percentages = mostUsedActivity.map((activity) => {
 ---
 
 <Layout pageName='Activities'>
-  <div class='flex flex-col gap-4'>
+  <div class='flex w-full sm:max-w-sm flex-col gap-4' >
     <h1 class='text-4xl'>Activities</h1>
-    <header role='tablist' class='tabs-boxed tabs max-w-sm'>
+    <header role='tablist' class='tabs-boxed tabs'>
       {
         timeFilters.map((filter) => (
           <a
             data-astro-prefetch
-            class={`tab capitalize ${filter === time ? 'tab-active' : ''}`}
+            class:list={[{ 'tab-active': filter === time }]}
+            class='tab capitalize'
             href={`/activities?time=${filter}`}>
             {filter}
           </a>
@@ -47,13 +48,13 @@ const percentages = mostUsedActivity.map((activity) => {
                   </div>
                 </div>
                 <div class='flex gap-2'>
-                  <div class='flex justify-end'>
+                  <div class='flex justify-end items-center'>
                     <div
-                      class='activity-bar w-full origin-right justify-end rounded transition-transform'
+                      class='activity-bar w-full origin-right justify-end rounded transition-transform h-6'
                       style={`width: ${percentages[i]}px; background-color: ${activity.color}`}
                     />
                   </div>
-                  <div class='w-14 text-end content-center'>{percentages[i]}%</div>
+                  <div class='w-14 content-center text-end'>{percentages[i]}%</div>
                 </div>
               </div>
             ))
