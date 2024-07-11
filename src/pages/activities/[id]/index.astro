@@ -6,6 +6,7 @@ import { ActivitySchema } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import ActivityForm from '@components/ActivityForm.astro';
 import GoalsList from '@components/GoalsList.astro';
+import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
@@ -61,8 +62,8 @@ if (Astro.request.method === 'POST') {
 ---
 
 <Layout pageName='Activity'>
-  <div class='flex-container gap-4'>
-    <div class='flex justify-between'>
+  <div class='flex-container gap-4 max-w-sm'>
+    <div class='flex justify-between '>
       <h1 class='text-3xl font-bold text-base-content'>{activity?.name}</h1>
       <div class='content-center'>
         <button id='edit-activity' class='active:scale105' popovertarget='edit-activity-dialog'>
@@ -80,24 +81,19 @@ if (Astro.request.method === 'POST') {
             </path>
           </svg>
         </button>
-        <div id='edit-activity-dialog' popover class='mb-0 w-dvw overflow-hidden bg-transparent p-0'>
-          <div class='md:fixed md:bottom-0 md:right-0 md:h-dvh'>
-            <div
-              class='rounded-t-lg border-t border-t-base-300 bg-base-200 p-4 text-base-content md:h-full md:w-[40dvw] md:max-w-md md:border-l md:border-l-base-300'>
-              <header class='p-4'><h2 class='text-3xl font-bold'>Edit Activity</h2></header>
-              <ActivityForm activity={activity} validationErrors={validationErrors}>
-                <button
-                  type='button'
-                  popovertargetaction='hide'
-                  popovertarget='edit-activity-dialog'
-                  id='cancel-edit-btn'
-                  class='btn btn-ghost text-warning'>
-                  Cancel
-                </button>
-              </ActivityForm>
-            </div>
-          </div>
-        </div>
+        <Popover title='Edit Activity'>
+          <ActivityForm activity={activity} validationErrors={validationErrors}>
+            <button
+              type='button'
+              popovertargetaction='hide'
+              popovertarget='edit-activity-dialog'
+              id='cancel-edit-btn'
+              class='btn btn-ghost text-warning'>
+              Cancel
+            </button>
+          </ActivityForm>
+        </Popover>
+        
       </div>
     </div>
     <GoalsList
@@ -112,10 +108,3 @@ if (Astro.request.method === 'POST') {
     />
   </div>
 </Layout>
-<style>
-  [popover]::backdrop {
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
-    filter: blur(4px);
-  }
-</style>

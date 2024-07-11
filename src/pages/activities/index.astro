@@ -39,18 +39,21 @@ const percentages = mostUsedActivity.map((activity) => {
             mostUsedActivity.map((activity, i) => (
               <div class='flex justify-between gap-2'>
                 <div class='col-span-1'>
-                  <a href={`/activities/${activity.activityId}`} class='hover:font-bold'>
-                    {activity.activityName}
-                  </a>
+                  <div class='flex items-center gap-2'>
+                    <img src={activity.icon} alt='activity-icon' class='h-8 w-8 rounded-lg bg-base-content p-1' />
+                    <a href={`/activities/${activity.activityId}`} class='hover:font-bold'>
+                      {activity.activityName}
+                    </a>
+                  </div>
                 </div>
                 <div class='flex gap-2'>
                   <div class='flex justify-end'>
                     <div
-                      class='activity-bar w-full origin-right justify-end rounded bg-red-500 transition-transform'
-                      style={`width: ${percentages[i]}px`}
+                      class='activity-bar w-full origin-right justify-end rounded transition-transform'
+                      style={`width: ${percentages[i]}px; background-color: ${activity.color}`}
                     />
                   </div>
-                  <div class='w-14 text-end'>{percentages[i]}%</div>
+                  <div class='w-14 text-end content-center'>{percentages[i]}%</div>
                 </div>
               </div>
             ))
