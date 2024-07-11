@@ -6,6 +6,7 @@ import { getSetupDone } from '@/api/setup/queries';
 import ActivityForm from '@/components/ActivityForm.astro';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import store from '@/store/first-setup.store';
+import { ActivitySchema } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
@@ -22,11 +23,7 @@ if (!step) return Astro.redirect('/setup?step=1');
 let validationErrors: ValidationErrors | undefined;
 
 let activities: TActivity[] = [];
-const schema = zfd.formData({
-  name: zfd.text(z.string().min(3).max(30)),
-  color: zfd.text(z.string()),
-  icon: zfd.text(z.string())
-});
+
 
 try {
   const step1 = store.getStep1();
@@ -50,13 +47,11 @@ if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
   if (step === '1') {
     try {
-      const validated = schema.parse(formData);
-      const startIndex = validated.icon.indexOf('icons/');
-      const iconPath = validated.icon.substring(startIndex);
+      const validated = ActivitySchema.parse(formData);
+
       store.setStep1({
         authorId: user.id,
         ...validated,
-        icon: iconPath
       });
 
       return Astro.redirect('/setup?step=2');

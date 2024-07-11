@@ -4,5 +4,14 @@ export const ActivitySchema = zfd.formData({
   id: zfd.numeric().optional(),
   name: zfd.text(z.string().min(3).max(20)),
   color: zfd.text(z.string().min(7).max(7)),
-  icon: zfd.text(z.string().min(3).max(20)).optional()
+  icon: zfd.text(
+    z
+      .string()
+      .transform((value) => {
+        const startIndex = value.indexOf('icons/');
+        const iconPath = value.substring(startIndex ?? 0);
+        return iconPath;
+      })
+      .optional()
+  )
 });

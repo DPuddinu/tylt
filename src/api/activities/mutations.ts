@@ -16,7 +16,6 @@ export async function createActivity(payload: CreateActivityPayload) {
   return res;
 }
 export async function updateActivity(activity: TActivity) {
-  store.invalidateActivities();
   try {
     const res = await db
       .update(Activity)
@@ -24,6 +23,8 @@ export async function updateActivity(activity: TActivity) {
       .where(and(eq(Activity.authorId, activity.authorId), eq(Activity.id, activity.id)))
       .returning()
       .get();
+    store.updateCachedActivity(res);
+    return res;
   } catch (error) {
     throw error;
   }
