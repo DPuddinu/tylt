@@ -1,29 +1,24 @@
 ---
-import InputContainer from './InputContainer.astro';
-
 type Props = {
-  label: string;
   name: string;
   required?: boolean;
   value?: Date | null;
   min?: Date;
 };
-const { label, name, required = false, value, min } = Astro.props;
+const { name, required = false, value, min } = Astro.props;
 
 export function getInputDateString(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 ---
 
-<InputContainer HTMLFor={name} label={label} errors={[]}>
-  <input
-    placeholder='mm/dd/yyyy'
-    required={required}
-    type='date'
-    id={name}
-    name={name}
-    value={value ? getInputDateString(value) : undefined}
-    min={min ? getInputDateString(min) : undefined}
-    class='select-bordered rounded-lg border bg-base-100 px-4 py-2 font-semibold hover:cursor-pointer'
-  />
-</InputContainer>
+<input
+  placeholder='mm/dd/yyyy'
+  required={required}
+  type='date'
+  id={name}
+  name={name}
+  value={value ? getInputDateString(value) : undefined}
+  min={min ? getInputDateString(min) : undefined}
+  class='select-bordered w-full max-w-sm rounded-lg border bg-base-100 px-4 py-2 font-semibold hover:cursor-pointer'
+/>

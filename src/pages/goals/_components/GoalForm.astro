@@ -1,69 +1,85 @@
 ---
 import DatePicker from '@/components/DatePicker.astro';
 import RichTextEditor from '@/components/RichTextEditor.astro';
-import AstroSelect from '@/components/Select.astro';
+import Select from '@/components/Select.astro';
 import TextInput from '@/components/TextInput.astro';
 import type { ValidationErrors } from '@/types/formValidation.types';
-import { GoalFormNames } from '@/types/goal.types';
+import type { GoalInsertPayload } from '@/types/goal.types';
+import InputContainer from '@components/InputContainer.astro';
 import SubmitButton from '@components/SubmitButton.astro';
-import type { TActivity, TGoal } from 'db/config';
 
+type GoalInputName = 'title' | 'description' | 'activityId' | 'completionDate' | 'dueDate';
+type GoalInputValue = {
+  label: string;
+  inputName: string;
+};
+const formNames: Record<GoalInputName, GoalInputValue> = {
+  title: { label: 'Title', inputName: 'title' },
+  description: { label: 'Description', inputName: 'description' },
+  activityId: { label: 'Activity', inputName: 'activityId' },
+  completionDate: { label: 'Completion Date', inputName: 'completionDate' },
+  dueDate: { label: 'Due Date', inputName: 'dueDate' }
+};
+
+import type { TActivity, TGoal } from 'db/config';
 type Props = {
-  title?: string;
   goal?: TGoal;
   activities: TActivity[];
-  validationErrors?: ValidationErrors;
+  validationErrors?: ValidationErrors<GoalInsertPayload>;
 };
-const { activities, title, goal, validationErrors } = Astro.props;
-const formId = 'goal-form';
+const { activities, goal, validationErrors } = Astro.props;
 ---
 
-<section class='flex w-full sm:max-w-sm flex-col gap-4 overflow-hidden'>
-  {
-    title && (
-      <header transition:name={title}>
-        <h1 class='text-4xl font-bold'>{title}</h1>
-      </header>
-    )
-  }
-  <form id={formId} method='post' class='flex flex-col gap-6 rounded-lg bg-base-200 p-4'>
-    <div class='flex justify-between gap-2'>
-      <div class='flex flex-col grow gap-2'>
-        <TextInput id='title-input' name={GoalFormNames.title} value={goal?.title} placeholder='Type title...' />
-        {validationErrors?.title && <span class='px-2 text-error'>{validationErrors?.title}</span>}
-      </div>
-    </div>
-    <RichTextEditor
-      name={GoalFormNames.description}
-      label={GoalFormNames.description}
-      placeholder='Add new Description...'
-      value={goal?.description}
-    />
-    <div id='date-group' class='space-y-4'>
-      <div class='flex flex-col gap-2'>
-        <label for='select-activity' class='label-text lg:text-base'>Cagetory</label>
-        <AstroSelect
-          options={activities}
-          label='name'
-          fieldKey='id'
-          value={goal?.activityId}
-          id='select-activity'
-          name={GoalFormNames.activityId}
-          form={formId}
-        />
-      </div>
-      <div class='flex flex-wrap gap-4'>
+<form method='post' class='flex flex-col grow gap-6 rounded-lg bg-base-200 p-4 w-full'>
+  <div class='flex flex-wrap gap-2'>
+    <InputContainer HTMLFor='title-input' label='Title' errors={validationErrors?.title}>
+      <TextInput id='title-input' name={formNames.title.inputName} value={goal?.title} placeholder='Type title...' />
+    </InputContainer>
+    <InputContainer
+      HTMLFor={formNames.activityId.label}
+      label={formNames.activityId.label}
+      errors={validationErrors?.activityId}>
+      <Select
+        id='select-activity'
+        required
+        options={activities}
+        optionKey='id'
+        optionLabelKey='name'
+        value={goal?.activityId}
+        name={formNames.activityId.inputName}
+      />
+    </InputContainer>
+    <div class="flex flex-wrap gap-2">
+      <InputContainer
+        HTMLFor={formNames.completionDate.label}
+        label={formNames.completionDate.label}
+        errors={validationErrors?.completionDate}>
         <DatePicker
-          name={GoalFormNames.completionDate}
-          label='Completion Date'
+          name={formNames.completionDate.inputName}
           value={goal?.completionDate ? goal.completionDate : new Date()}
         />
-        <DatePicker name={GoalFormNames.dueDate} label='Due Date' value={goal?.dueDate} />
-      </div>
+      </InputContainer>
+      <InputContainer
+        HTMLFor={formNames.dueDate.label}
+        label={formNames.dueDate.label}
+        errors={validationErrors?.dueDate}>
+        <DatePicker name={formNames.dueDate.inputName} value={goal?.dueDate} />
+      </InputContainer>
     </div>
-    <footer id='save-btn' class='flex justify-end gap-4'>
-      <slot/>
-      <SubmitButton className='!btn-warning disabled:!bg-warning'>{goal ? 'Update' : 'Create'}</SubmitButton>
-    </footer>
-  </form>
-</section>
+  </div>
+
+  <div class="grow">
+    <InputContainer className='h-full' HTMLFor='description' label={formNames.description.label} errors={validationErrors?.title}>
+      <RichTextEditor
+        name={formNames.description.inputName}
+        id={formNames.description.inputName}
+        placeholder='Add new Description...'
+        value={goal?.description}
+      />
+    </InputContainer>
+  </div>
+  <footer id='save-btn' class='flex justify-end gap-4'>
+    <slot />
+    <SubmitButton className='!btn-warning disabled:!bg-warning'>{goal ? 'Update' : 'Create'}</SubmitButton>
+  </footer>
+</form>

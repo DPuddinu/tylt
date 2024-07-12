@@ -1,0 +1,22 @@
+:root {
+  --black-editor: #212121
+}
+.ql-container.ql-snow {
+  border: 0 !important;
+}
+.ql-toolbar {
+  border: 0 !important;
+  * {
+    color: var(--black-editor) !important;
+  }
+  span {
+    margin: 0 !important;
+    font-weight: bold !important;
+  }
+}
+.ql-stroke{
+  stroke: var(--black-editor) !important;
+}
+.ql-editor{
+  color: var(--black-editor) !important;
+}

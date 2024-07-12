@@ -15,17 +15,7 @@ export const GoalInsertSchema = zfd.formData({
   completionDate: zfd.text(z.string().date().nullish()).transform((date) => (date ? new Date(date) : undefined)),
   dueDate: zfd.text(z.string().date().nullish()).transform((date) => (date ? new Date(date) : undefined))
 });
-
 export type GoalInsertPayload = z.infer<typeof GoalInsertSchema> & {
   authorId: string;
   authorName: string;
-};
-
-type Key = 'title' | 'description' | 'activityId' | 'completionDate' | 'dueDate';
-export const GoalFormNames: Record<Key, Key> = {
-  title: 'title',
-  description: 'description',
-  activityId: 'activityId',
-  completionDate: 'completionDate',
-  dueDate: 'dueDate'
 };

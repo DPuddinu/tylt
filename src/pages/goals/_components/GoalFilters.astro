@@ -30,8 +30,8 @@ const { fromDate: fromDate, toDate, activity: filterActivity, expired, notExpire
         <AstroSelect
           value={filterActivity}
           options={activities}
-          label={'name'}
-          fieldKey={'id'}
+          optionLabelKey={'name'}
+          optionKey={'id'}
           id='select-activity'
           name='activity'
           form='filter-form'

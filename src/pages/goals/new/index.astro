@@ -1,0 +1,43 @@
+---
+import { getActivities } from '@/api/activities/queries';
+import { createGoal } from '@/api/goals/mutations';
+import GoalForm from '@/pages/goals/_components/GoalForm.astro';
+import type { ValidationErrors } from '@/types/formValidation.types';
+import { GoalInsertSchema, type GoalInsertPayload } from '@/types/goal.types';
+import Layout from '@layouts/MainLayout.astro';
+import { ZodError } from 'zod';
+
+const { user } = Astro.locals;
+const activities = await getActivities(user.id);
+
+let validationErrors: ValidationErrors<GoalInsertPayload> | undefined;
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+
+  try {
+    const data = GoalInsertSchema.parse(formData);
+    await createGoal({
+      ...data,
+      authorId: user.id,
+      authorName: user.name
+    });
+    return Astro.redirect('/goals');
+  } catch (error) {
+    if (error instanceof ZodError) {
+      validationErrors = error.flatten().fieldErrors as ValidationErrors<GoalInsertPayload>;
+    } else return Astro.redirect('/error/error');
+  }
+}
+const title = 'New Goal';
+---
+
+<Layout pageName={title}>
+  <section class='flex w-full h-full flex-col gap-4 overflow-hidden'>
+    <header transition:name={title}>
+      <h1 class='text-4xl font-bold'>{title}</h1>
+    </header>
+    <GoalForm activities={activities} validationErrors={validationErrors} >
+      <a href='/goals' class='btn text-warning'>Cancel</a>
+    </GoalForm>
+  </section>
+</Layout>

@@ -2,23 +2,22 @@
 type Props = {
   id: string;
   options: any[];
-  fieldKey: string;
-  label: string;
+  optionKey: string;
+  optionLabelKey: string;
   value?: any;
-  form: string;
   name: string;
+  required?: boolean;
 };
-const { fieldKey, form, label, options, value, name, id } = Astro.props;
+const { optionKey, optionLabelKey, options, value, name, id, required = false } = Astro.props;
 ---
 
-<select id={id} class='select select-bordered w-fit' name={name} form={form}>
+<select required={required} id={id} class='select select-bordered w-fit' name={name}>
   <option value='' disabled hidden>Pick a activity</option>
   {
     options.map((option) => (
       <div>
-        {option[fieldKey]}
-        <option value={String(option[fieldKey])} selected={option[fieldKey] === value}>
-          {String(option[label])}
+        <option value={String(option[optionKey])} selected={option[optionKey] === value}>
+          {String(option[optionLabelKey])}
         </option>
       </div>
     ))

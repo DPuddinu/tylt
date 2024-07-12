@@ -1,22 +1,24 @@
 ---
+import '../styles/editor.css';
 import '../../node_modules/quill/dist/quill.snow.css';
 
 type Props = {
   value?: string;
-  label: string;
+  id: string;
   name: string;
   placeholder: string;
 };
-const { value, label, name, placeholder } = Astro.props;
+const { value, id, name, placeholder } = Astro.props;
 ---
 
-<quill-editor data-value={value} data-id={name} data-placeholder={placeholder}>
-  <div class='flex h-48 flex-col gap-2'>
-    <label for={`${label}-container`} class='label-text capitalize lg:text-base'>{label}</label>
-    <div id='loader' class='h-full w-full animate-pulse rounded bg-slate-200'></div>
-    <div id={`${label}-container`} class='flex-container hidden max-w-full grow flex-col rounded bg-base-content'>
-      <div id={label} class='content max-w-full text-black'></div>
-    </div>
+<quill-editor
+  data-value={value}
+  data-id={name}
+  data-placeholder={placeholder}
+  class='flex h-full grow flex-col gap-2 rounded-xl'>
+  <div id='loader' class='h-full w-full animate-pulse rounded-xl border-x bg-base-content/50'></div>
+  <div id={`${id}-container`} class='flex-container hidden max-w-full grow flex-col rounded-xl bg-base-content/50 p-1'>
+    <div id={id} class='content max-w-full text-black'></div>
   </div>
 </quill-editor>
 
@@ -44,9 +46,11 @@ const { value, label, name, placeholder } = Astro.props;
       loader?.remove();
       const editorContainer = document.querySelector(`#${id}-container`);
 
-      const formats = document.querySelectorAll('.ql-formats');
-      formats?.forEach((el) => el.classList.add('!mr-0'));
+      // const formats = document.querySelectorAll('.ql-formats');
+      // formats?.forEach((el) => el.classList.add('!mr-0'));
+
       editorContainer?.classList.replace('hidden', 'flex');
+
       if (value) quill.setContents(JSON.parse(value));
       if (form && form.contains(quillEditor)) {
         form.addEventListener('formdata', (event) =>

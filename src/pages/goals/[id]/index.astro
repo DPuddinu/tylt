@@ -4,7 +4,7 @@ import { updateGoal } from '@/api/goals/mutations';
 import { getGoalById } from '@/api/goals/queries';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import type { ValidationErrors } from '@/types/formValidation.types';
-import { GoalInsertSchema } from '@/types/goal.types';
+import { GoalInsertSchema, type GoalInsertPayload } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
@@ -15,14 +15,14 @@ const { user } = Astro.locals;
 let activities: TActivity[] = [];
 let goal: TGoal | undefined;
 
-let validationErrors: ValidationErrors | undefined;
+let validationErrors: ValidationErrors<GoalInsertPayload> | undefined;
 
 try {
   activities = await getActivities(user.id);
   goal = await getGoalById({ id: Number(id), userId: user.id });
 } catch (error) {
   if (error instanceof ZodError) {
-    validationErrors = error.flatten().fieldErrors;
+    validationErrors = error.flatten().fieldErrors as ValidationErrors<GoalInsertPayload>;
   } else return Astro.redirect(`/error?redirect=goals/${id}`);
 }
 
@@ -37,12 +37,18 @@ if (Astro.request.method === 'POST') {
     return Astro.redirect('/goals');
   } catch (error) {
     if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors;
+      validationErrors = error.flatten().fieldErrors as ValidationErrors<GoalInsertPayload>;
     } else return Astro.redirect(`/error?redirect=goals/${id}`);
   }
 }
+const title = 'Edit Goal';
 ---
 
 <Layout pageName='Goal'>
-  <GoalForm validationErrors={validationErrors} goal={goal} title='Edit Goal' activities={activities} />
+  <section class='flex w-full flex-col gap-4 overflow-hidden sm:max-w-sm'>
+    <header transition:name={title}>
+      <h1 class='text-4xl font-bold'>{title}</h1>
+    </header>
+    <GoalForm validationErrors={validationErrors} goal={goal} activities={activities} />
+  </section>
 </Layout>

@@ -19,13 +19,136 @@ const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => B
 <Card title={title}>
   {
     goals.length > 0 ? (
-      <article class='flex grow flex-col gap-4'>
-        <ul>
-          {goals.map((goal) => (
-            <GoalRow goal={goal} />
-          ))}
-        </ul>
-      </article>
+      <>
+        <article class='hidden md:flex'>
+        <div class="overflow-x-auto">
+          <table class="table table-lg">
+            <!-- head -->
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Job</th>
+                <th>Favorite Color</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- row 1 -->
+              <tr>
+                
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle h-12 w-12">
+                        <img
+                          src="https://img.daisyui.com/tailwind-css-component-profile-2@56w.png"
+                          alt="Avatar Tailwind CSS Component" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold">Hart Hagerty</div>
+                      <div class="text-sm opacity-50">United States</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  Zemlak, Daniel and Leannon
+                  <br />
+                  <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
+                </td>
+                <td>Purple</td>
+                
+              </tr>
+              <!-- row 2 -->
+              <tr>
+                
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle h-12 w-12">
+                        <img
+                          src="https://img.daisyui.com/tailwind-css-component-profile-3@56w.png"
+                          alt="Avatar Tailwind CSS Component" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold">Brice Swyre</div>
+                      <div class="text-sm opacity-50">China</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  Carroll Group
+                  <br />
+                  <span class="badge badge-ghost badge-sm">Tax Accountant</span>
+                </td>
+                <td>Red</td>
+                
+              </tr>
+              <!-- row 3 -->
+              <tr>
+                
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle h-12 w-12">
+                        <img
+                          src="https://img.daisyui.com/tailwind-css-component-profile-4@56w.png"
+                          alt="Avatar Tailwind CSS Component" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold">Marjy Ferencz</div>
+                      <div class="text-sm opacity-50">Russia</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  Rowe-Schoen
+                  <br />
+                  <span class="badge badge-ghost badge-sm">Office Assistant I</span>
+                </td>
+                <td>Crimson</td>
+                
+              </tr>
+              <!-- row 4 -->
+              <tr>
+                
+                <td>
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle h-12 w-12">
+                        <img
+                          src="https://img.daisyui.com/tailwind-css-component-profile-5@56w.png"
+                          alt="Avatar Tailwind CSS Component" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold">Yancy Tear</div>
+                      <div class="text-sm opacity-50">Brazil</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  Wyman-Ledner
+                  <br />
+                  <span class="badge badge-ghost badge-sm">Community Outreach Specialist</span>
+                </td>
+                <td>Indigo</td>
+                
+              </tr>
+            </tbody>
+            
+          </table>
+        </div>
+        </article>
+        <article class='flex grow flex-col gap-4 md:hidden'>
+          <ul>
+            {goals.map((goal) => (
+              <GoalRow goal={goal} />
+            ))}
+          </ul>
+        </article>
+      </>
     ) : (
       <div class='flex justify-center py-8 text-lg'>No Goals</div>
     )
