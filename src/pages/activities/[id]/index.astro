@@ -1,7 +1,8 @@
 ---
 import { updateActivity } from '@/api/activities/mutations';
-import { getActivityById } from '@/api/activities/queries';
+import { getActivities, getActivityById } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getGoalByActivityId } from '@/api/goals/queries';
+import type { ActivityInsertPayload } from '@/types/activities.types';
 import { ActivitySchema } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import ActivityForm from '@components/ActivityForm.astro';
@@ -22,8 +23,8 @@ const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 let goals: TGoal[] = [];
 let totalPages = 0;
 let totalRows = 0;
-
-let validationErrors: ValidationErrors | undefined;
+let activities: TActivity[] = [];
+let validationErrors: ValidationErrors<ActivityInsertPayload> | undefined;
 let activity: TActivity | undefined;
 
 try {
@@ -40,6 +41,8 @@ try {
   goals = cachedGoals;
   totalRows = count;
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
+
+  activities = await getActivities(user.id);
 } catch (error) {
   return Astro.redirect(`/error?redirect=activities/${activity.id}`);
 }
@@ -55,7 +58,7 @@ if (Astro.request.method === 'POST') {
     return Astro.redirect(`/activities/${activity.id}`);
   } catch (error) {
     if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors;
+      validationErrors = error.flatten().fieldErrors as ValidationErrors<ActivityInsertPayload>;
     } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
   }
 }
@@ -66,21 +69,20 @@ if (Astro.request.method === 'POST') {
     <div class='flex justify-between'>
       <h1 class='text-3xl font-bold text-base-content'>{activity?.name}</h1>
       <div class='content-center'>
-        <button id='edit-activity' class='active:scale-105 md:btn uppercase' popovertarget='edit-activity-dialog'>
+        <button id='edit-activity' class='uppercase active:scale-105 md:hidden' popovertarget='edit-activity-dialog'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 24 24'
             stroke-width='1.5'
             stroke='currentColor'
-            class='size-6 md:hidden active:scale-105 active:text-warning'>
+            class='size-6 active:scale-105 active:text-warning'>
             <path
               stroke-linecap='round'
               stroke-linejoin='round'
               d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125'>
             </path>
           </svg>
-          <span class="hidden md:block">Edit Activity</span>
         </button>
         <Popover id='edit-activity-dialog' title='Edit Activity'>
           <ActivityForm activity={activity} validationErrors={validationErrors}>
@@ -97,8 +99,7 @@ if (Astro.request.method === 'POST') {
       </div>
     </div>
     <GoalsList
-      queryParams={undefined}
-      title='Goals'
+      activities={activities}
       goals={goals}
       totalRows={totalRows}
       totalPages={totalPages}

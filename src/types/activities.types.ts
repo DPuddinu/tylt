@@ -15,3 +15,4 @@ export const ActivitySchema = zfd.formData({
       .optional()
   )
 });
+export type ActivityInsertPayload = z.infer<typeof ActivitySchema>;

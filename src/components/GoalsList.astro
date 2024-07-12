@@ -12,9 +12,9 @@ type Props = {
   offset: number;
   currentPage: number;
   itemsPerPage: number;
-  queryParams: Record<string, string | null> | undefined;
+  queryParams?: Record<string, string | null> | undefined;
 };
-const { activities, goals, totalPages, offset, currentPage, itemsPerPage, queryParams } = Astro.props;
+const { activities, goals, totalPages, offset, currentPage, itemsPerPage, queryParams = undefined } = Astro.props;
 const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => Boolean(value));
 const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
 ---
@@ -44,11 +44,13 @@ const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
                     <td>
                       <div class='flex items-center gap-2'>
                         <img
-                          src={activities.find((activity) => activity.id === goal.activityId)?.icon}
+                          src={`/${activities.find((activity) => activity.id === goal.activityId)?.icon}`}
                           alt='Activity Icon'
                           class='h-8 w-8 rounded bg-base-content p-1'
                         />
-                        <span>{activities.find((activity) => activity.id === goal.activityId)?.name}</span>
+                        <a href={`activities/${activities.find((activity) => activity.id === goal.activityId)?.id}`}>
+                          {activities.find((activity) => activity.id === goal.activityId)?.name}
+                        </a>
                       </div>
                     </td>
                     <td>{formatDate(goal.creationDate, locale)}</td>
