@@ -1,6 +1,6 @@
 import { atom } from 'nanostores';
 
-type Report = {
+export type GoalsReport = {
   completedCount: number;
   completionRate: number;
   lastWeekGoalsCount: number;
@@ -8,11 +8,11 @@ type Report = {
   deltaCount: number;
 };
 
-const reportStore = atom<Report | undefined>(undefined);
+const reportStore = atom<GoalsReport | undefined>(undefined);
 function getCachedReport() {
   return reportStore.get();
 }
-function setCachedReport(report: Report) {
+function setCachedReport(report: GoalsReport) {
   reportStore.set(report);
 }
 function invalidateReport() {

@@ -21,8 +21,8 @@ const links = ['Activities', 'Goals', 'Reports'];
     <title>{pageName}</title>
   </head>
   <body class='flex h-dvh flex-col bg-base-content/5'>
-    <header class='min-h-16 bg-base-300 py-2 shadow-md shadow-base-300/50'>
-      <nav class='navbar justify-end gap-4'>
+    <header class='h-16 bg-base-300 shadow-md shadow-base-300/50'>
+      <nav class='flex justify-end items-center h-full gap-4'>
         <div class="gap-4 hidden md:flex">
           <a data-astro-prefetch href='/goals'>Goals</a>
           <a data-astro-prefetch href='/activities'>Activities 🏗️</a>
@@ -45,18 +45,17 @@ const links = ['Activities', 'Goals', 'Reports'];
         </Dropdown>
       </nav>
     </header>
-    <main class='flex-container z-10'>
-      <div class='content h-full p-8'>
+    <main class='flex-container z-0'>
+      <div class='content p-8'>
         <slot />
       </div>
     </main>
     {
       pageName && (
         <footer
-          transition:animate='fade'
-          transition:persist
+          transition:name='footer'
           role='tablist'
-          class='tabs-boxed tabs grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 px-3 md:hidden'>
+          class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-b-none bg-base-300 px-3 md:hidden'>
           {links.map((link) => (
             <>
               {link === pageName ? (

@@ -12,8 +12,7 @@ import Layout from '@layouts/MainLayout.astro';
 import { ZodError } from 'zod';
 const { user } = Astro.locals;
 
-const time = Astro.url.searchParams.get('time');
-if (!time) return Astro.redirect('/activities?time=month');
+const time = Astro.url.searchParams.get('time') ?? 'month';
 
 const mostUsedActivity = await getGoalsWithActivities({ userId: Astro.locals.user.id, timeFilter: time as TimeFilter });
 const total = mostUsedActivity.reduce((acc, activity) => acc + activity.goalCount, 0);
@@ -44,9 +43,9 @@ if (Astro.request.method === 'POST') {
 ---
 
 <Layout pageName='Activities'>
-  <div class='flex w-full flex-col gap-4 sm:max-w-sm' transition:name="content">
+  <div class='flex w-full flex-col gap-4 sm:max-w-sm'>
     <h1 class='text-4xl'>Activities</h1>
-    <header role='tablist' class='tabs-boxed tabs'>
+    <div role='tablist' class='tabs-boxed tabs' transition:name='filters'>
       {
         timeFilters.map((filter) => (
           <a
@@ -58,8 +57,8 @@ if (Astro.request.method === 'POST') {
           </a>
         ))
       }
-    </header>
-    <section class='card flex max-w-md flex-col gap-8 bg-base-200 text-neutral-content'>
+    </div>
+    <section class='card flex max-w-md flex-col gap-8 bg-base-200 text-neutral-content' transition:name='content'>
       <div class='card-body gap-8'>
         <div class='flex flex-col gap-4'>
           {
@@ -90,7 +89,9 @@ if (Astro.request.method === 'POST') {
       </div>
     </section>
     <Popover id='new-activity-dialog' title='New Activity'>
-      <ActivityForm validationErrors={validationErrors} />
+      <ActivityForm validationErrors={validationErrors}>
+        <button type="button" popovertarget='new-activity-dialog' class='btn text-warning' transition:name='fab'>Cancel</button>
+      </ActivityForm>
     </Popover>
   </div>
   <Fab popoverTarget='new-activity-dialog'>+</Fab>

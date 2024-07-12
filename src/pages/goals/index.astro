@@ -7,6 +7,7 @@ import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
+import { fade } from 'astro:transitions';
 import type { TActivity, TGoal } from 'db/config';
 
 const { user } = Astro.locals;
@@ -74,5 +75,4 @@ try {
       itemsPerPage={ITEMS_PER_PAGE}
     />
   </section>
-  <Fab href='/goals/new'>+</Fab>
 </Layout>

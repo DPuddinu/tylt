@@ -1,4 +1,5 @@
 import store, { type GoalsByActivityResponse } from '@/store/goals.store';
+import reportStore, { type GoalsReport } from '@/store/report.store';
 import type { GoalFilters } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
@@ -11,7 +12,11 @@ type GetPaginatedGoalsParams = {
   page?: number;
   filters?: GoalFilters;
 };
-export async function getCompletionRate(userId: string) {
+export async function getCompletionRate(userId: string): Promise<GoalsReport> {
+  const cachedCompletionRate = reportStore.getCachedReport();
+  if (cachedCompletionRate) {
+    return cachedCompletionRate;
+  }
   try {
     const goals = await db.select().from(Goal).where(eq(Goal.authorId, userId));
     const completedGoals = goals.filter((goal) => goal.completed);
@@ -26,13 +31,14 @@ export async function getCompletionRate(userId: string) {
       );
     });
     const delta = lastWeekGoals.length - secondLastWeekGoals.length;
-    const report = {
+    const report: GoalsReport = {
       completedCount: completedGoals.length,
       completionRate: toFixedDecimals(100 * (completedGoals.length / goals.length)),
       lastWeekGoalsCount: lastWeekGoals.length,
       totalGoalsCount: goals.length,
       deltaCount: delta
     };
+    reportStore.setCachedReport(report);
     return report;
   } catch (error) {
     throw new Error('Cannot get completion rate');

@@ -3,7 +3,7 @@ type Props = {
   href?: string;
   popoverTarget?: string;
 };
-const { href, popoverTarget} = Astro.props as Props;
+const { href, popoverTarget } = Astro.props as Props;
 ---
 
 <>
@@ -11,7 +11,7 @@ const { href, popoverTarget} = Astro.props as Props;
     popoverTarget && (
       <button
         popovertarget={popoverTarget}
-        class='btn btn-circle btn-warning fixed bottom-[4.5rem] right-0 m-4 text-xl sm:bottom-0'
+        class='btn btn-circle btn-warning fixed bottom-16 right-0 m-4 text-xl sm:bottom-0'
         transition:name='fab'>
         <slot />
       </button>
@@ -22,7 +22,7 @@ const { href, popoverTarget} = Astro.props as Props;
       <a
         href={href}
         data-astro-prefetch
-        class='btn btn-circle btn-warning fixed bottom-[4.5rem] right-0 m-4 text-xl sm:bottom-0'
+        class='btn btn-circle btn-warning fixed bottom-16 right-0 m-4 text-xl sm:bottom-0'
         transition:name='fab'>
         <slot />
       </a>

@@ -20,12 +20,22 @@ const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
 ---
 
 <Card title='Goals'>
+  <div slot='header-content' class='flex w-full items-center justify-end'>
+    <a
+      transition:animate='slide'
+      href='/goals/new'
+      data-astro-prefetch
+      class='btn btn-circle btn-warning btn-sm text-base font-extrabold'
+      transition:name='fab'>
+      +
+    </a>
+  </div>
   {
     goals.length > 0 ? (
       <>
         <article class='hidden md:flex'>
           <div class='grow overflow-x-auto'>
-            <table class='table table-lg w-full'>
+            <table class='table table-lg w-full' transition:animate="none">
               <thead>
                 <tr class='text-lg'>
                   <th>Name</th>
@@ -80,7 +90,7 @@ const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
           </div>
         </article>
         <article class='flex grow flex-col gap-4 md:hidden'>
-          <ul>
+          <ul transition:name='content'>
             {goals.map((goal) => (
               <GoalRow goal={goal} />
             ))}
