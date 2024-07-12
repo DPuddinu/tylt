@@ -31,6 +31,7 @@ export function updateGoal(data: UpdateGoalPayload) {
     .update(Goal)
     .set({
       ...data,
+      updateDate: new Date(),
       completed: !!completionDate
     })
     .where(and(eq(Goal.authorId, data.userId), eq(Goal.id, data.goalId)))
