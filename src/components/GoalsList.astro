@@ -1,10 +1,12 @@
 ---
 import GoalRow from '@/pages/goals/_components/GoalRow.astro';
+import { formatDate } from '@/utils/format-date';
+import type { TActivity, TGoal } from 'db/config';
 import Card from './Card.astro';
 
 type Props = {
-  title: string;
-  goals: any[];
+  activities: TActivity[];
+  goals: TGoal[];
   totalRows: number;
   totalPages: number;
   offset: number;
@@ -12,134 +14,68 @@ type Props = {
   itemsPerPage: number;
   queryParams: Record<string, string | null> | undefined;
 };
-const { title, goals, totalPages, offset, currentPage, itemsPerPage, queryParams } = Astro.props;
+const { activities, goals, totalPages, offset, currentPage, itemsPerPage, queryParams } = Astro.props;
 const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => Boolean(value));
+const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
 ---
 
-<Card title={title}>
+<Card title='Goals'>
   {
     goals.length > 0 ? (
       <>
         <article class='hidden md:flex'>
-        <div class="overflow-x-auto">
-          <table class="table table-lg">
-            <!-- head -->
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Job</th>
-                <th>Favorite Color</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- row 1 -->
-              <tr>
-                
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
+          <div class='grow overflow-x-auto'>
+            <table class='table table-lg w-full'>
+              <thead>
+                <tr class='text-lg'>
+                  <th>Name</th>
+                  <th>Activity</th>
+                  <th>Creation</th>
+                  <th>Last Update</th>
+                  <th>Due Date</th>
+                  <th>Completion Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {goals.map((goal) => (
+                  <tr>
+                    <td>{goal.title}</td>
+                    <td>
+                      <div class='flex items-center gap-2'>
                         <img
-                          src="https://img.daisyui.com/tailwind-css-component-profile-2@56w.png"
-                          alt="Avatar Tailwind CSS Component" />
+                          src={activities.find((activity) => activity.id === goal.activityId)?.icon}
+                          alt='Activity Icon'
+                          class='h-8 w-8 rounded bg-base-content p-1'
+                        />
+                        <span>{activities.find((activity) => activity.id === goal.activityId)?.name}</span>
                       </div>
-                    </div>
-                    <div>
-                      <div class="font-bold">Hart Hagerty</div>
-                      <div class="text-sm opacity-50">United States</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  Zemlak, Daniel and Leannon
-                  <br />
-                  <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
-                </td>
-                <td>Purple</td>
-                
-              </tr>
-              <!-- row 2 -->
-              <tr>
-                
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
-                        <img
-                          src="https://img.daisyui.com/tailwind-css-component-profile-3@56w.png"
-                          alt="Avatar Tailwind CSS Component" />
-                      </div>
-                    </div>
-                    <div>
-                      <div class="font-bold">Brice Swyre</div>
-                      <div class="text-sm opacity-50">China</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  Carroll Group
-                  <br />
-                  <span class="badge badge-ghost badge-sm">Tax Accountant</span>
-                </td>
-                <td>Red</td>
-                
-              </tr>
-              <!-- row 3 -->
-              <tr>
-                
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
-                        <img
-                          src="https://img.daisyui.com/tailwind-css-component-profile-4@56w.png"
-                          alt="Avatar Tailwind CSS Component" />
-                      </div>
-                    </div>
-                    <div>
-                      <div class="font-bold">Marjy Ferencz</div>
-                      <div class="text-sm opacity-50">Russia</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  Rowe-Schoen
-                  <br />
-                  <span class="badge badge-ghost badge-sm">Office Assistant I</span>
-                </td>
-                <td>Crimson</td>
-                
-              </tr>
-              <!-- row 4 -->
-              <tr>
-                
-                <td>
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
-                        <img
-                          src="https://img.daisyui.com/tailwind-css-component-profile-5@56w.png"
-                          alt="Avatar Tailwind CSS Component" />
-                      </div>
-                    </div>
-                    <div>
-                      <div class="font-bold">Yancy Tear</div>
-                      <div class="text-sm opacity-50">Brazil</div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  Wyman-Ledner
-                  <br />
-                  <span class="badge badge-ghost badge-sm">Community Outreach Specialist</span>
-                </td>
-                <td>Indigo</td>
-                
-              </tr>
-            </tbody>
-            
-          </table>
-        </div>
+                    </td>
+                    <td>{formatDate(goal.creationDate, locale)}</td>
+                    <td>{formatDate(goal.updateDate, locale)}</td>
+                    <td>{goal.dueDate ? formatDate(goal.dueDate, locale) : '-'}</td>
+                    <td>{goal.completionDate ? formatDate(goal.completionDate, locale) : '-'}</td>
+                    <td>
+                      <a href={`/goals/${goal.id}`}>
+                        <svg
+                          class='h-6 w-6'
+                          xmlns='http://www.w3.org/2000/svg'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'>
+                          <path
+                            stroke-linecap='round'
+                            stroke-linejoin='round'
+                            d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125'
+                          />
+                        </svg>
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </article>
         <article class='flex grow flex-col gap-4 md:hidden'>
           <ul>

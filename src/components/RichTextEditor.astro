@@ -1,6 +1,6 @@
 ---
-import '../styles/editor.css';
 import '../../node_modules/quill/dist/quill.snow.css';
+import '../styles/editor.css';
 
 type Props = {
   value?: string;
@@ -36,7 +36,7 @@ const { value, id, name, placeholder } = Astro.props;
       const quillEditor = document.querySelector('quill-editor') as HTMLFormElement;
       const quill = new Quill.default(`#${id}`, {
         modules: {
-          toolbar: [[{ header: [1, 2, 3, 4, 5, false] }], ['bold', 'italic', 'underline'], ['link', 'code-block']]
+          toolbar: [[{ header: [1, 2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'code-block']]
         },
         placeholder,
         theme: 'snow'
@@ -46,16 +46,14 @@ const { value, id, name, placeholder } = Astro.props;
       loader?.remove();
       const editorContainer = document.querySelector(`#${id}-container`);
 
-      // const formats = document.querySelectorAll('.ql-formats');
-      // formats?.forEach((el) => el.classList.add('!mr-0'));
-
       editorContainer?.classList.replace('hidden', 'flex');
 
       if (value) quill.setContents(JSON.parse(value));
       if (form && form.contains(quillEditor)) {
-        form.addEventListener('formdata', (event) =>
-          event.formData.append(id, JSON.stringify(quill.getContents().ops))
-        );
+        form.addEventListener('formdata', (event) => {
+          console.log(event);
+          event.formData.append(id, JSON.stringify(quill.getContents().ops));
+        });
       }
     }
   }

@@ -1,19 +1,13 @@
 ---
 import { getActivities } from '@/api/activities/queries';
-import { createGoal } from '@/api/goals/mutations';
 import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import { getSetupDone } from '@/api/setup/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
-import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
-import type { ValidationErrors } from '@/types/formValidation.types';
-import { GoalInsertSchema, type GoalInsertPayload } from '@/types/goal.types';
 import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
-import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
-import { ZodError } from 'zod';
 
 const { user } = Astro.locals;
 
@@ -67,21 +61,18 @@ try {
 ---
 
 <Layout pageName='Goals'>
-  <section>
-    <div class='flex flex-col gap-4 md:flex-row'>
-      <GoalFilterSidebar activities={activities} filters={goalFilters} />
-      <GoalsList
-        queryParams={params}
-        title='Goals'
-        goals={goals}
-        totalRows={totalRows}
-        totalPages={totalPages}
-        offset={offsetFilter}
-        currentPage={currentPage}
-        itemsPerPage={ITEMS_PER_PAGE}
-      />
-    </div>
+  <section class='flex flex-col gap-4 md:flex-row'>
+    <GoalFilterSidebar activities={activities} filters={goalFilters} />
+    <GoalsList
+      queryParams={params}
+      activities={activities}
+      goals={goals}
+      totalRows={totalRows}
+      totalPages={totalPages}
+      offset={offsetFilter}
+      currentPage={currentPage}
+      itemsPerPage={ITEMS_PER_PAGE}
+    />
   </section>
-  
   <Fab href='/goals/new'>+</Fab>
 </Layout>

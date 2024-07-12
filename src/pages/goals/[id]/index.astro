@@ -29,7 +29,6 @@ try {
 if (Astro.request.method === 'POST') {
   if (!goal) throw new Error('Goal not found');
   const formData = await Astro.request.formData();
-
   try {
     const data = GoalInsertSchema.parse(formData);
     await updateGoal({ ...data, userId: user.id, goalId: goal.id });
@@ -45,10 +44,12 @@ const title = 'Edit Goal';
 ---
 
 <Layout pageName='Goal'>
-  <section class='flex w-full flex-col gap-4 overflow-hidden sm:max-w-sm'>
+  <section class='flex h-full w-full flex-col gap-4 overflow-hidden'>
     <header transition:name={title}>
       <h1 class='text-4xl font-bold'>{title}</h1>
     </header>
-    <GoalForm validationErrors={validationErrors} goal={goal} activities={activities} />
+    <GoalForm activities={activities} goal={goal} validationErrors={validationErrors}>
+      <a href='/goals' class='btn text-warning'>Cancel</a>
+    </GoalForm>
   </section>
 </Layout>
