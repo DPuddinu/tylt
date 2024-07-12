@@ -2,6 +2,7 @@
 import type { GoalFilters } from '@/types/filters.types';
 import Checkbox from '@components/Checkbox.astro';
 import DatePicker from '@components/DatePicker.astro';
+import InputContainer from '@components/InputContainer.astro';
 import type { TActivity } from 'db/config';
 import AstroSelect from '../../../components/Select.astro';
 
@@ -20,58 +21,61 @@ const { fromDate: fromDate, toDate, activity: filterActivity, expired, notExpire
   <header class='collapse-title text-xl font-medium sm:text-2xl'>Filters</header>
   <section class='collapse-content'>
     <form id='filter-form' method='get' class='flex flex-col gap-4'>
-      <div class='flex flex-col gap-2 sm:flex-row md:flex-col'>
-        <DatePicker name='fromDate' label='From Date' value={fromDate ? new Date(fromDate) : null} />
-        <DatePicker name='toDate' label='To Date' value={toDate ? new Date(toDate) : null} />
-      </div>
-
       <div class='flex flex-col gap-2'>
-        <label for='select-activity' class='label-text'>Select Activity</label>
-        <AstroSelect
-          value={filterActivity}
-          options={activities}
-          optionLabelKey={'name'}
-          optionKey={'id'}
-          id='select-activity'
-          name='activity'
-          form='filter-form'
-        />
-      </div>
-      <div class='space-y-4 py-2'>
-        <Checkbox checked={completed} label='Completed' name='completed' />
-        <Checkbox checked={notCompleted} label='Not Completed' name='notCompleted' />
-        <Checkbox checked={expired} label='Expired' name='expired' />
-        <Checkbox checked={notExpired} label='Not Expired' name='notExpired' />
-      </div>
+        <InputContainer HTMLFor='fromDate' label='From Date' errors={[]}>
+          <DatePicker name='fromDate' value={fromDate ? new Date(fromDate) : null} />
+        </InputContainer>
+        <InputContainer HTMLFor='fromDate' label='To Date' errors={[]}>
+          <DatePicker name='toDate' value={toDate ? new Date(toDate) : null} />
+        </InputContainer>
 
-      <div class='grid grid-cols-3 gap-2'>
-        <div class='col-span-1'>
-          <a href='/goals' class='btn w-full bg-base-content/15 hover:border-base-100 hover:hover:bg-base-content/10'>
-            Reset
-          </a>
+        <div class='flex flex-col gap-2'>
+          <label for='select-activity' class='label-text'>Select Activity</label>
+          <AstroSelect
+            value={filterActivity}
+            options={activities}
+            optionLabelKey={'name'}
+            optionKey={'id'}
+            id='select-activity'
+            name='activity'
+          />
         </div>
-        <div class='col-span-2'>
-          <button
-            type='submit'
-            class='btn w-full bg-base-content/15 hover:border-base-100 hover:hover:bg-base-content/10'>
-            Filter
-          </button>
+        <div class='space-y-4 py-2'>
+          <Checkbox checked={completed} label='Completed' name='completed' />
+          <Checkbox checked={notCompleted} label='Not Completed' name='notCompleted' />
+          <Checkbox checked={expired} label='Expired' name='expired' />
+          <Checkbox checked={notExpired} label='Not Expired' name='notExpired' />
+        </div>
+
+        <div class='grid grid-cols-3 gap-2'>
+          <div class='col-span-1'>
+            <a href='/goals' class='btn w-full bg-base-content/15 hover:border-base-100 hover:hover:bg-base-content/10'>
+              Reset
+            </a>
+          </div>
+          <div class='col-span-2'>
+            <button
+              type='submit'
+              class='btn w-full bg-base-content/15 hover:border-base-100 hover:hover:bg-base-content/10'>
+              Filter
+            </button>
+          </div>
         </div>
       </div>
     </form>
   </section>
-</aside>
 
-<style>
-  input[type='date'] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  @media screen and (min-width: 640px) {
-    .collapse-arrow > .collapse-title:after {
-      display: none;
+  <style>
+    input[type='date'] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
     }
-  }
-</style>
+    @media screen and (min-width: 640px) {
+      .collapse-arrow > .collapse-title:after {
+        display: none;
+      }
+    }
+  </style>
+</aside>

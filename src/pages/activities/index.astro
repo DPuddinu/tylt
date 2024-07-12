@@ -1,7 +1,7 @@
 ---
 import { createActivity } from '@/api/activities/mutations';
 import { getGoalsWithActivities } from '@/api/activities/queries';
-import { ActivitySchema } from '@/types/activities.types';
+import { ActivitySchema, type ActivityInsertPayload } from '@/types/activities.types';
 import { timeFilters, type TimeFilter } from '@/types/filters.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
@@ -23,7 +23,7 @@ const percentages = mostUsedActivity.map((activity) => {
   return formattedNum;
 });
 
-let validationErrors: ValidationErrors | undefined;
+let validationErrors: ValidationErrors<ActivityInsertPayload> | undefined;
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
@@ -37,14 +37,14 @@ if (Astro.request.method === 'POST') {
     return Astro.redirect('/activities');
   } catch (error) {
     if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors;
+      validationErrors = error.flatten().fieldErrors as ValidationErrors<ActivityInsertPayload>;
     } else return Astro.redirect('/error?redirect=activities');
   }
 }
 ---
 
 <Layout pageName='Activities'>
-  <div class='flex w-full flex-col gap-4 sm:max-w-sm'>
+  <div class='flex w-full flex-col gap-4 sm:max-w-sm' transition:name="content">
     <h1 class='text-4xl'>Activities</h1>
     <header role='tablist' class='tabs-boxed tabs'>
       {

@@ -1,5 +1,6 @@
 ---
 import TextInput from '@/components/TextInput.astro';
+import type { ActivityInsertPayload } from '@/types/activities.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
 import { getAllIconPaths } from '@/utils/getAllFilesName';
 import InputContainer from '@components/InputContainer.astro';
@@ -10,7 +11,7 @@ const icons = getAllIconPaths();
 type Props = {
   title?: string;
   activity?: TActivity;
-  validationErrors?: ValidationErrors;
+  validationErrors?: ValidationErrors<ActivityInsertPayload>;
 };
 const { activity, validationErrors, title } = Astro.props;
 ---

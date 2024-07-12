@@ -2,6 +2,7 @@
 import '@/styles/commons.css';
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
+
 import '@fontsource/inter';
 const { user } = Astro.locals;
 type Props = {
@@ -20,66 +21,33 @@ const links = ['Activities', 'Goals', 'Reports'];
     <title>{pageName}</title>
   </head>
   <body class='flex h-dvh flex-col bg-base-content/5'>
-    <header class='h-fit bg-base-300'>
-      <div
-        class='navbar justify-between border border-b border-base-300 border-base-300/50 p-2 pl-6 shadow-md shadow-base-300/50'>
-        <label for='my-drawer' class='drawer-button hover:scale-105 hover:cursor-pointer'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            stroke-width='2'
-            stroke='currentColor'
-            class='h-6 w-6'>
-            <path stroke-linecap='round' stroke-linejoin='round' d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12'></path>
-          </svg>
-        </label>
+    <header class='min-h-16 bg-base-300 py-2 shadow-md shadow-base-300/50'>
+      <nav class='navbar justify-end gap-4'>
+        <div class="gap-4 hidden md:flex">
+          <a data-astro-prefetch href='/goals'>Goals</a>
+          <a data-astro-prefetch href='/activities'>Activities 🏗️</a>
+          <a data-astro-prefetch href='/reports'>Reports 🏗️</a>
+        </div>
         <Dropdown>
           <button
             slot='trigger'
-            class='btn btn-circle border-slate-700 bg-slate-700 hover:border-slate-600 hover:bg-slate-600'>
+            class='btn btn-circle border-base-content bg-base-content text-base-300 hover:border-base-content/90 hover:bg-base-content/90'>
             {user.name[0]}
           </button>
           <div slot='content'>
+            <li class='text-lg font-bold'><a data-astro-prefetch href='/changelog'>Changelog</a></li>
             <li>
-              <a class='flex h-8 p-0 active:bg-transparent'>
-                <SignOut />
+              <a class='text-lg font-bold'>
+                <SignOut> Logout </SignOut>
               </a>
             </li>
           </div>
         </Dropdown>
-      </div>
+      </nav>
     </header>
-    <main class='flex-container z-10' transition:animate='fade' transition:name='main'>
-      <div class='content drawer h-full'>
-        <input id='my-drawer' type='checkbox' class='drawer-toggle' />
-        <div class='drawer-content p-8' transition:name='drawer'>
-          <slot />
-        </div>
-        <div class='drawer-side' transition:name='drawer'>
-          <label for='my-drawer' aria-label='close sidebar' class='drawer-overlay'></label>
-          <ul
-            class='menu z-20 flex min-h-full w-80 grow flex-col border border-base-300/50 bg-base-200 p-4 text-base-content shadow'>
-            <div>
-              <div class='flex h-24 w-full items-center justify-center'>
-                <h3 class='text-3xl italic'>TYLT</h3>
-              </div>
-              <div class='border border-base-content opacity-50'></div>
-              <div class='py-4'>
-                <li class='hidden text-lg font-bold sm:block'><a data-astro-prefetch href='/goals'>Goals</a></li>
-                <li class='hidden text-lg font-bold sm:block'>
-                  <a data-astro-prefetch href='/activities'>Activities 🏗️</a>
-                </li>
-                <li class='hidden text-lg font-bold sm:block'><a data-astro-prefetch href='/reports'>Reports 🏗️</a></li>
-                <li class='text-lg font-bold'><a data-astro-prefetch href='/changelog'>Changelog</a></li>
-                <li class='disabled text-lg font-bold'><a>Settings 🏗️</a></li>
-              </div>
-            </div>
-            <div class='flex grow flex-col justify-end'>
-              <SignOut className='btn btn-error w-full'> Logout </SignOut>
-            </div>
-          </ul>
-        </div>
+    <main class='flex-container z-10'>
+      <div class='content h-full p-8'>
+        <slot />
       </div>
     </main>
     {
@@ -88,7 +56,7 @@ const links = ['Activities', 'Goals', 'Reports'];
           transition:animate='fade'
           transition:persist
           role='tablist'
-          class='tabs-boxed tabs grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 px-3 sm:hidden'>
+          class='tabs-boxed tabs grid h-[4.65rem] w-full grid-cols-3 items-center justify-between rounded-b-none bg-base-300 px-3 md:hidden'>
           {links.map((link) => (
             <>
               {link === pageName ? (
