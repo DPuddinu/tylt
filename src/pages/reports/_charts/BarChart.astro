@@ -5,7 +5,7 @@ const { user } = Astro.locals;
 const goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
 ---
 
-<activities-bar-chart data-value={JSON.stringify(goalsWithActivities)} class='rounded-lg bg-base-300 w-[50%] h-fit px-8 py-4'>
+<activities-bar-chart data-value={JSON.stringify(goalsWithActivities)} class='h-fit rounded-lg bg-base-300 px-8 py-4'>
   <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Goals per Activity</h1>
   <canvas id='chart'></canvas>
 </activities-bar-chart>
@@ -64,3 +64,13 @@ const goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
 
   customElements.define('activities-bar-chart', ActivitiesBarChart);
 </script>
+<style>
+  @media (min-width: 768px) {
+    activities-bar-chart {
+      width: calc(50vw - 2.25rem )!important;
+    }
+  }
+  activities-bar-chart {
+    width: calc(100vw - 4rem);
+  }
+</style>

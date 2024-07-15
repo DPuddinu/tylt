@@ -25,7 +25,7 @@ const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
       transition:animate='slide'
       href='/goals/new'
       data-astro-prefetch
-      class='btn btn-circle btn-warning btn-sm text-base font-extrabold'
+      class='btn btn-circle btn-warning btn-sm md:btn-md md:text-2xl md:font-bold text-base font-extrabold'
       transition:name='fab'>
       +
     </a>
@@ -33,9 +33,9 @@ const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
   {
     goals.length > 0 ? (
       <>
-        <article class='hidden md:flex'>
+        <article class='hidden grow md:flex'>
           <div class='grow overflow-x-auto'>
-            <table class='table table-lg w-full' transition:animate="none">
+            <table class='table table-lg w-full' transition:animate='none'>
               <thead>
                 <tr class='text-lg'>
                   <th>Name</th>
