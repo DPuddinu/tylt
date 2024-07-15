@@ -1,0 +1,66 @@
+---
+import { getGoalsWithActivities } from '@/api/activities/queries';
+
+const { user } = Astro.locals;
+const goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
+---
+
+<activities-bar-chart data-value={JSON.stringify(goalsWithActivities)} class='rounded-lg bg-base-300 w-[50%] h-fit px-8 py-4'>
+  <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Goals per Activity</h1>
+  <canvas id='chart'></canvas>
+</activities-bar-chart>
+
+<script>
+  import type { ActivityWithGoalCount } from '@/api/activities/queries';
+  import { BarController, BarElement, CategoryScale, Chart, LinearScale, Tooltip } from 'chart.js';
+  Chart.register(BarController, BarElement, LinearScale, Tooltip, CategoryScale);
+
+  class ActivitiesBarChart extends HTMLElement {
+    constructor() {
+      super();
+      const data = this.dataset.value;
+      const chart = document.querySelector<HTMLCanvasElement>('#chart');
+      if (data && chart) {
+        const parsedData = JSON.parse(data) as ActivityWithGoalCount[];
+        new Chart(chart, {
+          type: 'bar',
+          options: {
+            responsive: true,
+            plugins: {
+              tooltip: {
+                enabled: true,
+                callbacks: {
+                  label: function (context) {
+                    return 'Goals: ' + context.parsed.y;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                labels: parsedData.map((row) => row.activityName),
+                type: 'category'
+              },
+              y: {
+                ticks: {
+                  stepSize: 1 // Only show integer grid lines with a step size of 10
+                },
+                type: 'linear'
+              }
+            }
+          },
+          data: {
+            datasets: [
+              {
+                data: parsedData.map((row) => row.goalCount),
+                backgroundColor: parsedData.map((row) => row.color)
+              }
+            ]
+          }
+        });
+      }
+    }
+  }
+
+  customElements.define('activities-bar-chart', ActivitiesBarChart);
+</script>

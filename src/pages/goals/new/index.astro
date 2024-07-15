@@ -32,8 +32,8 @@ const title = 'New Goal';
 ---
 
 <Layout pageName={title}>
-  <section class='flex w-full flex-col gap-4'>
-    <header transition:name="filters">
+  <section class='flex h-full w-full flex-col gap-4'>
+    <header transition:name='filters'>
       <h1 class='text-4xl font-bold'>{title}</h1>
     </header>
     <GoalForm activities={activities} validationErrors={validationErrors} transition:name='content'>

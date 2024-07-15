@@ -1,6 +1,7 @@
 ---
 import { getCompletionRate } from '@/api/goals/queries';
 import Layout from '@layouts/MainLayout.astro';
+import BarChart from './_charts/BarChart.astro';
 
 const { user } = Astro.locals;
 
@@ -31,45 +32,28 @@ try {
 ---
 
 <Layout pageName='Reports'>
-  <div class='flex flex-col gap-4' >
-    <!-- <div role='tablist' class='tabs-boxed tabs max-w-sm'>
-      <a role='tab' class='tab'>Day</a>
-      <a role='tab' class='tab tab-active'>Week</a>
-      <a role='tab' class='tab'>Month</a>
-    </div> -->
-    <div class='stats stats-vertical w-full bg-base-200 shadow lg:stats-horizontal sm:w-fit'>
-      <div class='stat'>
-        <div class='stat-title'>Goals Completed</div>
-        <div class='stat-value'>{`${completionRate}%`}</div>
-        <div class='stat-desc min-h-5'>{`${completedCount} out of ${totalGoals}`}</div>
+  <header class='font-bolder pb-4 text-4xl text-base-content'><h1>Reports</h1></header>
+  <div class='grid auto-rows-auto gap-4 w-[80vw'>
+    <section class='grid h-40 grid-cols-2 grid-rows-2 gap-2 sm:grid-cols-4 sm:grid-rows-1'>
+      <div class='flex flex-col justify-center gap-4 rounded-xl bg-base-300 p-8 shadow-lg'>
+        <div class='text-center text-4xl font-extrabold text-base-content'>{`${completionRate}%`}</div>
+        <div class='text-balance text-center text-base-content/80'>Goals Completed</div>
       </div>
-
-      <div class='stat'>
-        <div class='stat-title'>Total Goals</div>
-        <div class='stat-value'>{totalGoals}</div>
-        <div class='stat-desc min-h-5'></div>
+      <div class='flex flex-col justify-center gap-4 rounded-xl bg-base-300 p-8 shadow-lg'>
+        <div class='text-center text-4xl font-extrabold text-base-content'>{totalGoals}</div>
+        <div class='text-balance text-center text-base-content/80'>Total Goals</div>
       </div>
-
-      <div class='stat'>
-        <div class='stat-title'>New Goals Last Week</div>
-        <div class='stat-value'>{lastWeekGoals}</div>
-        <div class='stat-desc min-h-5'>
-          {`${delta >= 0 ? '+' : ''}${delta} vs previous week`}
+      <div class='flex flex-col justify-center gap-4 rounded-xl bg-base-300 p-8 shadow-lg'>
+        <div class='text-center text-4xl font-extrabold text-base-content'>{`${lastWeekGoals}`}</div>
+        <div class='text-balance text-center text-base-content/80'>New Goals Last Week</div>
+      </div>
+      <div class='flex flex-col justify-center gap-4 rounded-xl bg-base-300 p-8 shadow-lg'>
+        <div class='text-center text-4xl font-extrabold text-base-content'>
+          {`${delta >= 0 ? '+' : ''}${delta}`}
         </div>
+        <div class='text-balance text-center text-base-content/80'>Vs Previous Week</div>
       </div>
-    </div>
-    <!-- <div class='flex flex-wrap gap-4'>
-      {
-        goalsWithActivities.map((data) => (
-          <div class='w-fit rounded-lg p-4 min-w-40 text-xl text-black' style={`background-color: ${data.color}`}>
-            <div class="flex gap-2">
-              <img alt={`${data.activityName} icon`} src={`${data.icon}`} height='24' width='24'/>
-              {data.activityName}
-            </div>
-            <p class="text-sm">{data.goalCount} goals</p>
-          </div>
-        ))
-      }
-    </div> -->
+    </section>
+    <BarChart />
   </div>
 </Layout>

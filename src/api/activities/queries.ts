@@ -1,6 +1,7 @@
 import store from '@/store/activities.store';
 import type { TimeFilter } from '@/types/filters.types';
 import { Activity, Goal, and, count, db, desc, eq, gte } from 'astro:db';
+import { z } from 'zod';
 
 export async function getActivities(userId: string) {
   const cachedActivities = store.getCachedActivities();
@@ -39,13 +40,15 @@ export async function getActivityById({ id, userId }: GetActivityByIdParams) {
     throw error;
   }
 }
-export type ActivityWithGoalCount = {
-  activityId: number;
-  activityName: string;
-  goalCount: number;
-  icon: string;
-  color: string;
-};
+
+export const ActivityWithGoalSchema = z.object({
+  activityId: z.number(),
+  activityName: z.string(),
+  goalCount: z.number(),
+  icon: z.string(),
+  color: z.string()
+});
+export type ActivityWithGoalCount = z.infer<typeof ActivityWithGoalSchema>;
 
 export async function getGoalsWithActivities({
   userId,
