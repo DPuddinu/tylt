@@ -6,7 +6,7 @@ import { atom } from 'nanostores';
 // ACTIVITIES
 const activitiesStore = atom<TActivity[] | undefined>(undefined);
 const activitiesWithGoalCount = atom<ActivityWithGoalCount[] | undefined>(undefined);
-const activitiesTimeFilter = atom<TimeFilter>('month');
+const activitiesTimeFilter = atom<TimeFilter | undefined>(undefined);
 
 function getCachedActivities() {
   return activitiesStore.get();
@@ -46,6 +46,7 @@ function setCachedTimeFilter(filter: TimeFilter) {
 function invalidateActivities() {
   activitiesStore.set(undefined);
   activitiesWithGoalCount.set(undefined);
+  activitiesTimeFilter.set(undefined);
 }
 
 const store = {

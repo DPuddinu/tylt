@@ -1,0 +1,70 @@
+---
+import { getGoalsWithActivities } from '@/api/activities/queries';
+
+const goalsWithActivities = await getGoalsWithActivities({ userId: Astro.locals.user.id });
+---
+
+<activities-pie-chart
+  data-value={JSON.stringify(goalsWithActivities)}
+  class='col-span-1 h-full w-full rounded-lg bg-base-300 px-8 py-4 md:col-span-2 xl:col-span-1'>
+  <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Activities</h1>
+  <canvas id='goalsWithActivities'></canvas>
+</activities-pie-chart>
+
+<script>
+  import type { ActivityWithGoalCount } from '@/api/activities/queries';
+  import { ArcElement, Chart, DoughnutController, Legend, Title, Tooltip } from 'chart.js';
+  Chart.register(ArcElement, DoughnutController, Title, Tooltip, Legend);
+
+  class ActivitiesPieChart extends HTMLElement {
+    constructor() {
+      super();
+      const data = this.dataset.value;
+      const chart = document.querySelector<HTMLCanvasElement>('#goalsWithActivities');
+      let labelColor = 'lightgray';
+      const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
+
+      if (data && chart) {
+        const parsedData = JSON.parse(data) as ActivityWithGoalCount[];
+        const piechart = new Chart(chart, {
+          type: 'doughnut',
+          options: {
+            plugins: {
+              legend: {
+                labels: {
+                  color: labelColor,
+                  boxHeight: 15,
+                  font: {
+                    size: 16
+                  }
+                }
+              }
+            }
+          },
+          data: {
+            labels: parsedData.map((row) => row.activityName),
+            datasets: [
+              {
+                label: 'Goals count',
+                data: parsedData.map((row) => row.goalCount),
+                backgroundColor: parsedData.map((row) => row.color),
+                hoverOffset: 4
+              }
+            ]
+          }
+        });
+
+        darkModePreference.addEventListener('change', (e) => {
+          labelColor = e.matches ? 'lightgray' : 'black';
+          const legend = piechart.options.plugins?.legend?.labels;
+          if (legend) {
+            legend.color = labelColor;
+            piechart.update();
+          }
+        });
+      }
+    }
+  }
+
+  customElements.define('activities-pie-chart', ActivitiesPieChart);
+</script>

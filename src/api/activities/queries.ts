@@ -23,7 +23,6 @@ type GetActivityByIdParams = {
 export async function getActivityById({ id, userId }: GetActivityByIdParams) {
   const cachedActivity = store.getCachedActivityById(id);
   if (cachedActivity) {
-    console.log('cached activity', cachedActivity);
     return cachedActivity;
   }
   try {
@@ -34,7 +33,6 @@ export async function getActivityById({ id, userId }: GetActivityByIdParams) {
       .get();
 
     if (activity) store.updateCachedActivity(activity);
-    console.log('activity', activity);
     return activity;
   } catch (error) {
     throw error;
@@ -46,7 +44,11 @@ export const ActivityWithGoalSchema = z.object({
   activityName: z.string(),
   goalCount: z.number(),
   icon: z.string(),
-  color: z.string()
+  color: z.string(),
+  completed: z
+    .boolean()
+    .nullable()
+    .transform((value) => !!value)
 });
 export type ActivityWithGoalCount = z.infer<typeof ActivityWithGoalSchema>;
 
@@ -56,7 +58,7 @@ export async function getGoalsWithActivities({
 }: {
   userId: string;
   timeFilter?: TimeFilter;
-}) {
+}): Promise<ActivityWithGoalCount[]> {
   let timeFilterQuery;
   const oneDay = 24 * 60 * 60 * 1000;
 
@@ -87,25 +89,23 @@ export async function getGoalsWithActivities({
       break;
   }
   try {
-    const cachedActivitiesWithGoalCount = store.getCachedActivitiesWithGoalCount();
-    if (cachedActivitiesWithGoalCount) {
-      return cachedActivitiesWithGoalCount;
-    }
     const res = await db
       .select({
         activityId: Activity.id,
         activityName: Activity.name,
         goalCount: count(Goal.id),
         icon: Activity.icon,
-        color: Activity.color
+        color: Activity.color,
+        completed: Goal.completed
       })
       .from(Activity)
       .where(eq(Activity.authorId, userId))
       .leftJoin(Goal, and(eq(Activity.id, Goal.activityId), timeFilterQuery))
       .groupBy(Activity.id)
       .orderBy(desc(count(Goal.id)));
-    store.setCachedActivitiesWithGoalCount(res);
-    return res;
+    const parsed = ActivityWithGoalSchema.array().parse(res);
+    store.setCachedActivitiesWithGoalCount(parsed);
+    return parsed;
   } catch (error) {
     throw error;
   }

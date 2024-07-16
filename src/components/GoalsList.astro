@@ -17,6 +17,8 @@ type Props = {
 const { activities, goals, totalPages, offset, currentPage, itemsPerPage, queryParams = undefined } = Astro.props;
 const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => Boolean(value));
 const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
+const path = Astro.url.pathname;
+const baseHref = path.includes('activities') ? '' : '/activities/'; 
 ---
 
 <Card title='Goals'>
@@ -25,7 +27,7 @@ const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
       transition:animate='slide'
       href='/goals/new'
       data-astro-prefetch
-      class='btn btn-circle btn-warning btn-sm md:btn-md md:text-2xl md:font-bold text-base font-extrabold'
+      class='btn btn-circle btn-warning btn-sm text-base font-extrabold md:btn-md md:text-2xl md:font-bold'
       transition:name='fab'>
       +
     </a>
@@ -58,7 +60,8 @@ const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
                           alt='Activity Icon'
                           class='h-8 w-8 rounded bg-base-content p-1'
                         />
-                        <a href={`activities/${activities.find((activity) => activity.id === goal.activityId)?.id}`}>
+                        <a
+                          href={`${baseHref}${activities.find((activity) => activity.id === goal.activityId)?.id}`}>
                           {activities.find((activity) => activity.id === goal.activityId)?.name}
                         </a>
                       </div>

@@ -33,7 +33,9 @@ const Goal = defineTable({
     dueDate: column.date({
       optional: true
     }),
-    completed: column.boolean()
+    completed: column.boolean({
+      default: false
+    })
   }
 });
 
