@@ -1,21 +1,53 @@
 ---
-import { getGoalsWithActivities } from '@/api/activities/queries';
-
+import { getGoalsByTimePeriod } from '@/api/goals/queries';
 const { user } = Astro.locals;
-const goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
+
+type ShortGoal = {
+  completed: boolean;
+  creationDate: Date;
+};
+let error: string | undefined;
+const goalsByTimePeriod: ShortGoal[] = await getGoalsByTimePeriod({ userId: user.id, timeFilter: 'all Time' });
+console.log(goalsByTimePeriod);
+type CompletionGoal = {
+  completedCount: number;
+  notCompletedCount: number;
+};
+const goalsByMonth = goalsByTimePeriod.reduce(
+  (acc, goal) => {
+    const month = new Date(goal.creationDate).getMonth();
+
+    if (goal.completed) {
+      acc[month] = {
+        completedCount: acc[month].completedCount + 1,
+        notCompletedCount: acc[month].notCompletedCount
+      };
+    } else {
+      acc[month] = {
+        completedCount: acc[month].completedCount,
+        notCompletedCount: acc[month].notCompletedCount + 1
+      };
+    }
+    return acc;
+  },
+  new Array<CompletionGoal>(12).fill({
+    completedCount: 0,
+    notCompletedCount: 0
+  })
+);
 ---
 
 <activities-bar-chart
-  data-value={JSON.stringify(goalsWithActivities)}
+  data-value={JSON.stringify(goalsByMonth)}
   class='col-span-1 h-fit w-full rounded-lg bg-base-300 px-8 py-4 md:col-span-2'>
-  <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Goals per Activity</h1>
+  <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Goals per Month</h1>
+  <h1>{error}</h1>
   <canvas id='chart'></canvas>
 </activities-bar-chart>
 
 <script>
-  import type { ActivityWithGoalCount } from '@/api/activities/queries';
-  import { BarController, BarElement, CategoryScale, Chart, LinearScale, Title, Tooltip } from 'chart.js';
-  Chart.register(BarController, BarElement, LinearScale, Tooltip, CategoryScale, Title);
+  import { BarController, BarElement, CategoryScale, Chart, Legend, LinearScale, Title, Tooltip } from 'chart.js';
+  Chart.register(BarController, BarElement, LinearScale, Tooltip, CategoryScale, Title, Legend);
 
   class ActivitiesBarChart extends HTMLElement {
     constructor() {
@@ -27,23 +59,30 @@ const goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
       let labelColor = 'lightgray';
 
       if (data && chart) {
-        const parsedData = JSON.parse(data) as ActivityWithGoalCount[];
+        const parsedData = JSON.parse(data) as {
+          completedCount: number;
+          notCompletedCount: number;
+        }[];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const barchart = new Chart(chart, {
           type: 'bar',
           options: {
             plugins: {
-              tooltip: {
-                enabled: true,
-                callbacks: {
-                  label: function (context) {
-                    return 'Goals: ' + context.parsed.y;
+              legend: {
+                labels: {
+                  boxHeight: 15,
+                  color: labelColor,
+                  font: {
+                    size: 16
                   }
-                }
+                },
+                position: 'top'
               }
             },
             scales: {
               x: {
-                labels: parsedData.map((row) => row.activityName),
+                stacked: true,
+                labels: months.map((row) => row),
                 type: 'category',
                 ticks: {
                   color: labelColor,
@@ -53,6 +92,7 @@ const goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
                 }
               },
               y: {
+                stacked: true,
                 ticks: {
                   color: labelColor,
                   stepSize: 1,
@@ -67,8 +107,16 @@ const goalsWithActivities = await getGoalsWithActivities({ userId: user.id });
           data: {
             datasets: [
               {
-                data: parsedData.map((row) => row.goalCount),
-                backgroundColor: parsedData.map((row) => row.color)
+                label: 'Completed',
+                data: parsedData.map((row) => row.completedCount),
+                backgroundColor: '#64d175',
+                barThickness: 30
+              },
+              {
+                label: 'Not Completed',
+                data: parsedData.map((row) => row.notCompletedCount),
+                backgroundColor: '#ef4444',
+                barThickness: 30
               }
             ]
           }

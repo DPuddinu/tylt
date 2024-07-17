@@ -1,6 +1,7 @@
 import store from '@/store/activities.store';
 import type { TimeFilter } from '@/types/filters.types';
-import { Activity, Goal, and, count, db, desc, eq, gte } from 'astro:db';
+import { getTimeFilterQuery } from '@/utils/queries-helpers';
+import { Activity, Goal, and, count, db, desc, eq } from 'astro:db';
 import { z } from 'zod';
 
 export async function getActivities(userId: string) {
@@ -52,16 +53,13 @@ export const ActivityWithGoalSchema = z.object({
 });
 export type ActivityWithGoalCount = z.infer<typeof ActivityWithGoalSchema>;
 
-export async function getGoalsWithActivities({
+export async function getGoalsCountPerActivity({
   userId,
   timeFilter = 'all Time'
 }: {
   userId: string;
   timeFilter?: TimeFilter;
 }): Promise<ActivityWithGoalCount[]> {
-  let timeFilterQuery;
-  const oneDay = 24 * 60 * 60 * 1000;
-
   const cachedTimeFilter = store.getCachedTimeFilter();
   if (cachedTimeFilter !== timeFilter) {
     store.invalidateActivities();
@@ -71,22 +69,6 @@ export async function getGoalsWithActivities({
     if (cachedActivitiesWithGoalCount) {
       return cachedActivitiesWithGoalCount;
     }
-  }
-  switch (timeFilter) {
-    case 'week':
-      const oneWeekAgo = new Date(new Date().getTime() - 7 * oneDay);
-      timeFilterQuery = gte(Goal.creationDate, oneWeekAgo);
-      break;
-    case 'month':
-      const oneMonthAgo = new Date(new Date().getTime() - 30 * oneDay);
-      timeFilterQuery = gte(Goal.creationDate, oneMonthAgo);
-      break;
-    case 'all Time':
-      timeFilterQuery = undefined;
-      break;
-    default:
-      timeFilterQuery = undefined;
-      break;
   }
   try {
     const res = await db
@@ -100,7 +82,7 @@ export async function getGoalsWithActivities({
       })
       .from(Activity)
       .where(eq(Activity.authorId, userId))
-      .leftJoin(Goal, and(eq(Activity.id, Goal.activityId), timeFilterQuery))
+      .leftJoin(Goal, and(eq(Activity.id, Goal.activityId), getTimeFilterQuery(timeFilter)))
       .groupBy(Activity.id)
       .orderBy(desc(count(Goal.id)));
     const parsed = ActivityWithGoalSchema.array().parse(res);

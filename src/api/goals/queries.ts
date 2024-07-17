@@ -1,7 +1,8 @@
 import store, { type GoalsByActivityResponse } from '@/store/goals.store';
 import reportStore, { type GoalsReport } from '@/store/report.store';
-import type { GoalFilters } from '@/types/filters.types';
+import type { GoalFilters, TimeFilter } from '@/types/filters.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
+import { getTimeFilterQuery } from '@/utils/queries-helpers';
 import { Goal, and, count, db, desc, eq, gt, gte, lt, lte } from 'astro:db';
 import type { TGoal } from 'db/config';
 
@@ -155,6 +156,27 @@ export async function getGoalByActivityId({
       goals: getGoalsByActivity,
       id: activityId
     };
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getGoalsByTimePeriod({
+  userId,
+  timeFilter = 'all Time'
+}: {
+  userId: string;
+  timeFilter?: TimeFilter;
+}) {
+  try {
+    return await db
+      .select({
+        title: Goal.title,
+        completed: Goal.completed,
+        creationDate: Goal.creationDate
+      })
+      .from(Goal)
+      .where(and(eq(Goal.authorId, userId), getTimeFilterQuery(timeFilter)));
   } catch (error) {
     throw error;
   }

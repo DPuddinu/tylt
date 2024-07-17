@@ -1,7 +1,7 @@
 ---
-import { getGoalsWithActivities } from '@/api/activities/queries';
+import { getGoalsCountPerActivity } from '@/api/activities/queries';
 
-const goalsWithActivities = await getGoalsWithActivities({ userId: Astro.locals.user.id });
+const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.locals.user.id });
 ---
 
 <activities-pie-chart
@@ -45,7 +45,7 @@ const goalsWithActivities = await getGoalsWithActivities({ userId: Astro.locals.
             labels: parsedData.map((row) => row.activityName),
             datasets: [
               {
-                label: 'Goals count',
+                label: 'Goals',
                 data: parsedData.map((row) => row.goalCount),
                 backgroundColor: parsedData.map((row) => row.color),
                 hoverOffset: 4

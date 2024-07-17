@@ -1,6 +1,6 @@
 ---
 import { createActivity } from '@/api/activities/mutations';
-import { getGoalsWithActivities } from '@/api/activities/queries';
+import { getGoalsCountPerActivity } from '@/api/activities/queries';
 import { ActivitySchema, type ActivityInsertPayload } from '@/types/activities.types';
 import { timeFilters, type TimeFilter } from '@/types/filters.types';
 import type { ValidationErrors } from '@/types/formValidation.types';
@@ -14,7 +14,10 @@ const { user } = Astro.locals;
 
 const time = Astro.url.searchParams.get('time') ?? 'month';
 
-const mostUsedActivity = await getGoalsWithActivities({ userId: Astro.locals.user.id, timeFilter: time as TimeFilter });
+const mostUsedActivity = await getGoalsCountPerActivity({
+  userId: Astro.locals.user.id,
+  timeFilter: time as TimeFilter
+});
 const total = mostUsedActivity.reduce((acc, activity) => acc + activity.goalCount, 0);
 const percentages = mostUsedActivity.map((activity) => {
   const percent = (activity.goalCount / total) * 100;
@@ -44,7 +47,7 @@ if (Astro.request.method === 'POST') {
 
 <Layout pageName='Activities'>
   <div class='flex w-full flex-col gap-4 sm:max-w-sm'>
-    <h1 class='text-4xl font-bolder'>Activities</h1>
+    <h1 class='font-bolder text-4xl'>Activities</h1>
     <div role='tablist' class='tabs-boxed tabs' transition:name='filters'>
       {
         timeFilters.map((filter) => (
@@ -90,7 +93,9 @@ if (Astro.request.method === 'POST') {
     </section>
     <Popover id='new-activity-dialog' title='New Activity'>
       <ActivityForm validationErrors={validationErrors}>
-        <button type="button" popovertarget='new-activity-dialog' class='btn text-warning' transition:name='fab'>Cancel</button>
+        <button type='button' popovertarget='new-activity-dialog' class='btn text-warning' transition:name='fab'>
+          Cancel
+        </button>
       </ActivityForm>
     </Popover>
   </div>
