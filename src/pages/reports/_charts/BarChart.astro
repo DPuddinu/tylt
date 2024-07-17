@@ -38,10 +38,12 @@ const goalsByMonth = goalsByTimePeriod.reduce(
 
 <activities-bar-chart
   data-value={JSON.stringify(goalsByMonth)}
-  class='col-span-1 h-fit w-full rounded-lg bg-base-300 px-8 py-4 md:col-span-2'>
+  class='col-span-1 flex w-full grow flex-col rounded-lg bg-base-300 px-8 py-4 md:col-span-2'>
   <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Goals per Month</h1>
   <h1>{error}</h1>
-  <canvas id='chart'></canvas>
+  <div class='flex grow flex-col items-end justify-end'>
+    <canvas id='chart' class='max-h-[400px] md:h-auto'></canvas>
+  </div>
 </activities-bar-chart>
 
 <script>
@@ -66,6 +68,7 @@ const goalsByMonth = goalsByTimePeriod.reduce(
         const barchart = new Chart(chart, {
           type: 'bar',
           options: {
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 labels: {
