@@ -6,9 +6,9 @@ const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.local
 
 <activities-pie-chart
   data-value={JSON.stringify(goalsWithActivities)}
-  class='col-span-1 h-full w-full rounded-lg bg-base-300 px-8 py-4 md:col-span-2 xl:col-span-1'>
+  class='col-span-1 flex h-fit w-full flex-col rounded-lg bg-base-300 px-8 py-4 md:col-span-2'>
   <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Activities</h1>
-  <canvas id='goalsWithActivities'></canvas>
+  <canvas id='goalsWithActivities' class='max-h-[400px]'></canvas>
 </activities-pie-chart>
 
 <script>
