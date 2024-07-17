@@ -8,7 +8,6 @@ type ShortGoal = {
 };
 let error: string | undefined;
 const goalsByTimePeriod: ShortGoal[] = await getGoalsByTimePeriod({ userId: user.id, timeFilter: 'all Time' });
-console.log(goalsByTimePeriod);
 type CompletionGoal = {
   completedCount: number;
   notCompletedCount: number;
