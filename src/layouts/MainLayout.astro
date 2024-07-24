@@ -1,9 +1,11 @@
 ---
 import '@/styles/commons.css';
+import { seoConfig } from '@/utils/seoConfig';
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
-
 import '@fontsource/inter';
+import { SEO } from 'astro-seo';
+
 const { user } = Astro.locals;
 type Props = {
   pageName?: string;
@@ -14,6 +16,28 @@ const links = ['Activities', 'Goals', 'Reports'];
 
 <html>
   <head>
+    <SEO
+      title={pageName}
+      description={seoConfig.description}
+      noindex={false}
+      nofollow={false}
+      openGraph={{
+        basic: {
+          title: pageName || seoConfig.siteName,
+          type: 'website',
+          image: seoConfig.image.url
+        },
+        image: {
+          width: seoConfig.image.width,
+          height: seoConfig.image.height,
+          alt: seoConfig.image.alt
+        },
+        optional: {
+          siteName: seoConfig.siteName,
+          description: seoConfig.description
+        }
+      }}
+    />
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
@@ -82,9 +106,7 @@ const links = ['Activities', 'Goals', 'Reports'];
         </div>
       )
     }
-  </body>
-
-  <style>
+  </body><style>
     @view-transition {
       navigation: auto;
     }

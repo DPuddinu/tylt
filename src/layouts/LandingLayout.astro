@@ -1,7 +1,9 @@
 ---
 import '@/styles/commons.css';
+import { seoConfig } from '@/utils/seoConfig';
 import SignInButton from '@components/SignInButton.astro';
 import '@fontsource/inter';
+import { SEO } from 'astro-seo';
 
 const pathName = Astro.url.pathname;
 const { title } = Astro.props;
@@ -9,6 +11,28 @@ const { title } = Astro.props;
 
 <html lang='en'>
   <head>
+    <SEO
+      title={title}
+      description={seoConfig.description}
+      noindex={false}
+      nofollow={false}
+      openGraph={{
+        basic: {
+          title: title,
+          type: 'website',
+          image: seoConfig.image.url
+        },
+        image: {
+          width: seoConfig.image.width,
+          height: seoConfig.image.height,
+          alt: seoConfig.image.alt
+        },
+        optional: {
+          siteName: seoConfig.siteName,
+          description: seoConfig.description
+        }
+      }}
+    />
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
