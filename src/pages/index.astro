@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import SignInButton from '@components/SignInButton.astro';
 import LandingLayout from '@layouts/LandingLayout.astro';
 ---
@@ -8,7 +9,7 @@ import LandingLayout from '@layouts/LandingLayout.astro';
     <header>
       <h1
         transition:name='title'
-        class='text-balanced text-center text-5xl font-bold xl:tracking-wide sm:text-5xl xl:text-7xl'>
+        class='text-balanced text-center text-5xl font-bold sm:text-5xl xl:text-7xl xl:tracking-wide'>
         Track Your <br /> Learning Today
       </h1>
     </header>
@@ -19,7 +20,7 @@ import LandingLayout from '@layouts/LandingLayout.astro';
     </article>
     <footer class='flex content-center justify-center'>
       <div class='flex flex-col gap-4'>
-        <SignInButton className="btn-wide" label='Sign in with GitHub' />
+        <SignInButton className='btn-wide' label='Sign in with GitHub' />
       </div>
     </footer>
   </section>

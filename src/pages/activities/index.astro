@@ -1,15 +1,14 @@
 ---
+
 import { createActivity } from '@/api/activities/mutations';
 import { getGoalsCountPerActivity } from '@/api/activities/queries';
-import { ActivitySchema, type ActivityInsertPayload } from '@/types/activities.types';
+import { ActivitySchema } from '@/types/activities.types';
 import { timeFilters, type TimeFilter } from '@/types/filters.types';
-import type { ValidationErrors } from '@/types/formValidation.types';
 import { toFixedDecimals } from '@/utils/fixed-decimals';
 import ActivityForm from '@components/ActivityForm.astro';
 import Fab from '@components/Fab.astro';
 import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
-import { ZodError } from 'zod';
 const { user } = Astro.locals;
 
 const time = Astro.url.searchParams.get('time') ?? 'month';
@@ -25,8 +24,6 @@ const percentages = mostUsedActivity.map((activity) => {
   return formattedNum;
 });
 
-let validationErrors: ValidationErrors<ActivityInsertPayload> | undefined;
-
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
 
@@ -38,9 +35,7 @@ if (Astro.request.method === 'POST') {
     });
     return Astro.redirect('/activities');
   } catch (error) {
-    if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors as ValidationErrors<ActivityInsertPayload>;
-    } else return Astro.redirect('/error?redirect=activities');
+    return Astro.redirect('/error?redirect=activities');
   }
 }
 ---
@@ -48,11 +43,11 @@ if (Astro.request.method === 'POST') {
 <Layout pageName='Activities'>
   <div class='flex w-full flex-col gap-4 sm:max-w-sm'>
     <h1 class='font-bolder text-4xl'>Activities</h1>
-    <div role='tablist' class='tabs-boxed tabs' transition:name='filters'>
+    <header role='tablist' class='tabs-boxed tabs' transition:name='filters'>
       {
         timeFilters.map((filter) => (
           <a
-            data-astro-prefetch
+            data-astro-prefetch='hover'
             class:list={[{ 'tab-active': filter === time }]}
             class='tab capitalize'
             href={`/activities?time=${filter}`}>
@@ -60,26 +55,24 @@ if (Astro.request.method === 'POST') {
           </a>
         ))
       }
-    </div>
+    </header>
     <section class='card flex max-w-md flex-col gap-8 bg-base-200 text-neutral-content' transition:name='content'>
-      <div class='card-body gap-8'>
+      <div class='card-body gap-8 p-4'>
         <div class='flex flex-col gap-4'>
           {
             mostUsedActivity.map((activity, i) => (
-              <div class='flex justify-between gap-2'>
-                <div class='col-span-1'>
-                  <div class='flex items-center gap-2'>
-                    <img src={activity.icon} alt='activity-icon' class='h-8 w-8 rounded-lg bg-base-content p-1' />
-                    <a href={`/activities/${activity.activityId}`} class='hover:font-bold'>
-                      {activity.activityName}
-                    </a>
-                  </div>
+              <div class='grid grid-cols-2 justify-between gap-2'>
+                <div class='flex items-center gap-2 truncate'>
+                  <img src={activity.icon} alt='activity-icon' class='h-8 w-8 rounded-lg bg-base-content p-1' />
+                  <a href={`/activities/${activity.activityId}`} class='truncate hover:font-bold'>
+                    {activity.activityName}
+                  </a>
                 </div>
                 <div class='flex gap-2'>
-                  <div class='flex items-center justify-end'>
+                  <div class='flex grow items-center justify-end'>
                     <div
                       class='activity-bar h-6 w-full origin-right justify-end rounded transition-transform'
-                      style={`width: ${percentages[i]}px; background-color: ${activity.color}`}
+                      style={`width: ${percentages[i]}%; background-color: ${activity.color}`}
                     />
                   </div>
                   <div class='w-14 content-center text-end'>{percentages[i]}%</div>
@@ -92,7 +85,7 @@ if (Astro.request.method === 'POST') {
       </div>
     </section>
     <Popover id='new-activity-dialog' title='New Activity'>
-      <ActivityForm validationErrors={validationErrors}>
+      <ActivityForm>
         <button type='button' popovertarget='new-activity-dialog' class='btn text-warning' transition:name='fab'>
           Cancel
         </button>

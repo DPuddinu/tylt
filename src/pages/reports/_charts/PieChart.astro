@@ -6,15 +6,29 @@ const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.local
 
 <activities-pie-chart
   data-value={JSON.stringify(goalsWithActivities)}
-  class='col-span-1 flex h-fit w-full flex-col rounded-lg bg-base-300 px-8 py-4 md:col-span-2'>
+  class='col-span-1 flex h-fit w-full flex-col rounded-lg bg-base-200 p-4 md:col-span-2'>
   <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Activities</h1>
-  <canvas id='goalsWithActivities' class='max-h-[400px]'></canvas>
+  <div
+    id='pie-chart-container'
+    class='flex min-h-[300px] grow animate-pulse flex-col items-start justify-start gap-4 rounded-lg bg-base-100 p-2 px-4'>
+    <div id='pie-chart-legend' class='hidden flex-wrap items-center gap-2 px-1'>
+      {
+        goalsWithActivities.map((activity) => (
+          <div class='flex items-center gap-2'>
+            <div class='h-2 w-4' style={`background-color: ${activity.color}`} />
+            <span>{activity.activityName}</span>
+          </div>
+        ))
+      }
+    </div>
+    <canvas id='goalsWithActivities' class='max-h-[300px]'></canvas>
+  </div>
 </activities-pie-chart>
 
 <script>
   import type { ActivityWithGoalCount } from '@/api/activities/queries';
-  import { ArcElement, Chart, DoughnutController, Legend, Title, Tooltip } from 'chart.js';
-  Chart.register(ArcElement, DoughnutController, Title, Tooltip, Legend);
+  import { ArcElement, Chart, DoughnutController, Title, Tooltip } from 'chart.js';
+  Chart.register(ArcElement, DoughnutController, Title, Tooltip);
 
   class ActivitiesPieChart extends HTMLElement {
     constructor() {
@@ -25,24 +39,12 @@ const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.local
       const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
 
       if (data && chart) {
+        document.querySelector<HTMLDivElement>('#pie-chart-container')?.classList.remove('animate-pulse');
+        document.querySelector<HTMLDivElement>('#pie-chart-legend')?.classList.replace('hidden', 'flex');
         const parsedData = JSON.parse(data) as ActivityWithGoalCount[];
         const piechart = new Chart(chart, {
           type: 'doughnut',
-          options: {
-            plugins: {
-              legend: {
-                labels: {
-                  color: labelColor,
-                  boxHeight: 15,
-                  font: {
-                    size: 16
-                  }
-                }
-              }
-            }
-          },
           data: {
-            labels: parsedData.map((row) => row.activityName),
             datasets: [
               {
                 label: 'Goals',

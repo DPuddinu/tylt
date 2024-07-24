@@ -1,26 +1,41 @@
 ---
 version: 1.0.0
-pubDate: 'Jul 11 2024'
+pubDate: 'Jul 17 2024'
 ---
 
-### Jul 11 2024
+## Jul 17, 2024
 
-Feature changes:
+### Feature changes:
+
+- Add charts to reports page
+- change items per page to 5change items per page to 5change items per page to 5change items per page to 5change items per page to 5change items per page to 5
+
+### Bug fixes:
+
+- Goals filter resets cache
+
+---
+
+## Jul 11, 2024
+
+### Feature changes:
 
 - add popover component
 - New edit activity screen
 
-Chore changes:
+### Chore changes:
 
 - cached responses
 
-### Jul 03, 2024
+---
 
-Implement main features:
+## Jul 03, 2024
+
+### Feature changes:
 
 - show goals list
-- add goal
+- add new goal
 - edit goal
-- filter goal
+- filter goals
 - show activities
-- edit activities
+- edit activity

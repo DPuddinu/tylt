@@ -14,6 +14,9 @@
     font-weight: bold !important;
   }
 }
+.text-editor {
+  color: var(--black-editor);
+}
 .ql-stroke{
   stroke: var(--black-editor) !important;
 }

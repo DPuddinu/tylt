@@ -9,5 +9,12 @@ import db from '@astrojs/db';
 export default defineConfig({
   integrations: [tailwind(), auth(), db()],
   output: 'server',
-  adapter: vercel()
+  adapter: vercel(),
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: 'viewport'
+  },
+  experimental: {
+    serverIslands: true
+  }
 });

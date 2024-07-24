@@ -3,42 +3,24 @@ import DatePicker from '@/components/DatePicker.astro';
 import RichTextEditor from '@/components/RichTextEditor.astro';
 import Select from '@/components/Select.astro';
 import TextInput from '@/components/TextInput.astro';
-import type { ValidationErrors } from '@/types/formValidation.types';
-import type { GoalInsertPayload } from '@/types/goal.types';
+import { formNames } from '@/types/goalForm.types';
 import InputContainer from '@components/InputContainer.astro';
 import SubmitButton from '@components/SubmitButton.astro';
-
-type GoalInputName = 'title' | 'description' | 'activityId' | 'completionDate' | 'dueDate';
-type GoalInputValue = {
-  label: string;
-  inputName: string;
-};
-const formNames: Record<GoalInputName, GoalInputValue> = {
-  title: { label: 'Title', inputName: 'title' },
-  description: { label: 'Description', inputName: 'description' },
-  activityId: { label: 'Activity', inputName: 'activityId' },
-  completionDate: { label: 'Completion Date', inputName: 'completionDate' },
-  dueDate: { label: 'Due Date', inputName: 'dueDate' }
-};
 
 import type { TActivity, TGoal } from 'db/config';
 type Props = {
   goal?: TGoal;
   activities: TActivity[];
-  validationErrors?: ValidationErrors<GoalInsertPayload>;
 };
-const { activities, goal, validationErrors } = Astro.props;
+const { activities, goal } = Astro.props;
 ---
 
 <form id='goal-form' method='post' class='flex w-full grow flex-col gap-6 rounded-lg bg-base-200 p-4'>
   <div class='flex flex-wrap gap-2'>
-    <InputContainer HTMLFor='title-input' label='Title' errors={validationErrors?.title}>
+    <InputContainer HTMLFor='title-input' label='Title'>
       <TextInput id='title-input' name={formNames.title.inputName} value={goal?.title} placeholder='Type title...' />
     </InputContainer>
-    <InputContainer
-      HTMLFor={formNames.activityId.label}
-      label={formNames.activityId.label}
-      errors={validationErrors?.activityId}>
+    <InputContainer HTMLFor={formNames.activityId.label} label={formNames.activityId.label}>
       <Select
         id='select-activity'
         required
@@ -50,33 +32,58 @@ const { activities, goal, validationErrors } = Astro.props;
       />
     </InputContainer>
     <div class='flex flex-wrap gap-2'>
-      <InputContainer
-        HTMLFor={formNames.completionDate.label}
-        label={formNames.completionDate.label}
-        errors={validationErrors?.completionDate}>
+      <InputContainer HTMLFor={formNames.completionDate.label} label={formNames.completionDate.label}>
         <DatePicker
           name={formNames.completionDate.inputName}
           value={goal?.completionDate ? goal.completionDate : new Date()}
         />
       </InputContainer>
-      <InputContainer
-        HTMLFor={formNames.dueDate.label}
-        label={formNames.dueDate.label}
-        errors={validationErrors?.dueDate}>
+      <InputContainer HTMLFor={formNames.dueDate.label} label={formNames.dueDate.label}>
         <DatePicker name={formNames.dueDate.inputName} value={goal?.dueDate} />
       </InputContainer>
     </div>
   </div>
 
   <div class='grow'>
-    <InputContainer
-      className='h-full'
-      HTMLFor='description'
-      label={formNames.description.label}
-      errors={validationErrors?.title}>
+    <InputContainer className='h-full' HTMLFor='description' label={formNames.description.label}>
+      <button type='button' class='text-base-content' onclick='editorDialog.showModal()' slot='label'>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          fill='none'
+          viewBox='0 0 24 24'
+          stroke-width='2'
+          stroke='currentColor'
+          class='h-4 w-4'>
+          <path
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            d='M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15'>
+          </path>
+        </svg>
+      </button>
+      <dialog id='editorDialog' class='modal items-center'>
+        <div class='modal-box flex h-[90vh] max-w-screen-xl flex-col gap-4'>
+          <h3 class='text-lg font-bold'>Description</h3>
+          <div class='grow'>
+            <RichTextEditor
+              name={formNames.description.inputName}
+              id='dialog-editor'
+              placeholder='Add new Description...'
+              value={goal?.description}
+              register={false}
+            />
+          </div>
+          <footer class='flex justify-end'>
+            <button onclick='editorDialog.close()' type='button' class='btn btn-ghost text-warning'>Cancel</button>
+            <button id='confirm-editor-dialog-btn' type='button' class='btn btn-warning' onclick='editorDialog.close()'>
+              Confirm
+            </button>
+          </footer>
+        </div>
+      </dialog>
       <RichTextEditor
         name={formNames.description.inputName}
-        id={formNames.description.inputName}
+        id='main-editor'
         placeholder='Add new Description...'
         value={goal?.description}
       />
@@ -87,3 +94,21 @@ const { activities, goal, validationErrors } = Astro.props;
     <SubmitButton className='!btn-warning disabled:!bg-warning'>{goal ? 'Update' : 'Create'}</SubmitButton>
   </footer>
 </form>
+<script>
+  import Quill from 'quill';
+  const dialogEditorNode = document.querySelector(`#dialog-editor`);
+  const mainEditorNode = document.querySelector(`#main-editor`);
+  if (dialogEditorNode && mainEditorNode) {
+    setTimeout(() => {
+      const dialogEditor = Quill.find(dialogEditorNode) as Quill;
+      const mainEditor = Quill.find(mainEditorNode) as Quill;
+      
+      const confirmBtn = document.querySelector('#confirm-editor-dialog-btn') as HTMLButtonElement;
+      confirmBtn.onclick = () => {
+        mainEditor.setContents(dialogEditor.getContents().ops);
+        const dialog = document.querySelector('#editorDialog') as HTMLDialogElement;
+        dialog.close();
+      };
+    }, 0);
+  }
+</script>

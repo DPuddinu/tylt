@@ -1,28 +1,25 @@
 ---
 import TextInput from '@/components/TextInput.astro';
-import type { ActivityInsertPayload } from '@/types/activities.types';
-import type { ValidationErrors } from '@/types/formValidation.types';
-import { getAllIconPaths } from '@/utils/getAllFilesName';
 import InputContainer from '@components/InputContainer.astro';
+import { getIconPaths } from '@/utils/getIconPaths';
 import SubmitButton from '@components/SubmitButton.astro';
 import type { TActivity } from 'db/config';
 
-const icons = getAllIconPaths();
+const icons = getIconPaths();
 type Props = {
   title?: string;
   activity?: TActivity;
-  validationErrors?: ValidationErrors<ActivityInsertPayload>;
 };
-const { activity, validationErrors, title } = Astro.props;
+const { activity, title } = Astro.props;
 ---
 
-<section class='flex  flex-col gap-8'>
+<section class='flex flex-col gap-8'>
   {title && <h1 class='text-4xl font-bold'>{title}</h1>}
 
-  <form method='post'>
+  <form id='activity-form' method='post'>
     <div class='flex flex-col gap-4 rounded border border-base-200 bg-base-200 p-4'>
       <div class='col-span-2 flex flex-col gap-4'>
-        <InputContainer HTMLFor='name' label='Activity name' errors={validationErrors?.name}>
+        <InputContainer HTMLFor='name' label='Activity name'>
           <TextInput
             variant='300'
             value={activity?.name}
@@ -32,7 +29,7 @@ const { activity, validationErrors, title } = Astro.props;
           />
         </InputContainer>
 
-        <InputContainer HTMLFor='select-icon-btn' label='Select icon' errors={validationErrors?.icon}>
+        <InputContainer HTMLFor='select-icon-btn' label='Select icon'>
           <div class='flex flex-wrap gap-2'>
             {
               icons.map((path) => (
@@ -50,22 +47,25 @@ const { activity, validationErrors, title } = Astro.props;
               ))
             }
           </div>
-          <input id='activity-icon-input' type='hidden' name='icon' value={activity?.icon} />
+          <input id='activity-icon-input' name='icon' required value={activity?.icon} class='h-0 bg-transparent' />
+          <span id='activity-icon-input-error' class='hidden text-error'>Icon required</span>
         </InputContainer>
 
-        <InputContainer HTMLFor='color' label='Select color' errors={validationErrors?.color}>
+        <InputContainer HTMLFor='color' label='Select color'>
           <input
             id='color-picker'
             type='color'
+            min='7'
+            max='7'
             value={activity?.color}
             name='color'
             value='#ef4444'
-            class:list={['box', 'bg-error', 'h-8', 'w-24']}
+            class='box h-8 w-24 bg-error'
           />
         </InputContainer>
 
         <div class='flex justify-end gap-4'>
-          <slot/>
+          <slot />
           <SubmitButton className='!btn-warning disabled:!bg-warning'>
             {activity ? 'Update' : 'Create'}
           </SubmitButton>
@@ -96,7 +96,7 @@ const { activity, validationErrors, title } = Astro.props;
 <script>
   const iconBtns = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn');
   const iconImgs = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn>img');
-  const selectedIcon = document.querySelector<HTMLInputElement>('#activity-icon-input');
+  const selectedIcon = document.querySelector<HTMLInputElement>('#activity-icon-input');  
   iconBtns.forEach((btn, i) => {
     btn.addEventListener('click', (e) => {
       const target = e.target as HTMLImageElement;
@@ -111,5 +111,12 @@ const { activity, validationErrors, title } = Astro.props;
         }
       });
     });
+  });
+  const submitBtn = document.querySelector<HTMLButtonElement>('#submit-btn');
+  submitBtn?.addEventListener('click', (e) => {
+    if (!selectedIcon?.value) {
+      const error = document.querySelector<HTMLSpanElement>('#activity-icon-input-error');
+      error?.classList.remove('hidden');
+    }
   });
 </script>

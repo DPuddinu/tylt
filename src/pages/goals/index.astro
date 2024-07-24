@@ -4,10 +4,8 @@ import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import { getSetupDone } from '@/api/setup/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
-import Fab from '@components/Fab.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
-import { fade } from 'astro:transitions';
 import type { TActivity, TGoal } from 'db/config';
 
 const { user } = Astro.locals;
@@ -45,7 +43,6 @@ let totalRows = 0;
 let goals: TGoal[] = [];
 let totalPages = 0;
 let activities: TActivity[] = [];
-
 try {
   const { countGoals, goals: getGoals } = await getPaginatedGoals({
     userId: user.id,

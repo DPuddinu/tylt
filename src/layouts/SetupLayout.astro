@@ -1,6 +1,5 @@
 ---
 const currentStep = Number(Astro.url.searchParams.get('step'));
-import Prose from '../components/Prose.astro';
 type Step = {
   title: string;
   descriptionHeader: string;
@@ -23,38 +22,41 @@ const steps: Step[] = [
 ---
 
 <section class='flex flex-col gap-8 md:flex-row'>
-  <ul class='flex max-w-sm gap-8 md:flex-col md:p-4'>
+  <ul class='flex gap-4 md:flex-col md:p-4'>
     {
       steps.map((step, index) => (
-        <div class='flex items-center gap-4'>
-          <div
-            class='h-8 min-h-8 w-8 min-w-8 content-center text-balance rounded-full text-center font-bold text-success-content'
-            class:list={[
-              { 'bg-base-content/50': index + 1 !== currentStep },
-              { 'bg-success font-extrabold': index + 1 === currentStep },
-              { 'font-extrabold text-opacity-60': index + 1 > currentStep }
-            ]}>
-            <span>{index + 1}</span>
+        <>
+          <div class='flex items-center gap-4'>
+            <div
+              class='h-8 min-h-8 w-8 min-w-8 content-center text-balance rounded-full text-center font-bold text-success-content'
+              class:list={[
+                { 'bg-base-content/50': index + 1 !== currentStep },
+                { 'bg-success font-extrabold': index + 1 === currentStep },
+                { 'font-extrabold text-opacity-60': index + 1 > currentStep }
+              ]}>
+              <span>{index + 1}</span>
+            </div>
+            <li class:list={[{ 'font-extrabold': index + 1 === currentStep }]} data-step={index}>
+              {step.title}
+            </li>
           </div>
-          <li class:list={[{ 'font-extrabold': index + 1 === currentStep }]} data-step={index}>
-            {step.title}
-          </li>
-        </div>
+          <div class="h-16 w-8 hidden md:flex md:justify-center last:hidden">
+            <div class="bg-base-content/50 h-full w-[3px] rounded-full"></div>
+          </div>
+        </>
       ))
     }
   </ul>
-  <Prose>
-    <main
-      class='flex max-w-sm flex-col gap-4 rounded bg-base-200 shadow'
-      transition:animate='slide'
-      transition:name='main-content'>
-      <div class='flex-container flex flex-col gap-2 text-balance p-4 pb-0'>
-        <h1 class='break-words' transition:name='description'>
-          {steps[currentStep - 1].descriptionHeader}
-        </h1>
-        <p class='text-base-content/70' set:html={steps[currentStep - 1].descriptionBody} />
-      </div>
-      <slot />
-    </main>
-  </Prose>
+  <main
+    class='flex flex-col gap-4 rounded bg-base-200 shadow'
+    transition:animate='slide'
+    transition:name='main-content'>
+    <div class='flex flex-col gap-2 text-balance p-4 pb-0'>
+      <h1 class='break-words text-3xl font-bold' transition:name='description'>
+        {steps[currentStep - 1].descriptionHeader}
+      </h1>
+      <p class='text-base text-base-content/70' set:html={steps[currentStep - 1].descriptionBody} />
+    </div>
+    <slot />
+  </main>
 </section>

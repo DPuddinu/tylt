@@ -1,10 +1,8 @@
-import store from '@/store/activities.store';
 import { Activity, and, db, eq } from 'astro:db';
 import type { TActivity } from 'db/config';
 
 export type CreateActivityPayload = Omit<TActivity, 'id'>;
 export async function createActivity(payload: CreateActivityPayload) {
-  store.invalidateActivities();
   const res = await db
     .insert(Activity)
     .values({
@@ -23,7 +21,6 @@ export async function updateActivity(activity: TActivity) {
       .where(and(eq(Activity.authorId, activity.authorId), eq(Activity.id, activity.id)))
       .returning()
       .get();
-    store.updateCachedActivity(res);
     return res;
   } catch (error) {
     throw error;

@@ -1,45 +1,7 @@
 ---
-import Prose from '@/components/Prose.astro';
-import LandingLayout from '@/layouts/LandingLayout.astro';
 import MainLayout from '@/layouts/MainLayout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
-import { getSession } from 'auth-astro/server';
-const changelogs = (await getCollection('changelog')) as CollectionEntry<'changelog'>[];
-const session = await getSession(Astro.request);
+import Changelog from './_components/changelog.astro';
 ---
-
-{
-  session ? (
-    <MainLayout pageName='Changelog'>
-      <Prose>
-        <h1>Changelog</h1>
-        <br />
-        {changelogs.map(async (changelog) => {
-          const { Content } = await changelog.render();
-          return (
-            <div class='flex flex-col gap-4 font-mono'>
-              <Content />
-            </div>
-          );
-        })}
-      </Prose>
-    </MainLayout>
-  ) : (
-    <LandingLayout pageName='Changelog'>
-      <div class='h-full w-full py-8'>
-        <Prose>
-          <h1>Changelog</h1>
-          <br />
-          {changelogs.map(async (changelog) => {
-            const { Content } = await changelog.render();
-            return (
-              <div class='flex flex-col gap-4 font-mono'>
-                <Content />
-              </div>
-            );
-          })}
-        </Prose>
-      </div>
-    </LandingLayout>
-  )
-}
+<MainLayout pageName='Changelog'>
+  <Changelog />
+</MainLayout>

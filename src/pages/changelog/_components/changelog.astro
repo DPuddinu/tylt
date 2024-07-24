@@ -1,0 +1,21 @@
+---
+export const prerender = true;
+import Prose from '@/components/Prose.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+const changelogs = (await getCollection('changelog')) as CollectionEntry<'changelog'>[];
+---
+
+<Prose>
+  <h1>Changelog</h1>
+  <br />
+  {
+    changelogs.map(async (changelog) => {
+      const { Content } = await changelog.render();
+      return (
+        <div class='flex w-fit flex-col gap-4 font-mono'>
+          <Content />
+        </div>
+      );
+    })
+  }
+</Prose>

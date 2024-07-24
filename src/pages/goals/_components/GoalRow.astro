@@ -19,7 +19,7 @@ const currentLanguage = Astro.request.headers.get('Accept-Language')?.substring(
       <footer class='text-sm font-thin'>
         {
           goal.completed && goal.completionDate
-            ? `Achieved on ${goal.completionDate.toLocaleDateString(currentLanguage)}`
+            ? `Achieved on ${new Date(goal.completionDate).toLocaleDateString(currentLanguage)}` 
             : 'Not Completed'
         }
       </footer>

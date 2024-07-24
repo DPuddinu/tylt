@@ -9,6 +9,7 @@ const { id, title } = Astro.props;
 <div id={id} popover class='mb-0 w-dvw overflow-hidden bg-transparent p-0'>
   <div class='md:fixed md:bottom-0 md:right-0 md:h-dvh'>
     <div
+      id='popover-content'
       class='rounded-t-lg border-t border-t-base-300 bg-base-200 p-4 text-base-content md:h-full md:w-[40dvw] md:max-w-md md:border-l md:border-l-base-300'>
       <header class='p-4'><h2 class='text-3xl font-bold'>{title}</h2></header>
       <slot />
@@ -17,7 +18,31 @@ const { id, title } = Astro.props;
 </div>
 <style>
   [popover]::backdrop {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.01);
     backdrop-filter: blur(5px);
+  }
+  @keyframes slide-Y {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  @keyframes slide-X {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @media screen and (min-width: 768px) {
+    #popover-content {
+      animation: slide-X 0.3s forwards !important;
+    }
+  }
+  #popover-content {
+    animation: slide-Y 0.3s forwards;
   }
 </style>

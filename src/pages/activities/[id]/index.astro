@@ -2,9 +2,7 @@
 import { updateActivity } from '@/api/activities/mutations';
 import { getActivities, getActivityById } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getGoalByActivityId } from '@/api/goals/queries';
-import type { ActivityInsertPayload } from '@/types/activities.types';
 import { ActivitySchema } from '@/types/activities.types';
-import type { ValidationErrors } from '@/types/formValidation.types';
 import ActivityForm from '@components/ActivityForm.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Popover from '@components/Popover.astro';
@@ -24,11 +22,10 @@ let goals: TGoal[] = [];
 let totalPages = 0;
 let totalRows = 0;
 let activities: TActivity[] = [];
-let validationErrors: ValidationErrors<ActivityInsertPayload> | undefined;
 let activity: TActivity | undefined;
 
 try {
-  const { count, goals: cachedGoals } = await getGoalByActivityId({
+  const { count, goals: goalsByActivity } = await getGoalByActivityId({
     activityId: Number(id),
     userId: user.id,
     page: currentPage
@@ -38,7 +35,7 @@ try {
     id: Number(id),
     userId: user.id
   });
-  goals = cachedGoals;
+  goals = goalsByActivity;
   totalRows = count;
   totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
 
@@ -58,7 +55,6 @@ if (Astro.request.method === 'POST') {
     return Astro.redirect(`/activities/${activity.id}`);
   } catch (error) {
     if (error instanceof ZodError) {
-      validationErrors = error.flatten().fieldErrors as ValidationErrors<ActivityInsertPayload>;
     } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
   }
 }
@@ -86,7 +82,7 @@ if (Astro.request.method === 'POST') {
           <span class='hidden sm:block'>Edit Activity</span>
         </button>
         <Popover id='edit-activity-dialog' title='Edit Activity'>
-          <ActivityForm activity={activity} validationErrors={validationErrors}>
+          <ActivityForm activity={activity}>
             <button
               type='button'
               popovertargetaction='hide'
