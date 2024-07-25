@@ -4,6 +4,7 @@ import { seoConfig } from '@/utils/seoConfig';
 import SignInButton from '@components/SignInButton.astro';
 import '@fontsource/inter';
 import { SEO } from 'astro-seo';
+import { ViewTransitions } from 'astro:transitions';
 
 const pathName = Astro.url.pathname;
 const { title } = Astro.props;
@@ -33,15 +34,21 @@ const { title } = Astro.props;
         }
       }}
     />
+    <ViewTransitions />
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-    <meta name='viewport' content='width=device-width' />
-    <meta name='generator' content={Astro.generator} />
-    <title>{title}</title>
+
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <meta name='msapplication-config' content='/browserconfig.xml' />
+    <meta name='msapplication-TileColor' content='#15191e' />
+    <meta name='theme-color' content='#15191e' />
+
+    <script is:inline src='/registerSW.js'></script>
+    <link rel='manifest' href='/manifest.webmanifest' />
   </head>
-  <body class='grid min-h-screen grid-rows-[auto_1fr_auto] bg-base-300'>
-    <header class='sticky top-0 z-10 bg-base-300'>
-      <div class='navbar border-b border-b-base-100'>
+  <body class='flex flex-col bg-base-content/5'>
+    <header class='h-16 bg-base-300 shadow-md shadow-base-300/50'>
+      <div class='navbar max-h-full border-b border-b-base-100'>
         <div class='navbar-start'>
           <div class='dropdown'>
             <div tabindex='0' role='button' class='btn btn-ghost lg:hidden'>
@@ -94,16 +101,20 @@ const { title } = Astro.props;
       </div>
     </header>
 
-    <main class='flex flex-col items-center justify-center gap-12 bg-base-content/5 px-8'>
+    <main class='flex grow flex-col items-center justify-center gap-12 bg-base-content/5 px-8'>
       <slot />
     </main>
-    <footer class='h-16 w-full content-center border-t border-t-base-100 text-center font-mono text-sm opacity-85'>
+    <footer class='h-16 w-full content-center bg-base-300 text-center font-mono text-sm opacity-85'>
       Dario Puddinu 2024
     </footer>
+    <script>
+      // This is a hack to get vite-plugin-pwa to generate a sw.js file.
+      // Do not remove this script tag.
+    </script>
   </body>
 </html>
-<style>
+<!-- <style>
   @view-transition {
     navigation: auto; /* enabled! */
   }
-</style>
+</style> -->

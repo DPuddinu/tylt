@@ -1,5 +1,4 @@
 ---
-
 import { createActivity } from '@/api/activities/mutations';
 import { getGoalsCountPerActivity } from '@/api/activities/queries';
 import { ActivitySchema } from '@/types/activities.types';
@@ -9,6 +8,7 @@ import ActivityForm from '@components/ActivityForm.astro';
 import Fab from '@components/Fab.astro';
 import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
+import { Icon } from 'astro-icon/components';
 const { user } = Astro.locals;
 
 const time = Astro.url.searchParams.get('time') ?? 'month';
@@ -63,7 +63,7 @@ if (Astro.request.method === 'POST') {
             mostUsedActivity.map((activity, i) => (
               <div class='grid grid-cols-2 justify-between gap-2'>
                 <div class='flex items-center gap-2 truncate'>
-                  <img src={activity.icon} alt='activity-icon' class='h-8 w-8 rounded-lg bg-base-content p-1' />
+                  <Icon name={activity.icon} class='h-8 w-8 p-1' />
                   <a href={`/activities/${activity.activityId}`} class='truncate hover:font-bold'>
                     {activity.activityName}
                   </a>

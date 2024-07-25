@@ -21,12 +21,25 @@ export const seoConfig = {
  * Defines the configuration for PWA webmanifest.
  */
 export const manifest: Partial<ManifestOptions> = {
+  screenshots: [
+    {
+      src: '/screenshots/wide.png',
+      form_factor: 'wide',
+      sizes: '1920x958'
+    },
+    {
+      src: '/screenshots/narrow.png',
+      form_factor: 'narrow',
+      sizes: '395x855'
+    }
+  ],
   name: 'Track You Learning Today', // Change this to your website's name.
   short_name: 'TYLT', // Change this to your website's short name.
   description: 'Astro PWA application to keep track of your learning progress.', // Change this to your websites description.
-  theme_color: '#a6adbb0d', // Change this to your primary color.
-  background_color: '#a6adbb0d', // Change this to your background color.
+  theme_color: '#15191e', // Change this to your primary color.
+  background_color: '#15191e', // Change this to your background color.
   display: 'standalone',
+  display_override: ['standalone', 'fullscreen'],
   icons: [
     {
       src: '/favicons/Astro.png',

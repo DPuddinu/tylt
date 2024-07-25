@@ -1,6 +1,7 @@
 ---
 import GoalRow from '@/pages/goals/_components/GoalRow.astro';
 import { formatDate } from '@/utils/format-date';
+import { Icon } from 'astro-icon/components';
 import type { TActivity, TGoal } from 'db/config';
 import Card from './Card.astro';
 
@@ -55,10 +56,9 @@ const baseHref = path.includes('activities') ? '' : '/activities/';
                     <td>{goal.title}</td>
                     <td>
                       <div class='flex items-center gap-2'>
-                        <img
-                          src={`/${activities.find((activity) => activity.id === goal.activityId)?.icon}`}
-                          alt='Activity Icon'
-                          class='h-8 w-8 rounded bg-base-content p-1'
+                        <Icon
+                          name={activities.find((activity) => activity.id === goal.activityId)?.icon}
+                          class='h-8 w-8 rounded-lg p-1'
                         />
                         <a href={`${baseHref}${activities.find((activity) => activity.id === goal.activityId)?.id}`}>
                           {activities.find((activity) => activity.id === goal.activityId)?.name}

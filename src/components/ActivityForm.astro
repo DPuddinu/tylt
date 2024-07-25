@@ -1,11 +1,11 @@
 ---
 import TextInput from '@/components/TextInput.astro';
 import InputContainer from '@components/InputContainer.astro';
-import { getIconPaths } from '@/utils/getIconPaths';
 import SubmitButton from '@components/SubmitButton.astro';
+import { Icon } from 'astro-icon/components';
 import type { TActivity } from 'db/config';
 
-const icons = getIconPaths();
+const icons = ['music', 'office', 'programming', 'school', 'muscle', 'book'];
 type Props = {
   title?: string;
   activity?: TActivity;
@@ -32,16 +32,14 @@ const { activity, title } = Astro.props;
         <InputContainer HTMLFor='select-icon-btn' label='Select icon'>
           <div class='flex flex-wrap gap-2'>
             {
-              icons.map((path) => (
-                <button type='button' class='icon-select-btn'>
-                  <img
-                    src={path}
-                    alt='icon'
+              icons.map((name) => (
+                <button type='button' class='icon-select-btn' data-icon={name}>
+                  <Icon
+                    name={name}
                     class:list={[
-                      { outline: activity?.icon && path.includes(activity.icon) },
-                      { 'outline-warning': activity?.icon && path.includes(activity.icon) }
+                      { 'outline outline-warning text-warning': activity?.icon === name }
                     ]}
-                    class='h-12 w-12 rounded-lg bg-base-content p-1'
+                    class='h-12 w-12 rounded-lg p-1 focus:text-warning'
                   />
                 </button>
               ))
@@ -95,19 +93,18 @@ const { activity, title } = Astro.props;
 </section>
 <script>
   const iconBtns = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn');
-  const iconImgs = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn>img');
-  const selectedIcon = document.querySelector<HTMLInputElement>('#activity-icon-input');  
+  const iconImgs = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn>svg');
+  const selectedIcon = document.querySelector<HTMLInputElement>('#activity-icon-input');
   iconBtns.forEach((btn, i) => {
     btn.addEventListener('click', (e) => {
-      const target = e.target as HTMLImageElement;
-      if (selectedIcon && target) {
-        selectedIcon.value = target.src;
+      if (selectedIcon && btn.dataset.icon) {
+        selectedIcon.value = btn.dataset.icon;
       }
       iconImgs.forEach((img, j) => {
         if (j !== i) {
-          img.classList.remove('outline', 'outline-warning');
+          img.classList.remove('outline', 'outline-warning', 'text-warning');
         } else {
-          img.classList.add('outline', 'outline-warning');
+          img.classList.add('outline', 'outline-warning', 'text-warning');
         }
       });
     });

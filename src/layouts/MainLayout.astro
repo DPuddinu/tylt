@@ -5,6 +5,7 @@ import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
 import '@fontsource/inter';
 import { SEO } from 'astro-seo';
+import { ViewTransitions } from 'astro:transitions';
 
 const { user } = Astro.locals;
 type Props = {
@@ -38,13 +39,20 @@ const links = ['Activities', 'Goals', 'Reports'];
         }
       }}
     />
+    <ViewTransitions />
+
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-    <meta name='viewport' content='width=device-width' />
-    <meta name='generator' content={Astro.generator} />
-    <title>{pageName}</title>
+
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <meta name='msapplication-config' content='/browserconfig.xml' />
+    <meta name='msapplication-TileColor' content='#15191e' />
+    <meta name='theme-color' content='#15191e' />
+
+    <script is:inline src='/registerSW.js'></script>
+    <link rel='manifest' href='/manifest.webmanifest' />
   </head>
-  <body class='flex h-dvh flex-col bg-base-content/5'>
+  <body class='flex flex-col bg-base-content/5'>
     <header class='h-16 bg-base-300 shadow-md shadow-base-300/50'>
       <nav class='flex h-full items-center justify-end gap-4'>
         {
@@ -52,7 +60,7 @@ const links = ['Activities', 'Goals', 'Reports'];
             <div class='hidden gap-4 md:flex'>
               {links.map((link) => (
                 <a
-                  data-astro-prefetch
+                  data-astro-prefetch={pageName === 'New Goal' && link === 'Goals' ? 'none' : 'viewport'}
                   data-astro-reload
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
@@ -87,28 +95,31 @@ const links = ['Activities', 'Goals', 'Reports'];
     </main>
     {
       pageName && (
-        <div class='p-2'>
-          <footer
-            transition:name='footer'
-            role='tablist'
-            class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl bg-base-300 px-3 shadow shadow-base-content/10 md:hidden'>
-            {links.map((link) => (
-              <a
-                data-astro-prefetch
-                href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
-                role='link'
-                class:list={[{ 'tab-active': pageName === link }]}
-                class='tab h-3/4 text-base font-bold'>
-                {link}
-              </a>
-            ))}
-          </footer>
-        </div>
+        <footer
+          transition:name='footer'
+          role='tablist'
+          class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl rounded-b-none bg-base-300 shadow shadow-base-content/10 md:hidden'>
+          {links.map((link) => (
+            <a
+              data-astro-prefetch={pageName === 'New Goal' && link === 'Goals' ? 'none' : 'viewport'}
+              href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
+              role='link'
+              class:list={[{ 'tab-active': pageName === link }]}
+              class='tab h-3/4 text-base font-bold'>
+              {link}
+            </a>
+          ))}
+        </footer>
       )
     }
-  </body><style>
-    @view-transition {
-      navigation: auto;
-    }
-  </style>
+    <script>
+      // This is a hack to get vite-plugin-pwa to generate a sw.js file.
+      // Do not remove this script tag.
+    </script>
+  </body>
 </html>
+<!-- <style>
+  @view-transition {
+    navigation: auto;
+  }
+</style> -->
