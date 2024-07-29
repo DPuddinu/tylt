@@ -18,7 +18,7 @@ export default defineConfig({
   adapter: vercel(),
   prefetch: {
     prefetchAll: false,
-    defaultStrategy: 'viewport'
+    defaultStrategy: 'hover'
   },
   experimental: {
     serverIslands: true

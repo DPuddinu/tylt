@@ -1,12 +1,12 @@
 ---
 import { getActivities } from '@/api/activities/queries';
-import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
+import { ITEMS_PER_PAGE } from '@/api/goals/queries';
 import { getSetupDone } from '@/api/setup/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
-import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
-import type { TActivity, TGoal } from 'db/config';
+import type { TActivity } from 'db/config';
+import GoalsContainer from './_components/GoalsContainer.astro';
 
 const { user } = Astro.locals;
 
@@ -39,19 +39,9 @@ const goalFilters: GoalFilters = {
 };
 const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
-let totalRows = 0;
-let goals: TGoal[] = [];
-let totalPages = 0;
+
 let activities: TActivity[] = [];
 try {
-  const { countGoals, goals: getGoals } = await getPaginatedGoals({
-    userId: user.id,
-    page: currentPage,
-    filters: goalFilters
-  });
-  goals = getGoals;
-  totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
-
   activities = await getActivities(user.id);
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
@@ -59,17 +49,17 @@ try {
 ---
 
 <Layout pageName='Goals'>
-  <section class='flex flex-col gap-4 md:flex-row'>
+  <section class='flex h-full flex-col gap-4 md:flex-row'>
     <GoalFilterSidebar activities={activities} filters={goalFilters} />
-    <GoalsList
-      queryParams={params}
-      activities={activities}
-      goals={goals}
-      totalRows={totalRows}
-      totalPages={totalPages}
-      offset={offsetFilter}
+    <GoalsContainer
+      goalFilters={goalFilters}
       currentPage={currentPage}
-      itemsPerPage={ITEMS_PER_PAGE}
-    />
+      params={params}
+      offset={offsetFilter}
+      server:defer>
+      <div class='flex grow justify-center' slot='fallback'>
+        <span class='loading loading-spinner loading-lg'></span>
+      </div>
+    </GoalsContainer>
   </section>
 </Layout>
