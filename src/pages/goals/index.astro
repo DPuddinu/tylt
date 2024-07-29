@@ -52,6 +52,7 @@ try {
   <section class='flex h-full flex-col gap-4 md:flex-row'>
     <GoalFilterSidebar activities={activities} filters={goalFilters} />
     <GoalsContainer
+      activities={activities}
       goalFilters={goalFilters}
       currentPage={currentPage}
       params={params}
