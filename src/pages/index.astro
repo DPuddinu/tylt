@@ -1,4 +1,6 @@
 ---
+Astro.response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=31536000');
+
 export const prerender = true;
 import SignInButton from '@components/SignInButton.astro';
 import LandingLayout from '@layouts/LandingLayout.astro';
