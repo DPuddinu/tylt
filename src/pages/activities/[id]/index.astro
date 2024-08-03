@@ -7,8 +7,10 @@ import ActivityForm from '@components/ActivityForm.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
+import { purgeCache } from '@netlify/functions';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
+
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
@@ -51,6 +53,7 @@ if (Astro.request.method === 'POST') {
     if (!activity) throw new Error('Activity not found');
     const data = ActivitySchema.parse(formData);
     await updateActivity({ ...activity, ...data });
+    await purgeCache({ tags: [`activities-${user.id}`, `goals-${user.id}`, `reports-${user.id}`] });
 
     return Astro.redirect(`/activities/${activity.id}`);
   } catch (error) {
@@ -65,7 +68,7 @@ if (Astro.request.method === 'POST') {
     <div class='flex justify-between'>
       <h1 class='text-3xl font-bold text-base-content'>{activity?.name}</h1>
       <div class='content-center'>
-        <button id='edit-activity' class='uppercase active:scale-105 sm:btn' popovertarget='edit-activity-dialog'>
+        <button id='edit-activity' class='uppercase sm:btn active:scale-105' popovertarget='edit-activity-dialog'>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -98,7 +101,6 @@ if (Astro.request.method === 'POST') {
     <GoalsList
       activities={activities}
       goals={goals}
-      totalRows={totalRows}
       totalPages={totalPages}
       offset={offsetFilter}
       currentPage={currentPage}

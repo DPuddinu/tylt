@@ -19,7 +19,7 @@ if (Astro.request.method === 'POST') {
       authorId: user.id,
       authorName: user.name
     });
-    await purgeCache({ tags: [`goals-${user.id}`, `activities-${user.id}`] });
+    await purgeCache({ tags: [`goals-${user.id}`, `activities-${user.id}`, `reports-${user.id}`] });
 
     return Astro.redirect('/goals');
   } catch (error) {

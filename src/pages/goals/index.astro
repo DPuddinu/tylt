@@ -1,12 +1,12 @@
 ---
 import { getActivities } from '@/api/activities/queries';
-import { ITEMS_PER_PAGE } from '@/api/goals/queries';
+import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import { getSetupDone } from '@/api/setup/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
+import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity } from 'db/config';
-import GoalsContainer from './_components/GoalsContainer.astro';
 
 const { user } = Astro.locals;
 
@@ -41,6 +41,13 @@ const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
 let activities: TActivity[] = [];
+
+const { countGoals, goals } = await getPaginatedGoals({
+  userId: user.id,
+  page: currentPage,
+  filters: goalFilters
+});
+const totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
 try {
   activities = await getActivities(user.id);
 } catch (error) {
@@ -54,18 +61,16 @@ Astro.response.headers.set('netlify-cache-tag', `goals-${user.id}`);
 ---
 
 <Layout pageName='Goals'>
-  <section class='flex h-full flex-col gap-4 md:flex-row'>
+  <section class='flex flex-col gap-4 md:flex-row'>
     <GoalFilterSidebar activities={activities} filters={goalFilters} />
-    <GoalsContainer
+    <GoalsList
+      queryParams={params}
       activities={activities}
-      goalFilters={goalFilters}
-      currentPage={currentPage}
-      params={params}
+      goals={goals}
+      totalPages={totalPages}
       offset={offsetFilter}
-      server:defer>
-      <div class='flex grow justify-center' slot='fallback'>
-        <span class='loading loading-spinner loading-lg'></span>
-      </div>
-    </GoalsContainer>
+      currentPage={currentPage}
+      itemsPerPage={ITEMS_PER_PAGE}
+    />
   </section>
 </Layout>
