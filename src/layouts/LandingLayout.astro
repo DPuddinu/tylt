@@ -101,20 +101,13 @@ const { title } = Astro.props;
       </div>
     </header>
 
-    <main class='flex grow flex-col items-center justify-center gap-12 bg-base-content/5 px-8'>
+    <main class='flex grow flex-col items-center justify-center gap-12 bg-base-content/5 p-8'>
       <slot />
+      <SignInButton className='btn-wide' label='Sign in with GitHub' />
     </main>
-    <footer class='h-16 w-full content-center bg-base-300 text-center font-mono text-sm opacity-85'>
+    <footer class='h-16 w-full content-center text-center font-mono text-sm bg-base-300'>
       Dario Puddinu 2024
     </footer>
-    <script>
-      // This is a hack to get vite-plugin-pwa to generate a sw.js file.
-      // Do not remove this script tag.
-    </script>
+    <script></script>
   </body>
 </html>
-<!-- <style>
-  @view-transition {
-    navigation: auto; /* enabled! */
-  }
-</style> -->
