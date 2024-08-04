@@ -1,6 +1,6 @@
 html, body {
   scrollbar-gutter: auto !important;
-  min-height: 100dvh;
+  height: 100%;
 }
 button,
 a,

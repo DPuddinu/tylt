@@ -101,13 +101,15 @@ const { title } = Astro.props;
       </div>
     </header>
 
-    <main class='flex grow flex-col items-center justify-center gap-12 bg-base-content/5 p-8'>
-      <slot />
-      <SignInButton className='btn-wide' label='Sign in with GitHub' />
+    <main class='flex-container gap-12'>
+      <div class='content flex grow flex-col justify-center p-8 gap-16'>
+        <slot />
+        <div class='flex justify-center'>
+          <SignInButton className='btn-wide' label='Sign in with GitHub' />
+        </div>
+      </div>
     </main>
-    <footer class='h-16 w-full content-center text-center font-mono text-sm bg-base-300'>
-      Dario Puddinu 2024
-    </footer>
+    <footer class='h-16 w-full content-center bg-base-300 text-center font-mono text-sm'>Dario Puddinu 2024</footer>
     <script></script>
   </body>
 </html>

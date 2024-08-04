@@ -6,7 +6,7 @@ type Props = {
 const { id, title } = Astro.props;
 ---
 
-<div id={id} popover class='mb-0 w-dvw overflow-hidden bg-transparent p-0'>
+<div id={id} popover class='mb-0 w-dvw overflow-hidden bg-transparent p-0 md:m-0 md:h-full'>
   <div class='md:fixed md:bottom-0 md:right-0 md:h-dvh'>
     <div
       id='popover-content'
@@ -17,32 +17,44 @@ const { id, title } = Astro.props;
   </div>
 </div>
 <style>
-  [popover]::backdrop {
-    background: rgba(0, 0, 0, 0.01);
-    backdrop-filter: blur(5px);
+  :root {
+    --popover-animation-duration: 0.3s;
   }
-  @keyframes slide-Y {
-    0% {
+  @screen md {
+    [popover] {
+      transform: translateX(100%) !important;
+    }
+    [popover]:popover-open {
+      transform: translateX(0) !important;
+    }
+    @starting-style {
+      [popover]:popover-open {
+        transform: translateX(100%) !important;
+      }
+    }
+  }
+  [popover]:popover-open {
+    transform: translateY(0);
+  }
+  [popover] {
+    transform: translateY(100%);
+    transition:
+      transform var(--popover-animation-duration) ease-in-out,
+      overlay var(--popover-animation-duration) allow-discrete,
+      display var(--popover-animation-duration) allow-discrete;
+  }
+
+  @starting-style {
+    [popover]:popover-open {
       transform: translateY(100%);
     }
-    100% {
-      transform: translateY(0);
-    }
   }
-  @keyframes slide-X {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-  @media screen and (min-width: 768px) {
-    #popover-content {
-      animation: slide-X 0.3s forwards !important;
-    }
-  }
-  #popover-content {
-    animation: slide-Y 0.3s forwards;
+
+  [popover]::backdrop {
+    backdrop-filter: blur(2px);
+    transition:
+      display var(--popover-animation-duration) allow-discrete,
+      overlay var(--popover-animation-duration) allow-discrete,
+      background-color var(--popover-animation-duration);
   }
 </style>
