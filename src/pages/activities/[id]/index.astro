@@ -53,13 +53,28 @@ if (Astro.request.method === 'POST') {
     if (!activity) throw new Error('Activity not found');
     const data = ActivitySchema.parse(formData);
     await updateActivity({ ...activity, ...data });
-    await purgeCache({ tags: [`activities-${user.id}`, `goals-${user.id}`, `reports-${user.id}`] });
+    await purgeCache({
+      tags: [
+        `activities-${user.id}`,
+        `activity-${activity.id}-${user.id}`,
+        `goals-${user.id}`,
+        `reports-${user.id}`,
+        `goals-new-${user.id}`
+      ]
+    });
 
     return Astro.redirect(`/activities/${activity.id}`);
   } catch (error) {
     if (error instanceof ZodError) {
     } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
   }
+}
+if (activity) {
+  Astro.response.headers.set(
+    'Netlify-CDN-Cache-Control',
+    'public, durable, s-maxage=604800, stale-while-revalidate=604800'
+  );
+  Astro.response.headers.set('netlify-cache-tag', `activity-${activity.id}-${user.id}`);
 }
 ---
 

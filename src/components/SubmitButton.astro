@@ -11,7 +11,7 @@ const { className = '' } = Astro.props;
   class={`w-32 btn btn-primary ${className} disabled:!bg-primary disabled:text-base-300`}>
   <slot />
 </button>
-<script>
+<script is:inline data-astro-rerun>
   const spinner = document.createElement('span');
   spinner.classList.add('loading', 'loading-spinner', 'loading-md');
 
