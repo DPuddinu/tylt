@@ -3,7 +3,6 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import Changelog from './_components/changelog.astro';
 Astro.response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=31536000');
 
-export const prerender = true;
 ---
 <MainLayout pageName='Changelog'>
   <Changelog />

@@ -2,12 +2,11 @@
 Astro.response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=31536000');
 
 export const prerender = true;
-import SignInButton from '@components/SignInButton.astro';
 import LandingLayout from '@layouts/LandingLayout.astro';
 ---
 
 <LandingLayout title='Home'>
-  <section transition:animate='slide' class='grid content-center gap-8'>
+  <section transition:animate='slide' class='grid content-center gap-8 justify-center'>
     <header>
       <h1
         transition:name='title'
@@ -15,10 +14,8 @@ import LandingLayout from '@layouts/LandingLayout.astro';
         Track Your <br /> Learning Today
       </h1>
     </header>
-    <article>
-      <p class='max-w-[30em] text-center text-xl md:text-2xl'>
-        Set learning goals track achievements and generate insightful reports to maximize your growth.
-      </p>
-    </article>
+    <div class='max-w-[30em] text-center text-xl md:text-2xl'>
+      Set learning goals track achievements and generate insightful reports to maximize your growth.
+    </div>
   </section>
 </LandingLayout>
