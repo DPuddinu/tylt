@@ -1,6 +1,15 @@
 ---
 version: 1.0.0
-pubDate: 'Jul 17 2024'
+pubDate: 'Aug 5 2024'
+---
+
+## Aug 5, 2024
+
+### Feature changes:
+
+- Add PWA support
+- deploy to netlify with CDN cache support
+
 ---
 
 ## Jul 17, 2024

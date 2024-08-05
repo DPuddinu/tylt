@@ -5,7 +5,7 @@ import type { ManifestOptions } from 'vite-plugin-pwa';
  * Defines the default SEO configuration for the website.
  */
 export const seoConfig = {
-  baseURL: 'https://tylt.vercel.app/', // Change this to your production URL.
+  baseURL: 'https://tylt.netlify.app/', // Change this to your production URL.
   description: 'Astro PWA application to keep track of your learning progress.', // Change this to be your website's description.
   type: 'website',
   image: {

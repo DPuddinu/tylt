@@ -60,7 +60,7 @@ const links = ['Activities', 'Goals', 'Reports'];
             <div class='hidden gap-4 md:flex'>
               {links.map((link) => (
                 <a
-                  data-astro-prefetch={pageName === 'New Goal' && link === 'Goals' ? 'none' : 'hover'}
+                  data-astro-prefetch
                   data-astro-reload
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
@@ -101,7 +101,7 @@ const links = ['Activities', 'Goals', 'Reports'];
           class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl rounded-b-none bg-base-300 shadow shadow-base-content/10 md:hidden'>
           {links.map((link) => (
             <a
-              data-astro-prefetch={pageName === 'New Goal' && link === 'Goals' ? 'none' : 'hover'}
+              data-astro-prefetch
               href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
               role='link'
               class:list={[{ 'tab-active': pageName === link }]}
