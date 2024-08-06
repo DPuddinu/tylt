@@ -7,7 +7,7 @@ export const GoalInsertSchema = zfd.formData({
       .string({
         message: 'Title is required'
       })
-      .max(30)
+      .max(40)
   ),
   description: zfd.text().optional(),
   activityId: zfd.numeric(z.number().int()),
