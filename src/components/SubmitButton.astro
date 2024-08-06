@@ -11,19 +11,26 @@ const { className = '' } = Astro.props;
   class={`w-32 btn btn-primary ${className} disabled:!bg-primary disabled:text-base-300`}>
   <slot />
 </button>
-<script is:inline data-astro-rerun>
-  const spinner = document.createElement('span');
-  spinner.classList.add('loading', 'loading-spinner', 'loading-md');
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const spinner = document.createElement('span');
+    spinner.classList.add('loading', 'loading-spinner', 'loading-md');
 
-  const forms = document.querySelectorAll<HTMLFormElement>('form');
-  forms.forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      const submitBtn = e.submitter;
-      if (submitBtn) {
-        submitBtn.textContent = '';
-        submitBtn.appendChild(spinner);
-        submitBtn.setAttribute('disabled', 'true');
-      }
-    });
+    const submitBtn = document.querySelector<HTMLButtonElement>('#submit-btn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', (e) => {
+        const forms = document.querySelectorAll<HTMLFormElement>('form');
+        forms.forEach((form) => {
+          form.addEventListener('submit', (e) => {
+            const submitBtn = e.submitter;
+            if (submitBtn) {
+              submitBtn.textContent = '';
+              submitBtn.appendChild(spinner);
+              submitBtn.setAttribute('disabled', 'true');
+            }
+          });
+        });
+      });
+    }
   });
 </script>

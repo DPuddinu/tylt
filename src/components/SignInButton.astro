@@ -1,8 +1,7 @@
 ---
-import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
 import { SignIn } from 'auth-astro/components';
 import { getSession } from 'auth-astro/server';
-import Logo from '../../public/github-mark.svg';
 type Props = {
   label: string;
   className?: string;
@@ -15,9 +14,9 @@ const session = await getSession(Astro.request);
   session ? (
     <a
       href='/goals'
-      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black hover:bg-black disabled:!bg-primary disabled:text-base-300`}>
-      <Image src={Logo} alt={'github logo'} class='h-6 w-6' />
-      <span class='text-base-content'>{label}</span>
+      class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black text-white hover:bg-black disabled:!bg-primary disabled:text-base-300`}>
+      <Icon name={'github'} class='h-6 w-6 dark:stroke-black' />
+      <span>{label}</span>
     </a>
   ) : (
     <SignIn
@@ -28,8 +27,8 @@ const session = await getSession(Astro.request);
       }}
       class={`${className} btn flex min-w-32 items-center justify-center gap-2 rounded-2xl bg-black hover:bg-black disabled:!bg-primary disabled:text-base-300`}>
       <div class='flex items-center gap-2'>
-        <Image src={Logo} alt={'github logo'} class='h-6 w-6' />
-        <span class='text-base-content'>{label}</span>
+        <Icon name={'github'} class='h-6 w-6' />
+        <span>{label}</span>
       </div>
     </SignIn>
   )

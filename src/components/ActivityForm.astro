@@ -33,12 +33,10 @@ const { activity, title } = Astro.props;
           <div class='flex flex-wrap gap-2'>
             {
               icons.map((name) => (
-                <button type='button' class='icon-select-btn' data-icon={name}>
+                <button type='button' class='icon-select-btn' data-icon={name} onclick={`() => onIconClick(${name})`}>
                   <Icon
                     name={name}
-                    class:list={[
-                      { 'outline outline-warning text-warning': activity?.icon === name }
-                    ]}
+                    class:list={[{ 'text-warning outline outline-warning': activity?.icon === name }]}
                     class='h-12 w-12 rounded-lg p-1 focus:text-warning'
                   />
                 </button>
@@ -92,28 +90,30 @@ const { activity, title } = Astro.props;
   </style>
 </section>
 <script>
-  const iconBtns = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn');
-  const iconImgs = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn>svg');
-  const selectedIcon = document.querySelector<HTMLInputElement>('#activity-icon-input');
-  iconBtns.forEach((btn, i) => {
-    btn.addEventListener('click', (e) => {
-      if (selectedIcon && btn.dataset.icon) {
-        selectedIcon.value = btn.dataset.icon;
-      }
-      iconImgs.forEach((img, j) => {
-        if (j !== i) {
-          img.classList.remove('outline', 'outline-warning', 'text-warning');
-        } else {
-          img.classList.add('outline', 'outline-warning', 'text-warning');
+  document.addEventListener('astro:page-load', () => {
+    const iconBtns = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn');
+    const iconImgs = document.querySelectorAll<HTMLButtonElement>('.icon-select-btn>svg');
+    const activityIconInput = document.querySelector<HTMLInputElement>('#activity-icon-input');
+    iconBtns.forEach((btn, i) => {
+      btn.addEventListener('click', (e) => {
+        if (activityIconInput && btn.dataset.icon) {
+          activityIconInput.value = btn.dataset.icon;
         }
+        iconImgs.forEach((img, j) => {
+          if (j !== i) {
+            img.classList.remove('outline', 'outline-warning', 'text-warning');
+          } else {
+            img.classList.add('outline', 'outline-warning', 'text-warning');
+          }
+        });
       });
     });
-  });
-  const submitBtn = document.querySelector<HTMLButtonElement>('#submit-btn');
-  submitBtn?.addEventListener('click', (e) => {
-    if (!selectedIcon?.value) {
-      const error = document.querySelector<HTMLSpanElement>('#activity-icon-input-error');
-      error?.classList.remove('hidden');
-    }
+    const submitBtn = document.querySelector<HTMLButtonElement>('#submit-btn');
+    submitBtn?.addEventListener('click', (e) => {
+      if (!activityIconInput?.value) {
+        const error = document.querySelector<HTMLSpanElement>('#activity-icon-input-error');
+        error?.classList.remove('hidden');
+      }
+    });
   });
 </script>
