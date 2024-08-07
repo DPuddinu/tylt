@@ -11,6 +11,7 @@ const { className = 'w-full text-base font-semibold text-left' } = Astro.props;
     signOutBtn?.addEventListener('click', async () => {
       const { signOut } = await import('auth-astro/client');
       await signOut();
+      window.location.href = '/';
     });
   });
 </script>
