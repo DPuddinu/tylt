@@ -61,7 +61,6 @@ const links = ['Activities', 'Goals', 'Reports'];
               {links.map((link) => (
                 <a
                   data-astro-prefetch
-                  data-astro-reload
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
                   class:list={[{ 'font-bold text-warning': pageName === link }]}>
@@ -96,7 +95,6 @@ const links = ['Activities', 'Goals', 'Reports'];
     {
       pageName && (
         <footer
-          transition:name='footer'
           role='tablist'
           class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl rounded-b-none bg-base-300 shadow shadow-base-content/10 md:hidden'>
           {links.map((link) => (
