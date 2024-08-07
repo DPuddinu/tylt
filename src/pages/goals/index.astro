@@ -53,13 +53,11 @@ try {
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
 }
-if(Object.keys(params).length === 0){
-  Astro.response.headers.set(
-    'Netlify-CDN-Cache-Control',
-    'public, durable, s-maxage=604800, stale-while-revalidate=604800'
-  );
-  Astro.response.headers.set('netlify-cache-tag', `goals-${user.id}`);
-}
+Astro.response.headers.set(
+  'Netlify-CDN-Cache-Control',
+  'public, durable, s-maxage=604800, stale-while-revalidate=604800'
+);
+Astro.response.headers.set('netlify-cache-tag', `goals-${user.id}`);
 ---
 
 <Layout pageName='Goals'>
