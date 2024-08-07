@@ -1,9 +1,16 @@
 ---
-import { SignOut } from 'auth-astro/components';
 type Props = {
   className?: string;
 };
 const { className = 'w-full text-base font-semibold text-left' } = Astro.props;
 ---
-
-<SignOut class={className}>Logout</SignOut>
+<button id='signout-btn' class={className}>Logout</button>
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const signOutBtn = document.getElementById('signout-btn');
+    signOutBtn?.addEventListener('click', async () => {
+      const { signOut } = await import('auth-astro/client');
+      await signOut();
+    });
+  });
+</script>
