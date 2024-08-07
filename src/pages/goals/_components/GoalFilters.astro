@@ -11,7 +11,7 @@ type Props = {
   filters: GoalFilters;
 };
 const { activities, filters } = Astro.props;
-const { fromDate: fromDate, toDate, activity: filterActivity, expired, notExpired, completed, notCompleted } = filters;
+const { fromDate, toDate, activity, expired, notExpired, completed, notCompleted } = filters;
 ---
 
 <div>
@@ -33,7 +33,7 @@ const { fromDate: fromDate, toDate, activity: filterActivity, expired, notExpire
           <div class='flex flex-col gap-2'>
             <label for='select-activity' class='label-text'>Select Activity</label>
             <AstroSelect
-              value={filterActivity}
+              value={activity}
               options={activities}
               optionLabelKey={'name'}
               optionKey={'id'}
