@@ -1,12 +1,12 @@
 ---
-Astro.response.headers.set('Cache-Control', 'public, max-age=300, s-maxage=31536000');
+Astro.response.headers.set('Cache-Control', 'private, max-age=300, s-maxage=31536000');
 
 export const prerender = true;
 import LandingLayout from '@layouts/LandingLayout.astro';
 ---
 
 <LandingLayout title='Home'>
-  <section transition:animate='slide' class='grid content-center gap-8 justify-center'>
+  <section transition:animate='slide' class='grid content-center justify-center gap-8'>
     <header>
       <h1
         transition:name='title'
