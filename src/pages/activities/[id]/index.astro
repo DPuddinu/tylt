@@ -72,7 +72,7 @@ if (Astro.request.method === 'POST') {
 if (activity) {
   Astro.response.headers.set(
     'Netlify-CDN-Cache-Control',
-    'private, durable, s-maxage=604800, stale-while-revalidate=604800'
+    'public, durable, s-maxage=604800, stale-while-revalidate=604800'
   );
   Astro.response.headers.set('netlify-cache-tag', `activity-${activity.id}-${user.id}`);
 }
