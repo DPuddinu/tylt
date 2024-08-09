@@ -7,7 +7,6 @@ import ActivityForm from '@components/ActivityForm.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Popover from '@components/Popover.astro';
 import Layout from '@layouts/MainLayout.astro';
-import { purgeCache } from '@netlify/functions';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
 
@@ -53,28 +52,12 @@ if (Astro.request.method === 'POST') {
     if (!activity) throw new Error('Activity not found');
     const data = ActivitySchema.parse(formData);
     await updateActivity({ ...activity, ...data });
-    await purgeCache({
-      tags: [
-        `activities-${user.id}`,
-        `activity-${activity.id}-${user.id}`,
-        `goals-${user.id}`,
-        `reports-${user.id}`,
-        `goals-new-${user.id}`
-      ]
-    });
 
     return Astro.redirect(`/activities/${activity.id}`);
   } catch (error) {
     if (error instanceof ZodError) {
     } else return Astro.redirect(`/error?redirect=activities/${activity.id}`);
   }
-}
-if (activity) {
-  Astro.response.headers.set(
-    'Netlify-CDN-Cache-Control',
-    'public, durable, s-maxage=604800, stale-while-revalidate=604800'
-  );
-  Astro.response.headers.set('netlify-cache-tag', `activity-${activity.id}-${user.id}`);
 }
 ---
 

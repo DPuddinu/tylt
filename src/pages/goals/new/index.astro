@@ -4,7 +4,6 @@ import { createGoal } from '@/api/goals/mutations';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
-import { purgeCache } from '@netlify/functions';
 
 const { user } = Astro.locals;
 const activities = await getActivities(user.id);
@@ -19,7 +18,6 @@ if (Astro.request.method === 'POST') {
       authorId: user.id,
       authorName: user.name
     });
-    await purgeCache({ tags: [`goals-${user.id}`, `activities-${user.id}`, `reports-${user.id}`] });
 
     return Astro.redirect('/goals');
   } catch (error) {
@@ -27,11 +25,6 @@ if (Astro.request.method === 'POST') {
   }
 }
 const title = 'New Goal';
-Astro.response.headers.set(
-  'Netlify-CDN-Cache-Control',
-  'public, durable, s-maxage=604800, stale-while-revalidate=604800'
-);
-Astro.response.headers.set('netlify-cache-tag', `goals-new-${user.id}`);
 ---
 
 <Layout pageName={title}>
