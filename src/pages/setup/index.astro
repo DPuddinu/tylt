@@ -7,6 +7,7 @@ import ActivityForm from '@/components/ActivityForm.astro';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import { ActivitySchema } from '@/types/activities.types';
 import { GoalInsertSchema } from '@/types/goal.types';
+import { setupDoneKey } from '@/utils/constants';
 import Layout from '@layouts/MainLayout.astro';
 import SetupLayout from '@layouts/SetupLayout.astro';
 import type { TActivity } from 'db/config';
@@ -73,6 +74,7 @@ if (Astro.request.method === 'POST') {
       Astro.cookies.set(STEP_1, '', {
         maxAge: 0
       });
+      Astro.cookies.set(setupDoneKey, 'true');
       return Astro.redirect('/goals');
     } catch (error) {
       return Astro.redirect('/error?redirect=setup');

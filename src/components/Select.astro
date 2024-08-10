@@ -12,14 +12,12 @@ const { optionKey, optionLabelKey, options, value, name, id, required = false } 
 ---
 
 <select required={required} id={id} class='select select-bordered w-fit' name={name}>
-  <option value='' disabled hidden>Pick a activity</option>
+  <option value='' hidden disabled selected>Pick an activity</option>
   {
     options.map((option) => (
-      <div>
-        <option value={String(option[optionKey])} selected={option[optionKey] === value}>
-          {String(option[optionLabelKey])}
-        </option>
-      </div>
+      <option value={String(option[optionKey])} selected={option[optionKey] === value}>
+        {String(option[optionLabelKey])}
+      </option>
     ))
   }
 </select>

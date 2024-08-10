@@ -1,9 +1,11 @@
 import { defineMiddleware } from 'astro:middleware';
 import { getSession } from 'auth-astro/server';
 import { getSetupDone } from './api/setup/queries';
+import { setupDoneKey } from './utils/constants';
 
 const protectedRoutes = ['/goals', '/setup', '/activities', '/reports', '/error', '/changelog'];
-export const onRequest = defineMiddleware(async ({ redirect, request, locals, url }, next) => {
+
+export const onRequest = defineMiddleware(async ({ redirect, request, locals, url, cookies }, next) => {
   const matchingRoute = protectedRoutes.some((route) => url.pathname.toLowerCase().includes(route.toLowerCase()));
   if (!matchingRoute) return next();
 
@@ -17,6 +19,15 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
     ...user,
     id: user.email
   };
-  if (!(await getSetupDone(locals.user.id)) && !url.pathname.includes('setup')) return redirect('/setup');
+  let setupDone;
+  if (!cookies.has(setupDoneKey)) {
+    setupDone = Boolean(await getSetupDone(locals.user.id));
+    cookies.set(setupDoneKey, String(setupDone));
+  } else {
+    setupDone = cookies.get(setupDoneKey)?.value === 'true';
+  }
+  if (!setupDone && !url.pathname.includes('setup')) {
+    return redirect('/setup');
+  }
   return next();
 });

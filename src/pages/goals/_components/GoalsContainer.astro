@@ -1,0 +1,39 @@
+---
+import { getActivities } from '@/api/activities/queries';
+import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
+import type { GoalFilters } from '@/types/filters.types';
+import GoalsList from '@components/GoalsList.astro';
+import type { TActivity } from 'db/config';
+
+type Props = {
+  goalFilters: GoalFilters;
+  currentPage: number;
+  offset: number;
+  params: Record<string, string | null> | undefined;
+};
+const { goalFilters, currentPage, params, offset = 0 } = Astro.props;
+const { user } = Astro.locals;
+const { countGoals, goals } = await getPaginatedGoals({
+  userId: user.id,
+  page: currentPage,
+  filters: goalFilters
+});
+const totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
+let activities: TActivity[] = [];
+
+try {
+  activities = await getActivities(user.id);
+} catch (error) {
+  return Astro.redirect('error?redirect=goals');
+}
+---
+
+<GoalsList
+  queryParams={params}
+  activities={activities}
+  goals={goals}
+  totalPages={totalPages}
+  offset={offset}
+  currentPage={currentPage}
+  itemsPerPage={ITEMS_PER_PAGE}
+/>

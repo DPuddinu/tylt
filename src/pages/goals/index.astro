@@ -1,16 +1,13 @@
 ---
 import { getActivities } from '@/api/activities/queries';
-import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
-import { getSetupDone } from '@/api/setup/queries';
+import { ITEMS_PER_PAGE } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
-import GoalsList from '@components/GoalsList.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity } from 'db/config';
+import GoalsContainer from './_components/GoalsContainer.astro';
 
 const { user } = Astro.locals;
-
-if (!(await getSetupDone(user.id))) return Astro.redirect('/setup');
 
 function getParam(param: string) {
   return Astro.url.searchParams.get(param);
@@ -42,12 +39,7 @@ const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
 let activities: TActivity[] = [];
 
-const { countGoals, goals } = await getPaginatedGoals({
-  userId: user.id,
-  page: currentPage,
-  filters: goalFilters
-});
-const totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
+
 try {
   activities = await getActivities(user.id);
 } catch (error) {
@@ -58,14 +50,15 @@ try {
 <Layout pageName='Goals'>
   <section class='flex flex-col gap-4 md:flex-row'>
     <GoalFilterSidebar activities={activities} filters={goalFilters} />
-    <GoalsList
-      queryParams={params}
-      activities={activities}
-      goals={goals}
-      totalPages={totalPages}
-      offset={offsetFilter}
+    <GoalsContainer
+      goalFilters={goalFilters}
       currentPage={currentPage}
-      itemsPerPage={ITEMS_PER_PAGE}
-    />
+      params={params}
+      offset={offsetFilter}
+      server:defer>
+      <div class='flex grow justify-center' slot='fallback'>
+        <span class='loading loading-spinner loading-lg'></span>
+      </div>
+    </GoalsContainer>
   </section>
 </Layout>
