@@ -62,3 +62,8 @@ try {
     </GoalsContainer>
   </section>
 </Layout>
+
+<script>
+  const user = await fetch('/api/user.json').then(res => res.json());
+  console.log(user);
+</script>
