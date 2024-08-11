@@ -19,8 +19,7 @@ export async function GET(context: APIContext) {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Netlify-CDN-Cache-Control': 'public, durable, max-age=3600, stale-while-revalidate=120',
-        'Cache-Control': 'public, max-age=0, must-revalidate'
+        'Netlify-CDN-Cache-Control': 'public, durable, max-age=3600, stale-while-revalidate=120'
       }
     }
   );

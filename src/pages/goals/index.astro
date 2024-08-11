@@ -39,7 +39,6 @@ const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
 let activities: TActivity[] = [];
 
-
 try {
   activities = await getActivities(user.id);
 } catch (error) {
@@ -64,6 +63,6 @@ try {
 </Layout>
 
 <script>
-  const user = await fetch('/api/user.json').then(res => res.json());
+  const user = await fetch('/api/goals.json').then((res) => res.json());
   console.log(user);
 </script>
