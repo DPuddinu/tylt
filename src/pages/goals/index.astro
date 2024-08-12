@@ -56,6 +56,9 @@ Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
       params={params}
       offset={offsetFilter}
       server:defer>
+      <div class='flex grow justify-center' slot='fallback'>
+        <span class='loading loading-spinner loading-lg'></span>
+      </div>
     </GoalsContainer>
   </section>
 </Layout>
