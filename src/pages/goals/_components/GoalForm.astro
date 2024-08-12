@@ -73,8 +73,13 @@ const { activities, goal } = Astro.props;
               register={false}
             />
           </div>
-          <footer class='flex gap-4 justify-end'>
-            <button onclick='editorDialog.close()' type='button' class='btn btn-ghost text-base-content'>Cancel</button>
+          <footer class='flex justify-end gap-4'>
+            <button
+              onclick={`editorDialog.close();progress.classList.remove('hidden')`}
+              type='button'
+              class='btn btn-ghost text-base-content'>
+              Cancel
+            </button>
             <button id='confirm-editor-dialog-btn' type='button' class='btn btn-warning' onclick='editorDialog.close()'>
               Confirm
             </button>
@@ -102,7 +107,7 @@ const { activities, goal } = Astro.props;
     setTimeout(() => {
       const dialogEditor = Quill.find(dialogEditorNode) as Quill;
       const mainEditor = Quill.find(mainEditorNode) as Quill;
-      
+
       const confirmBtn = document.querySelector('#confirm-editor-dialog-btn') as HTMLButtonElement;
       confirmBtn.onclick = () => {
         mainEditor.setContents(dialogEditor.getContents().ops);

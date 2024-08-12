@@ -33,7 +33,7 @@ const title = 'New Goal';
       <h1 class='text-4xl font-bold'>{title}</h1>
     </header>
     <GoalForm activities={activities} transition:name='content'>
-      <a href='/goals' class='btn text-base-content'>Cancel</a>
+      <a href='/goals' class='btn text-base-content' onclick={`progress.classList.remove('hidden')`}>Cancel</a>
     </GoalForm>
   </section>
 </Layout>

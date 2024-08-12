@@ -60,7 +60,8 @@ const links = ['Activities', 'Goals', 'Reports'];
             <div class='hidden gap-4 md:flex'>
               {links.map((link) => (
                 <a
-                  data-astro-prefetch
+                  onclick={`progress.classList.remove('hidden')`}
+                  data-astro-prefetch="load"
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
                   class:list={[{ 'font-bold text-warning': pageName === link }]}>
@@ -87,7 +88,7 @@ const links = ['Activities', 'Goals', 'Reports'];
         </Dropdown>
       </nav>
     </header>
-    <progress id='progress' class='progress absolute top-16 hidden w-full rounded-none'></progress>
+    <progress id='progress' class='progress absolute h-[2px] top-16 hidden w-full rounded-none'></progress>
     <main class='flex-container z-0'>
       <div class='content grow p-8'>
         <slot />

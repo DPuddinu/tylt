@@ -38,7 +38,7 @@ export default defineConfig({
               urlPattern: ({ url }) => url.origin === 'https://tylt.netlify.app',
               handler: 'CacheFirst',
               options: {
-                cacheName: 'api-cache'
+                cacheName: 'tylt-v1'
               }
             }
           ]
