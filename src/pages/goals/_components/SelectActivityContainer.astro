@@ -1,0 +1,26 @@
+---
+import { getActivities } from '@/api/activities/queries';
+import { formNames } from '@/types/goalForm.types';
+import Select from '@components/Select.astro';
+
+const { user } = Astro.locals;
+const activities = await getActivities(user.id);
+type Props = {
+  value?: number;
+};
+const { value } = Astro.props;
+---
+
+<Select
+  server:defer
+  id='select-activity'
+  required
+  options={activities}
+  optionKey='id'
+  optionLabelKey='name'
+  value={value}
+  name={formNames.activityId.inputName}>
+  <div class='flex grow justify-center' slot='fallback'>
+    <span class='loading loading-spinner loading-lg'></span>
+  </div></Select
+>

@@ -1,12 +1,11 @@
 ---
-import { getActivities } from '@/api/activities/queries';
 import { createGoal } from '@/api/goals/mutations';
 import GoalForm from '@/pages/goals/_components/GoalForm.astro';
 import { GoalInsertSchema } from '@/types/goal.types';
 import Layout from '@layouts/MainLayout.astro';
+import SelectActivityContainer from '../_components/SelectActivityContainer.astro';
 
 const { user } = Astro.locals;
-const activities = await getActivities(user.id);
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
@@ -25,6 +24,7 @@ if (Astro.request.method === 'POST') {
   }
 }
 const title = 'New Goal';
+Astro.response.headers.set('Cache-Control', 'private, max-age=31536000');
 ---
 
 <Layout pageName={title}>
@@ -32,7 +32,8 @@ const title = 'New Goal';
     <header transition:name='filters'>
       <h1 class='text-4xl font-bold'>{title}</h1>
     </header>
-    <GoalForm activities={activities} transition:name='content'>
+    <GoalForm transition:name='content'>
+      <SelectActivityContainer slot='activities' />
       <a href='/goals' class='btn text-base-content' onclick={`progress.classList.remove('hidden')`}>Cancel</a>
     </GoalForm>
   </section>

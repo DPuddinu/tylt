@@ -44,6 +44,7 @@ try {
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
 }
+Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
 ---
 
 <Layout pageName='Goals'>
@@ -55,72 +56,6 @@ try {
       params={params}
       offset={offsetFilter}
       server:defer>
-      <div class='flex grow justify-center' slot='fallback'>
-        <span class='loading loading-spinner loading-lg'></span>
-      </div>
     </GoalsContainer>
   </section>
 </Layout>
-
-<script>
-  const cacheName = 'tylt-v1';
-  self.addEventListener('fetch', (event) => {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        // caches.match() always resolves
-        // but in case of success response will have value
-        if (response !== undefined) {
-          return response;
-        } else {
-          return fetch(event.request)
-            .then((response) => {
-              // response may be used only once
-              // we need to save clone to put one copy in cache
-              // and serve second one
-              let responseClone = response.clone();
-
-              caches.open(cacheName).then((cache) => {
-                cache.put(event.request, responseClone);
-              });
-              return response;
-            })
-            .catch(() => caches.match('/gallery/myLittleVader.jpg'));
-        }
-      })
-    );
-  });
-  async function getData() {
-    const url = 'http://localhost:4321/api/goals.json';
-    let cachedData = await getCachedData(cacheName, url);
-
-    if (cachedData) {
-      console.log('Retrieved cached data', cachedData);
-      return cachedData;
-    }
-
-    console.log('Fetching fresh data');
-
-    const cacheStorage = await caches.open(cacheName);
-    await cacheStorage.add(url);
-    cachedData = await getCachedData(cacheName, url);
-
-    return cachedData;
-  }
-
-  // Get data from the cache.
-  async function getCachedData(cacheName: string, url: string) {
-    const cacheStorage = await caches.open(cacheName);
-    const cachedResponse = await cacheStorage.match(url);
-
-    if (!cachedResponse || !cachedResponse.ok) {
-      return false;
-    }
-
-    return await cachedResponse.json();
-  }
-
-  await getData();
-  document.addEventListener('astro:page-load', async () => {
-    const { data } = await fetch('/api/goals.json').then((res) => res.json());
-  });
-</script>

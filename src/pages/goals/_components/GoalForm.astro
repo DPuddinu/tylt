@@ -1,18 +1,16 @@
 ---
 import DatePicker from '@/components/DatePicker.astro';
 import RichTextEditor from '@/components/RichTextEditor.astro';
-import Select from '@/components/Select.astro';
 import TextInput from '@/components/TextInput.astro';
 import { formNames } from '@/types/goalForm.types';
 import InputContainer from '@components/InputContainer.astro';
 import SubmitButton from '@components/SubmitButton.astro';
 
-import type { TActivity, TGoal } from 'db/config';
+import type { TGoal } from 'db/config';
 type Props = {
   goal?: TGoal;
-  activities: TActivity[];
 };
-const { activities, goal } = Astro.props;
+const { goal } = Astro.props;
 ---
 
 <form id='goal-form' method='post' class='flex w-full grow flex-col gap-6 rounded-lg bg-base-200 p-4'>
@@ -21,15 +19,8 @@ const { activities, goal } = Astro.props;
       <TextInput id='title-input' name={formNames.title.inputName} value={goal?.title} placeholder='Type title...' />
     </InputContainer>
     <InputContainer HTMLFor={formNames.activityId.label} label={formNames.activityId.label}>
-      <Select
-        id='select-activity'
-        required
-        options={activities}
-        optionKey='id'
-        optionLabelKey='name'
-        value={goal?.activityId}
-        name={formNames.activityId.inputName}
-      />
+      <slot name="activities"></slot>
+      
     </InputContainer>
     <div class='flex flex-wrap gap-2'>
       <InputContainer HTMLFor={formNames.completionDate.label} label={formNames.completionDate.label}>
