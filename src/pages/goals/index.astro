@@ -63,6 +63,8 @@ try {
 </Layout>
 
 <script>
-  const user = await fetch('/api/goals.json').then((res) => res.json());
-  console.log(user);
+  document.addEventListener('astro:page-load', async () => {
+    const { data } = await fetch('/api/goals.json').then((res) => res.json());
+    console.log(data);
+  });
 </script>

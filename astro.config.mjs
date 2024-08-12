@@ -32,7 +32,16 @@ export default defineConfig({
         workbox: {
           globDirectory: 'dist',
           globPatterns: ['**/*.{js,css,svg,png,jpg,jpeg,gif,webp,woff,woff2,ttf,eot,ico}'],
-          navigateFallback: '/'
+          navigateFallback: '/',
+          runtimeCaching: [
+            {
+              urlPattern: ({ url }) => url.origin === 'https://tylt.netlify.app',
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'api-cache'
+              }
+            }
+          ]
         }
       })
     ]

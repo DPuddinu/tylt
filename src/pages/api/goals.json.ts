@@ -10,18 +10,29 @@ export async function GET(context: APIContext) {
   //     statusText: 'Not found'
   //   });
   // }
+  const data = [
+    {
+      id: 1,
+      name: 'john'
+    },
+    {
+      id: 2,
+      name: 'bon'
+    },
+    {
+      id: 3,
+      name: 'jovi'
+    }
+  ];
 
   return new Response(
     JSON.stringify({
-      user
+      data
     }),
     {
       status: 200,
       headers: {
-        'Content-Type': 'application/json',
-        'Netlify-CDN-Cache-Control': 'public, durable, max-age=3600, stale-while-revalidate=120',
-        'Cache-Control': 'public, max-age=0, must-revalidate',
-        'Netlify-Vary': 'cookie=__Secure-authjs.session-token'
+        'Content-Type': 'application/json'
       }
     }
   );
