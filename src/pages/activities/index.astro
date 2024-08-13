@@ -33,7 +33,11 @@ if (Astro.request.method === 'POST') {
       authorId: user.id,
       ...data
     });
-
+    const currentVersion = Number(Astro.cookies.get('activities')?.value ?? '0');
+    Astro.cookies.set('activities', String(currentVersion + 1), {
+      path: '/'
+    });
+    console.log(currentVersion);
     return Astro.redirect('/activities');
   } catch (error) {
     return Astro.redirect('/error?redirect=activities');

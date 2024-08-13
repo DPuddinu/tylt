@@ -11,6 +11,7 @@ import { setupDoneKey } from '@/utils/constants';
 import Layout from '@layouts/MainLayout.astro';
 import SetupLayout from '@layouts/SetupLayout.astro';
 import type { TActivity } from 'db/config';
+import SelectActivityContainer from '../goals/_components/SelectActivityContainer.astro';
 
 const STEP_1 = 'SETUP_STEP_1';
 
@@ -88,7 +89,8 @@ if (Astro.request.method === 'POST') {
     {step === '1' && <ActivityForm transition:animate='slide' />}
     {
       step === '2' && (
-        <GoalForm activities={activities} transition:animate='slide'>
+        <GoalForm transition:animate='slide'>
+          <SelectActivityContainer  activities={activities} value={activities[0]?.id} slot='activities' />
           <a href='/setup' class='btn btn-ghost text-base-content'>
             Cancel
           </a>

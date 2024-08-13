@@ -25,8 +25,8 @@ pubDate: 'Aug 5 2024'
 
 ### Feature changes:
 
-- Add charts to reports page
-- change items per page to 5change items per page to 5change items per page to 5change items per page to 5change items per page to 5change items per page to 5
+- add charts to reports page
+- change items per page to 5
 
 ### Bug fixes:
 

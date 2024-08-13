@@ -44,7 +44,7 @@ try {
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
 }
-Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
+Astro.response.headers.set('Cache-Control', 'private, max-age=31536000');
 ---
 
 <Layout pageName='Goals'>

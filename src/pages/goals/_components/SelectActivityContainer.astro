@@ -2,17 +2,19 @@
 import { getActivities } from '@/api/activities/queries';
 import { formNames } from '@/types/goalForm.types';
 import Select from '@components/Select.astro';
+import type { TActivity } from 'db/config';
 
 const { user } = Astro.locals;
-const activities = await getActivities(user.id);
 type Props = {
+  activities?: TActivity[];
   value?: number;
 };
-const { value } = Astro.props;
+let activities: TActivity[] = [];
+const { value, activities: propsActivities } = Astro.props;
+activities = propsActivities ? propsActivities : await getActivities(user.id);
 ---
 
 <Select
-  server:defer
   id='select-activity'
   required
   options={activities}
