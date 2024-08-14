@@ -17,14 +17,14 @@ if (Astro.request.method === 'POST') {
       authorId: user.id,
       authorName: user.name
     });
-
+    Astro.cookies.set('revalidate', Astro.site + 'goals', { path: '/' });
     return Astro.redirect('/goals');
   } catch (error) {
     return Astro.redirect('/error?redirect=goals');
   }
 }
 const title = 'New Goal';
-Astro.response.headers.set('Cache-Control', 'private, max-age=31536000');
+Astro.response.headers.set('Cache-Control', 'private, max-age=45');
 ---
 
 <Layout pageName={title}>

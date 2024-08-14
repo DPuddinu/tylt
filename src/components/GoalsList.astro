@@ -19,15 +19,14 @@ const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => B
 const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
 const path = Astro.url.pathname;
 const baseHref = path.includes('activities') ? '' : '/activities/';
-const version = Astro.cookies.get('activities')?.value ?? '0';
 ---
 
 <Card title='Goals'>
   <div slot='header-content' class='flex w-full items-center justify-end'>
     <a
       transition:animate='slide'
-      href={`/goals/new?v=${version}`}
-      data-astro-prefetch='hover'
+      data-astro-prefetch='load'
+      href={`/goals/new`}
       class='btn btn-circle btn-warning btn-sm text-base font-extrabold md:btn-md md:text-2xl md:font-bold'
       transition:name='fab'>
       +
@@ -53,7 +52,7 @@ const version = Astro.cookies.get('activities')?.value ?? '0';
                 {goals.map((goal) => (
                   <tr>
                     <td>
-                      <a href={`/goals/${goal.id}`} class='hover:font-bold' data-astro-prefetch='viewport'>
+                      <a href={`/goals/${goal.id}`} class='hover:font-bold' data-astro-prefetch='load'>
                         {goal.title}
                       </a>
                     </td>
@@ -66,7 +65,7 @@ const version = Astro.cookies.get('activities')?.value ?? '0';
                         <a
                           href={`${baseHref}${activities.find((activity) => activity.id === goal.activityId)?.id}`}
                           class='hover:font-bold'
-                          data-astro-prefetch='viewport'>
+                          data-astro-prefetch='load'>
                           {activities.find((activity) => activity.id === goal.activityId)?.name}
                         </a>
                       </div>

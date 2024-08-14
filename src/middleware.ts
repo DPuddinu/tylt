@@ -29,5 +29,18 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
   if (!setupDone && !url.pathname.includes('setup')) {
     return redirect('/setup');
   }
-  return next();
+
+  // const revalidate = cookies.get('revalidate')?.value;
+
+  // const { method, headers } = request;
+  // console.log(headers.get('If-None-Match'));
+  // if (method === 'GET' && revalidate && request.url === revalidate) {
+  //   cookies.set('revalidate', '', {
+  //     maxAge: 0
+  //   });
+  //   console.log(revalidate);
+  //   console.log(request.url);
+  //   return next().then((res) => res.headers.set('ETag', crypto.randomUUID()));
+  // } else return next();
+  // return next();
 });

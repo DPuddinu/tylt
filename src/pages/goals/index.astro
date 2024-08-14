@@ -44,18 +44,15 @@ try {
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
 }
-Astro.response.headers.set('Cache-Control', 'private, max-age=31536000');
----
+Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
+const hash = crypto.randomUUID();
+Astro.response.headers.set('ETag', hash);
+  ---
 
 <Layout pageName='Goals'>
   <section class='flex flex-col gap-4 md:flex-row'>
     <GoalFilterSidebar activities={activities} filters={goalFilters} />
-    <GoalsContainer
-      goalFilters={goalFilters}
-      currentPage={currentPage}
-      params={params}
-      offset={offsetFilter}
-      server:defer>
+    <GoalsContainer goalFilters={goalFilters} currentPage={currentPage} params={params} offset={offsetFilter}>
       <div class='flex grow justify-center' slot='fallback'>
         <span class='loading loading-spinner loading-lg'></span>
       </div>

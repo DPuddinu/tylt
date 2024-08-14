@@ -64,7 +64,7 @@ const links = ['Activities', 'Goals', 'Reports'];
                   data-astro-prefetch="load"
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
-                  class="transition-colors duration-300 border border-b-transparent hover:border-b-warning"
+                  class="transition-colors duration-300 border border-transparent hover:border-b-warning"
                   class:list={[{ 'font-bold text-warning': pageName === link }]}>
                   {link}
                 </a>
