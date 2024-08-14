@@ -42,5 +42,5 @@ export const onRequest = defineMiddleware(async ({ redirect, request, locals, ur
   //   console.log(request.url);
   //   return next().then((res) => res.headers.set('ETag', crypto.randomUUID()));
   // } else return next();
-  // return next();
+  return next();
 });
