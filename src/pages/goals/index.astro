@@ -42,12 +42,20 @@ let activities: TActivity[] = [];
 try {
   activities = await getActivities(user.id);
 } catch (error) {
+  console.log('error', error);
   return Astro.redirect('error?redirect=goals');
 }
-Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
-const hash = crypto.randomUUID();
-Astro.response.headers.set('ETag', hash);
-  ---
+if (getParam('revalidate')) {
+  
+  return Astro.rewrite(
+    new Request(Astro.request, {
+      cache: 'reload'
+    })
+  );
+} else {
+  Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
+}
+---
 
 <Layout pageName='Goals'>
   <section class='flex flex-col gap-4 md:flex-row'>

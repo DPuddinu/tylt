@@ -61,7 +61,6 @@ const links = ['Activities', 'Goals', 'Reports'];
               {links.map((link) => (
                 <a
                   onclick={`progress.classList.remove('hidden')`}
-                  data-astro-prefetch="load"
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
                   class="transition-colors duration-300 border border-transparent hover:border-b-warning"
@@ -102,7 +101,6 @@ const links = ['Activities', 'Goals', 'Reports'];
           class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl rounded-b-none bg-base-300 px-2 shadow shadow-base-content/10 md:hidden'>
           {links.map((link) => (
             <a
-              data-astro-prefetch
               href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
               role='link'
               class:list={[{ 'tab-active': pageName === link }]}
