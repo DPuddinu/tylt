@@ -60,10 +60,11 @@ const links = ['Activities', 'Goals', 'Reports'];
             <div class='hidden gap-4 md:flex'>
               {links.map((link) => (
                 <a
+                  data-astro-prefetch='load'
                   onclick={`progress.classList.remove('hidden')`}
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
-                  class="transition-colors duration-300 border border-transparent hover:border-b-warning"
+                  class='border border-transparent transition-colors duration-300 hover:border-b-warning'
                   class:list={[{ 'font-bold text-warning': pageName === link }]}>
                   {link}
                 </a>
@@ -101,6 +102,7 @@ const links = ['Activities', 'Goals', 'Reports'];
           class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl rounded-b-none bg-base-300 px-2 shadow shadow-base-content/10 md:hidden'>
           {links.map((link) => (
             <a
+              data-astro-prefetch='load'
               href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
               role='link'
               class:list={[{ 'tab-active': pageName === link }]}

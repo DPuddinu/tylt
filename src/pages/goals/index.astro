@@ -1,69 +1,15 @@
 ---
-import { getActivities } from '@/api/activities/queries';
-import { ITEMS_PER_PAGE } from '@/api/goals/queries';
-import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
-import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
 import Layout from '@layouts/MainLayout.astro';
-import type { TActivity } from 'db/config';
-import GoalsContainer from './_components/GoalsContainer.astro';
+import GoalsContent from './_components/GoalsContent.astro';
+import Spinner from '@components/Spinner.astro';
 
-const { user } = Astro.locals;
-
-function getParam(param: string) {
-  return Astro.url.searchParams.get(param);
-}
-
-function getGoalParam(param: GoalFormParam) {
-  return getParam(param);
-}
-const params = {
-  completed: getGoalParam('completed'),
-  notCompleted: getGoalParam('notCompleted'),
-  expired: getGoalParam('expired'),
-  notExpired: getGoalParam('notExpired'),
-  fromDate: getGoalParam('fromDate'),
-  toDate: getGoalParam('toDate'),
-  activity: getGoalParam('activity')
-};
-const goalFilters: GoalFilters = {
-  completed: params.completed === 'on' || undefined,
-  notCompleted: params.notCompleted === 'on' || undefined,
-  expired: params.expired === 'on' || undefined,
-  notExpired: params.notExpired === 'on' || undefined,
-  fromDate: params.fromDate || undefined,
-  toDate: params.toDate || undefined,
-  activity: Number(params.activity) || undefined
-};
-const offsetFilter = Number(getParam('offset')) || 0;
-const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
-
-let activities: TActivity[] = [];
-
-try {
-  activities = await getActivities(user.id);
-} catch (error) {
-  console.log('error', error);
-  return Astro.redirect('error?redirect=goals');
-}
-if (getParam('revalidate')) {
-  
-  return Astro.rewrite(
-    new Request(Astro.request, {
-      cache: 'reload'
-    })
-  );
-} else {
-  Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
-}
+Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
 ---
 
 <Layout pageName='Goals'>
-  <section class='flex flex-col gap-4 md:flex-row'>
-    <GoalFilterSidebar activities={activities} filters={goalFilters} />
-    <GoalsContainer goalFilters={goalFilters} currentPage={currentPage} params={params} offset={offsetFilter}>
-      <div class='flex grow justify-center' slot='fallback'>
-        <span class='loading loading-spinner loading-lg'></span>
-      </div>
-    </GoalsContainer>
+  <section class='flex h-full flex-col gap-4 md:flex-row'>
+    <GoalsContent server:defer>
+      <Spinner />
+    </GoalsContent>
   </section>
 </Layout>

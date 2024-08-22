@@ -21,7 +21,7 @@ const { href, popoverTarget } = Astro.props as Props;
     href && (
       <a
         href={href}
-        data-astro-prefetch
+        data-astro-prefetch="load"
         class='btn btn-circle btn-warning fixed bottom-16 right-0 m-4 text-xl md:bottom-0'
         transition:name='fab'>
         <slot />

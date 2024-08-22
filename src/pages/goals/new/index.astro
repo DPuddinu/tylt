@@ -17,7 +17,6 @@ if (Astro.request.method === 'POST') {
       authorId: user.id,
       authorName: user.name
     });
-    Astro.cookies.set('revalidate', JSON.stringify(['/goals']), { path: '/' });
     
     return Astro.redirect('/goals?revalidate=true');
   } catch (error) {
@@ -25,7 +24,6 @@ if (Astro.request.method === 'POST') {
   }
 }
 const title = 'New Goal';
-Astro.response.headers.set('Cache-Control', 'private, max-age=45');
 ---
 
 <Layout pageName={title}>

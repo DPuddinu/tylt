@@ -1,0 +1,48 @@
+---
+import { getGoalsCountPerActivity } from '@/api/activities/queries';
+import { type TimeFilter } from '@/types/filters.types';
+import { toFixedDecimals } from '@/utils/fixed-decimals';
+import { Icon } from 'astro-icon/components';
+
+const time = Astro.url.searchParams.get('time') ?? 'month';
+
+const mostUsedActivity = await getGoalsCountPerActivity({
+  userId: Astro.locals.user.id,
+  timeFilter: time as TimeFilter
+});
+const total = mostUsedActivity.reduce((acc, activity) => acc + activity.goalCount, 0);
+const percentages = mostUsedActivity.map((activity) => {
+  const percent = (activity.goalCount / total) * 100;
+  const formattedNum = toFixedDecimals(percent);
+  return formattedNum;
+});
+---
+
+<section class='card flex max-w-md flex-col gap-8 bg-base-300 text-neutral-content' transition:name='content'>
+  <div class='card-body gap-8 p-4'>
+    <div class='flex flex-col gap-4 text-base-content'>
+      {
+        mostUsedActivity.map((activity, i) => (
+          <div class='grid grid-cols-2 justify-between gap-2'>
+            <div class='flex items-center gap-2 truncate'>
+              <Icon name={activity.icon} class='h-8 w-8 p-1' />
+              <a href={`/activities/${activity.activityId}`} class='truncate hover:font-bold'>
+                {activity.activityName}
+              </a>
+            </div>
+            <div class='flex gap-2'>
+              <div class='flex grow items-center justify-end'>
+                <div
+                  class='activity-bar h-6 w-full origin-right justify-end rounded transition-transform'
+                  style={`width: ${percentages[i]}%; background-color: ${activity.color}`}
+                />
+              </div>
+              <div class='w-14 content-center text-end'>{percentages[i]}%</div>
+            </div>
+          </div>
+        ))
+      }
+      {mostUsedActivity.length === 0 && <div class='text-center'>No activities found</div>}
+    </div>
+  </div>
+</section>

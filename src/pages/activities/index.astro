@@ -1,28 +1,16 @@
 ---
 import { createActivity } from '@/api/activities/mutations';
-import { getGoalsCountPerActivity } from '@/api/activities/queries';
 import { ActivitySchema } from '@/types/activities.types';
-import { timeFilters, type TimeFilter } from '@/types/filters.types';
-import { toFixedDecimals } from '@/utils/fixed-decimals';
+import { timeFilters } from '@/types/filters.types';
 import ActivityForm from '@components/ActivityForm.astro';
 import Fab from '@components/Fab.astro';
 import Popover from '@components/Popover.astro';
+import Spinner from '@components/Spinner.astro';
 import Layout from '@layouts/MainLayout.astro';
-import { Icon } from 'astro-icon/components';
+import ActivitiesContent from './components/ActivitiesContent.astro';
 const { user } = Astro.locals;
 
 const time = Astro.url.searchParams.get('time') ?? 'month';
-
-const mostUsedActivity = await getGoalsCountPerActivity({
-  userId: Astro.locals.user.id,
-  timeFilter: time as TimeFilter
-});
-const total = mostUsedActivity.reduce((acc, activity) => acc + activity.goalCount, 0);
-const percentages = mostUsedActivity.map((activity) => {
-  const percent = (activity.goalCount / total) * 100;
-  const formattedNum = toFixedDecimals(percent);
-  return formattedNum;
-});
 
 if (Astro.request.method === 'POST') {
   const formData = await Astro.request.formData();
@@ -38,7 +26,9 @@ if (Astro.request.method === 'POST') {
     return Astro.redirect('/error?redirect=activities');
   }
 }
+Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
 ---
+
 <Layout pageName='Activities'>
   <div class='flex w-full flex-col gap-4 sm:max-w-sm'>
     <h1 class='font-bolder text-4xl'>Activities</h1>
@@ -55,34 +45,9 @@ if (Astro.request.method === 'POST') {
         ))
       }
     </header>
-    <section class='card flex max-w-md flex-col gap-8 bg-base-300 text-neutral-content' transition:name='content'>
-      <div class='card-body gap-8 p-4'>
-        <div class='flex flex-col gap-4 text-base-content'>
-          {
-            mostUsedActivity.map((activity, i) => (
-              <div class='grid grid-cols-2 justify-between gap-2'>
-                <div class='flex items-center gap-2 truncate'>
-                  <Icon name={activity.icon} class='h-8 w-8 p-1' />
-                  <a href={`/activities/${activity.activityId}`} class='truncate hover:font-bold'>
-                    {activity.activityName}
-                  </a>
-                </div>
-                <div class='flex gap-2'>
-                  <div class='flex grow items-center justify-end'>
-                    <div
-                      class='activity-bar h-6 w-full origin-right justify-end rounded transition-transform'
-                      style={`width: ${percentages[i]}%; background-color: ${activity.color}`}
-                    />
-                  </div>
-                  <div class='w-14 content-center text-end'>{percentages[i]}%</div>
-                </div>
-              </div>
-            ))
-          }
-          {mostUsedActivity.length === 0 && <div class='text-center'>No activities found</div>}
-        </div>
-      </div>
-    </section>
+    <ActivitiesContent server:defer>
+      <Spinner slot='fallback' />
+    </ActivitiesContent>
     <Popover id='new-activity-dialog' title='New Activity'>
       <ActivityForm>
         <button type='button' popovertarget='new-activity-dialog' class='btn text-base-content' transition:name='fab'>
