@@ -1,7 +1,7 @@
 ---
+import Spinner from '@components/Spinner.astro';
 import Layout from '@layouts/MainLayout.astro';
 import GoalsContent from './_components/GoalsContent.astro';
-import Spinner from '@components/Spinner.astro';
 
 Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
 ---
@@ -9,7 +9,7 @@ Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
 <Layout pageName='Goals'>
   <section class='flex h-full flex-col gap-4 md:flex-row'>
     <GoalsContent server:defer>
-      <Spinner />
+      <Spinner slot='fallback' />
     </GoalsContent>
   </section>
 </Layout>
