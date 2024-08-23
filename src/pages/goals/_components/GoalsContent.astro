@@ -44,7 +44,11 @@ try {
 }
 ---
 
-<GoalFilterSidebar activities={activities} filters={goalFilters}>
-</GoalFilterSidebar>
-<GoalsContainer goalFilters={goalFilters} currentPage={currentPage} params={params} offset={offsetFilter}>
-</GoalsContainer>
+<GoalFilterSidebar activities={activities} filters={goalFilters} />
+<GoalsContainer goalFilters={goalFilters} currentPage={currentPage} params={params} offset={offsetFilter} />
+<script>
+  import { cacheFirst } from '@/scripts/service-worker-cache';
+  document.addEventListener('astro:page-load', async () => {
+    const activities = await cacheFirst('/api/activities').then((res) => res.json());
+  });
+</script>
