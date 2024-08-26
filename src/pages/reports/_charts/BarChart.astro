@@ -5,7 +5,10 @@ type ShortGoal = {
   completed: boolean;
   creationDate: Date;
 };
-const goalsByTimePeriod: ShortGoal[] = await getGoalsByTimePeriod({ userId: Astro.locals.user.id, timeFilter: 'all Time' });
+const goalsByTimePeriod: ShortGoal[] = await getGoalsByTimePeriod({
+  userId: Astro.locals.user.id,
+  timeFilter: 'all Time'
+});
 type CompletionGoal = {
   completedCount: number;
   notCompletedCount: number;
@@ -57,84 +60,84 @@ const goalsByMonth = goalsByTimePeriod.reduce(
 
 <script>
   import { BarController, BarElement, CategoryScale, Chart, LinearScale, Title, Tooltip } from 'chart.js';
-  Chart.register(BarController, BarElement, LinearScale, Tooltip, CategoryScale, Title);
+    Chart.register(BarController, BarElement, LinearScale, Tooltip, CategoryScale, Title);
 
-  class ActivitiesBarChart extends HTMLElement {
-    constructor() {
-      super();
-      const data = this.dataset.value;
-      const chart = document.querySelector<HTMLCanvasElement>('#chart');
-      const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
+    class ActivitiesBarChart extends HTMLElement {
+      constructor() {
+        super();
+        setTimeout(() => {
+          const data = this.dataset.value;
+          const chart = document.querySelector<HTMLCanvasElement>('#chart');
+          const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
+          let labelColor = 'lightgray';
 
-      let labelColor = 'lightgray';
-
-      if (data && chart) {
-        document.querySelector<HTMLDivElement>('#bar-chart-container')?.classList.remove('animate-pulse');
-        document.querySelector<HTMLDivElement>('#bar-chart-legend')?.classList.replace('hidden', 'flex');
-        const parsedData = JSON.parse(data) as {
-          completedCount: number;
-          notCompletedCount: number;
-        }[];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const barchart = new Chart(chart, {
-          type: 'bar',
-          options: {
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                stacked: true,
-                labels: months.map((row) => row),
-                type: 'category',
-                ticks: {
-                  color: labelColor,
-                  font: {
-                    size: 16
+          if (data && chart) {
+            document.querySelector<HTMLDivElement>('#bar-chart-container')?.classList.remove('animate-pulse');
+            document.querySelector<HTMLDivElement>('#bar-chart-legend')?.classList.replace('hidden', 'flex');
+            const parsedData = JSON.parse(data) as {
+              completedCount: number;
+              notCompletedCount: number;
+            }[];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const barchart = new Chart(chart, {
+              type: 'bar',
+              options: {
+                maintainAspectRatio: false,
+                scales: {
+                  x: {
+                    stacked: true,
+                    labels: months.map((row) => row),
+                    type: 'category',
+                    ticks: {
+                      color: labelColor,
+                      font: {
+                        size: 16
+                      }
+                    }
+                  },
+                  y: {
+                    stacked: true,
+                    ticks: {
+                      color: labelColor,
+                      stepSize: 1,
+                      font: {
+                        size: 16
+                      }
+                    },
+                    type: 'linear'
                   }
                 }
               },
-              y: {
-                stacked: true,
-                ticks: {
-                  color: labelColor,
-                  stepSize: 1,
-                  font: {
-                    size: 16
+              data: {
+                datasets: [
+                  {
+                    label: 'Completed',
+                    data: parsedData.map((row) => row.completedCount),
+                    backgroundColor: '#64d175',
+                    barThickness: 30
+                  },
+                  {
+                    label: 'Not Completed',
+                    data: parsedData.map((row) => row.notCompletedCount),
+                    backgroundColor: '#ef4444',
+                    barThickness: 30
                   }
-                },
-                type: 'linear'
+                ]
               }
-            }
-          },
-          data: {
-            datasets: [
-              {
-                label: 'Completed',
-                data: parsedData.map((row) => row.completedCount),
-                backgroundColor: '#64d175',
-                barThickness: 30
-              },
-              {
-                label: 'Not Completed',
-                data: parsedData.map((row) => row.notCompletedCount),
-                backgroundColor: '#ef4444',
-                barThickness: 30
+            });
+            darkModePreference.addEventListener('change', (e) => {
+              labelColor = e.matches ? 'lightgray' : 'black';
+              const xLabelColor = barchart.options.scales?.x?.ticks;
+              const yLabelColor = barchart.options.scales?.y?.ticks;
+              if (xLabelColor && yLabelColor) {
+                xLabelColor.color = labelColor;
+                yLabelColor.color = labelColor;
+                barchart.update();
               }
-            ]
+            });
           }
-        });
-        darkModePreference.addEventListener('change', (e) => {
-          labelColor = e.matches ? 'lightgray' : 'black';
-          const xLabelColor = barchart.options.scales?.x?.ticks;
-          const yLabelColor = barchart.options.scales?.y?.ticks;
-          if (xLabelColor && yLabelColor) {
-            xLabelColor.color = labelColor;
-            yLabelColor.color = labelColor;
-            barchart.update();
-          }
-        });
+        }, 0);
       }
     }
-  }
-
-  customElements.define('activities-bar-chart', ActivitiesBarChart);
+    customElements.define('activities-bar-chart', ActivitiesBarChart);
 </script>

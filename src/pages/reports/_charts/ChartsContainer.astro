@@ -1,0 +1,59 @@
+---
+import { getCompletionRate } from '@/api/goals/queries';
+import BarChart from './BarChart.astro';
+import PieChart from './PieChart.astro';
+
+const { user } = Astro.locals;
+
+let completionRate: number;
+let totalGoals: number;
+let lastWeekGoals: number;
+let delta: number;
+try {
+  const {
+    completionRate: ratePercentage,
+    lastWeekGoalsCount,
+    totalGoalsCount,
+    deltaCount
+  } = await getCompletionRate(user.id);
+  completionRate = ratePercentage;
+  totalGoals = totalGoalsCount;
+  lastWeekGoals = lastWeekGoalsCount;
+  delta = deltaCount;
+} catch (error) {
+
+  return Astro.redirect('error?redirect=reports');
+}
+---
+
+<div class='grid gap-4'>
+  <section class='grid h-40 grid-cols-2 grid-rows-2 gap-2 sm:grid-cols-4 sm:grid-rows-1'>
+    <div class='flex flex-col justify-center rounded-xl bg-base-200 p-4 shadow-lg md:gap-4 md:p-8'>
+      <div class='card-header text-center font-extrabold text-base-content'>{`${completionRate}%`}</div>
+      <div class='md:text text-balance text-center text-sm text-base-content/80'>Goals Completed</div>
+    </div>
+    <div class='flex flex-col justify-center rounded-xl bg-base-200 p-4 shadow-lg md:gap-4 md:p-8'>
+      <div class='card-header text-center font-extrabold text-base-content'>{totalGoals}</div>
+      <div class='md:text text-balance text-center text-sm text-base-content/80'>Total Goals</div>
+    </div>
+    <div class='flex flex-col justify-center rounded-xl bg-base-200 p-4 shadow-lg md:gap-4 md:p-8'>
+      <div class='card-header text-center font-extrabold text-base-content'>{`${lastWeekGoals}`}</div>
+      <div class='md:text text-balance text-center text-sm text-base-content/80'>New Goals Last Week</div>
+    </div>
+    <div class='flex flex-col justify-center rounded-xl bg-base-200 p-4 shadow-lg md:gap-4 md:p-8'>
+      <div class='card-header text-center font-extrabold text-base-content'>
+        {`${delta >= 0 ? '+' : ''}${delta}`}
+      </div>
+      <div class='md:text text-balance text-center text-sm text-base-content/80'>Vs Previous Week</div>
+    </div>
+  </section>
+  <section class='grid grid-cols-1 gap-2 md:grid-cols-4'>
+    <BarChart />
+    <PieChart />
+  </section>
+</div>
+<style>
+  .card-header {
+    font-size: clamp(1rem, 2.5vw, 2rem);
+  }
+</style>

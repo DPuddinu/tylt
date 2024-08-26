@@ -33,38 +33,40 @@ const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.local
   class ActivitiesPieChart extends HTMLElement {
     constructor() {
       super();
-      const data = this.dataset.value;
-      const chart = document.querySelector<HTMLCanvasElement>('#goalsWithActivities');
-      let labelColor = 'lightgray';
-      const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
+      setTimeout(() => {
+        const data = this.dataset.value;
+        const chart = document.querySelector<HTMLCanvasElement>('#goalsWithActivities');
+        let labelColor = 'lightgray';
+        const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
 
-      if (data && chart) {
-        document.querySelector<HTMLDivElement>('#pie-chart-container')?.classList.remove('animate-pulse');
-        document.querySelector<HTMLDivElement>('#pie-chart-legend')?.classList.replace('hidden', 'flex');
-        const parsedData = JSON.parse(data) as ActivityWithGoalCount[];
-        const piechart = new Chart(chart, {
-          type: 'doughnut',
-          data: {
-            datasets: [
-              {
-                label: 'Goals',
-                data: parsedData.map((row) => row.goalCount),
-                backgroundColor: parsedData.map((row) => row.color),
-                hoverOffset: 4
-              }
-            ]
-          }
-        });
+        if (data && chart) {
+          document.querySelector<HTMLDivElement>('#pie-chart-container')?.classList.remove('animate-pulse');
+          document.querySelector<HTMLDivElement>('#pie-chart-legend')?.classList.replace('hidden', 'flex');
+          const parsedData = JSON.parse(data) as ActivityWithGoalCount[];
+          const piechart = new Chart(chart, {
+            type: 'doughnut',
+            data: {
+              datasets: [
+                {
+                  label: 'Goals',
+                  data: parsedData.map((row) => row.goalCount),
+                  backgroundColor: parsedData.map((row) => row.color),
+                  hoverOffset: 4
+                }
+              ]
+            }
+          });
 
-        darkModePreference.addEventListener('change', (e) => {
-          labelColor = e.matches ? 'lightgray' : 'black';
-          const legend = piechart.options.plugins?.legend?.labels;
-          if (legend) {
-            legend.color = labelColor;
-            piechart.update();
-          }
-        });
-      }
+          darkModePreference.addEventListener('change', (e) => {
+            labelColor = e.matches ? 'lightgray' : 'black';
+            const legend = piechart.options.plugins?.legend?.labels;
+            if (legend) {
+              legend.color = labelColor;
+              piechart.update();
+            }
+          });
+        }
+      }, 0);
     }
   }
 
