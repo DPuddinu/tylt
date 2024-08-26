@@ -61,7 +61,6 @@ const links = ['Activities', 'Goals', 'Reports'];
               {links.map((link) => (
                 <a
                   data-astro-prefetch='load'
-                  onclick={`progress.classList.remove('hidden')`}
                   href={`${link === pageName ? '#' : '/' + link.toLowerCase()}`}
                   role='link'
                   class='border border-transparent transition-colors duration-300 hover:border-b-warning'
@@ -106,7 +105,6 @@ const links = ['Activities', 'Goals', 'Reports'];
               href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
               role='link'
               class:list={[{ 'tab-active': pageName === link }]}
-              onclick={`progress.classList.remove('hidden')`}
               class='tab h-3/4 text-base font-bold'>
               {link}
             </a>
@@ -116,3 +114,14 @@ const links = ['Activities', 'Goals', 'Reports'];
     }
   </body>
 </html>
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const progress = document.getElementById('progress');
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A') {
+        progress?.classList.remove('hidden');
+      }
+    });
+  });
+</script>
