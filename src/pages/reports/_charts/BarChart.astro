@@ -9,37 +9,9 @@ const goalsByTimePeriod: ShortGoal[] = await getGoalsByTimePeriod({
   userId: Astro.locals.user.id,
   timeFilter: 'all Time'
 });
-type CompletionGoal = {
-  completedCount: number;
-  notCompletedCount: number;
-};
-const goalsByMonth = goalsByTimePeriod.reduce(
-  (acc, goal) => {
-    const month = new Date(goal.creationDate).getMonth();
-
-    if (goal.completed) {
-      acc[month] = {
-        completedCount: acc[month].completedCount + 1,
-        notCompletedCount: acc[month].notCompletedCount
-      };
-    } else {
-      acc[month] = {
-        completedCount: acc[month].completedCount,
-        notCompletedCount: acc[month].notCompletedCount + 1
-      };
-    }
-    return acc;
-  },
-  new Array<CompletionGoal>(12).fill({
-    completedCount: 0,
-    notCompletedCount: 0
-  })
-);
 ---
 
-<activities-bar-chart
-  data-value={JSON.stringify(goalsByMonth)}
-  class='col-span-1 flex h-fit w-full grow flex-col gap-4 rounded-lg bg-base-200 p-4 sm:col-span-2'>
+<activities-bar-chart class='col-span-1 flex h-fit w-full grow flex-col gap-4 rounded-lg bg-base-200 p-4 sm:col-span-2'>
   <h1 class='text-center text-2xl font-bold text-base-content'>Goals per Month</h1>
   <div
     id='bar-chart-container'
@@ -60,84 +32,82 @@ const goalsByMonth = goalsByTimePeriod.reduce(
 
 <script>
   import { BarController, BarElement, CategoryScale, Chart, LinearScale, Title, Tooltip } from 'chart.js';
-    Chart.register(BarController, BarElement, LinearScale, Tooltip, CategoryScale, Title);
+  import type { CompletionGoal } from '@/pages/api/barchart';
+  Chart.register(BarController, BarElement, LinearScale, Tooltip, CategoryScale, Title);
 
-    class ActivitiesBarChart extends HTMLElement {
-      constructor() {
-        super();
-        setTimeout(() => {
-          const data = this.dataset.value;
-          const chart = document.querySelector<HTMLCanvasElement>('#chart');
-          const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
-          let labelColor = 'lightgray';
+  class ActivitiesBarChart extends HTMLElement {
+    constructor() {
+      super();
+      setTimeout(async () => {
+        const data = (await fetch('/api/barchart').then((res) => res.json())) as CompletionGoal[];  
+        const chart = document.querySelector<HTMLCanvasElement>('#chart');
+        const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
+        let labelColor = 'lightgray';
 
-          if (data && chart) {
-            document.querySelector<HTMLDivElement>('#bar-chart-container')?.classList.remove('animate-pulse');
-            document.querySelector<HTMLDivElement>('#bar-chart-legend')?.classList.replace('hidden', 'flex');
-            const parsedData = JSON.parse(data) as {
-              completedCount: number;
-              notCompletedCount: number;
-            }[];
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const barchart = new Chart(chart, {
-              type: 'bar',
-              options: {
-                maintainAspectRatio: false,
-                scales: {
-                  x: {
-                    stacked: true,
-                    labels: months.map((row) => row),
-                    type: 'category',
-                    ticks: {
-                      color: labelColor,
-                      font: {
-                        size: 16
-                      }
+        if (data && chart) {
+          document.querySelector<HTMLDivElement>('#bar-chart-container')?.classList.remove('animate-pulse');
+          document.querySelector<HTMLDivElement>('#bar-chart-legend')?.classList.replace('hidden', 'flex');
+
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const barchart = new Chart(chart, {
+            type: 'bar',
+            options: {
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  stacked: true,
+                  labels: months.map((row) => row),
+                  type: 'category',
+                  ticks: {
+                    color: labelColor,
+                    font: {
+                      size: 16
+                    }
+                  }
+                },
+                y: {
+                  stacked: true,
+                  ticks: {
+                    color: labelColor,
+                    stepSize: 1,
+                    font: {
+                      size: 16
                     }
                   },
-                  y: {
-                    stacked: true,
-                    ticks: {
-                      color: labelColor,
-                      stepSize: 1,
-                      font: {
-                        size: 16
-                      }
-                    },
-                    type: 'linear'
-                  }
+                  type: 'linear'
                 }
-              },
-              data: {
-                datasets: [
-                  {
-                    label: 'Completed',
-                    data: parsedData.map((row) => row.completedCount),
-                    backgroundColor: '#64d175',
-                    barThickness: 30
-                  },
-                  {
-                    label: 'Not Completed',
-                    data: parsedData.map((row) => row.notCompletedCount),
-                    backgroundColor: '#ef4444',
-                    barThickness: 30
-                  }
-                ]
               }
-            });
-            darkModePreference.addEventListener('change', (e) => {
-              labelColor = e.matches ? 'lightgray' : 'black';
-              const xLabelColor = barchart.options.scales?.x?.ticks;
-              const yLabelColor = barchart.options.scales?.y?.ticks;
-              if (xLabelColor && yLabelColor) {
-                xLabelColor.color = labelColor;
-                yLabelColor.color = labelColor;
-                barchart.update();
-              }
-            });
-          }
-        }, 0);
-      }
+            },
+            data: {
+              datasets: [
+                {
+                  label: 'Completed',
+                  data: data.map((row) => row.completedCount),
+                  backgroundColor: '#64d175',
+                  barThickness: 30
+                },
+                {
+                  label: 'Not Completed',
+                  data: data.map((row) => row.notCompletedCount),
+                  backgroundColor: '#ef4444',
+                  barThickness: 30
+                }
+              ]
+            }
+          });
+          darkModePreference.addEventListener('change', (e) => {
+            labelColor = e.matches ? 'lightgray' : 'black';
+            const xLabelColor = barchart.options.scales?.x?.ticks;
+            const yLabelColor = barchart.options.scales?.y?.ticks;
+            if (xLabelColor && yLabelColor) {
+              xLabelColor.color = labelColor;
+              yLabelColor.color = labelColor;
+              barchart.update();
+            }
+          });
+        }
+      }, 0);
     }
-    customElements.define('activities-bar-chart', ActivitiesBarChart);
+  }
+  customElements.define('activities-bar-chart', ActivitiesBarChart);
 </script>

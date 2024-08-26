@@ -1,28 +1,21 @@
 ---
-import { getGoalsCountPerActivity } from '@/api/activities/queries';
 
-const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.locals.user.id });
 ---
 
-<activities-pie-chart
-  data-value={JSON.stringify(goalsWithActivities)}
-  class='col-span-1 flex h-fit w-full flex-col rounded-lg bg-base-200 p-4 md:col-span-2'>
+<activities-pie-chart class='col-span-1 flex h-fit w-full flex-col rounded-lg bg-base-200 p-4 md:col-span-2'>
   <h1 class='pb-4 text-center text-2xl font-bold text-base-content'>Activities</h1>
   <div
     id='pie-chart-container'
     class='flex min-h-[300px] grow animate-pulse flex-col items-start justify-start gap-4 rounded-lg bg-base-100 p-2 px-4'>
-    <div id='pie-chart-legend' class='hidden flex-wrap items-center gap-2 px-1'>
-      {
-        goalsWithActivities.map((activity) => (
-          <div class='flex items-center gap-2'>
-            <div class='h-2 w-4' style={`background-color: ${activity.color}`} />
-            <span>{activity.activityName}</span>
-          </div>
-        ))
-      }
-    </div>
+    <div id='pie-chart-legend' class='hidden flex-wrap items-center gap-2 px-1'></div>
     <canvas id='goalsWithActivities' class='max-h-[300px]'></canvas>
   </div>
+  <template id='activity-legend-template'>
+    <div class='flex items-center gap-2'>
+      <div class='h-2 w-4'></div>
+      <span></span>
+    </div>
+  </template>
 </activities-pie-chart>
 
 <script>
@@ -33,8 +26,21 @@ const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.local
   class ActivitiesPieChart extends HTMLElement {
     constructor() {
       super();
-      setTimeout(() => {
-        const data = this.dataset.value;
+      setTimeout(async () => {
+        const data = (await fetch('/api/piechart').then((res) => res.json())) as ActivityWithGoalCount[];
+
+        const legends = document.querySelector<HTMLDivElement>('#pie-chart-legend');
+        data.forEach((activity) => {
+          const template = document.querySelector<HTMLTemplateElement>('#activity-legend-template');
+          const clone = template?.content.cloneNode(true) as HTMLDivElement;
+          const color = clone.querySelector<HTMLDivElement>('div>div');
+          const name = clone.querySelector<HTMLSpanElement>('div>span');
+          if (!template || !legends || !color || !name) return;
+          color.style.backgroundColor = activity.color;
+          name.textContent = activity.activityName;
+          legends.appendChild(clone);
+        });
+
         const chart = document.querySelector<HTMLCanvasElement>('#goalsWithActivities');
         let labelColor = 'lightgray';
         const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)');
@@ -42,15 +48,14 @@ const goalsWithActivities = await getGoalsCountPerActivity({ userId: Astro.local
         if (data && chart) {
           document.querySelector<HTMLDivElement>('#pie-chart-container')?.classList.remove('animate-pulse');
           document.querySelector<HTMLDivElement>('#pie-chart-legend')?.classList.replace('hidden', 'flex');
-          const parsedData = JSON.parse(data) as ActivityWithGoalCount[];
           const piechart = new Chart(chart, {
             type: 'doughnut',
             data: {
               datasets: [
                 {
                   label: 'Goals',
-                  data: parsedData.map((row) => row.goalCount),
-                  backgroundColor: parsedData.map((row) => row.color),
+                  data: data.map((row) => row.goalCount),
+                  backgroundColor: data.map((row) => row.color),
                   hoverOffset: 4
                 }
               ]

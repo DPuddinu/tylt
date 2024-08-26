@@ -10,14 +10,15 @@ type Props = {
   register?: boolean;
 };
 const { value, id, name, placeholder, register = true } = Astro.props;
+
 ---
 
 <quill-editor
-  data-value={value}
   data-id={id}
   data-name={name}
   data-placeholder={placeholder}
-  data-register={register}
+  data-value={value}
+  data-register={register.toString()}
   class='flex h-full grow flex-col gap-2 rounded-xl md:min-h-40'>
   <div
     id={`${id}-container`}
@@ -32,7 +33,7 @@ const { value, id, name, placeholder, register = true } = Astro.props;
   class QuillEditor extends HTMLElement {
     constructor() {
       super();
-      const { value, placeholder, id, name , register} = this.dataset;
+      const { value, placeholder, id, name, register } = this.dataset;
       const form = document.querySelector('#goal-form') as HTMLFormElement;
       if (!id || !name) throw new Error('Editor ID or name is required');
 
@@ -50,8 +51,7 @@ const { value, id, name, placeholder, register = true } = Astro.props;
       editorContainer?.classList.replace('hidden', 'flex');
 
       if (value) quill.setContents(JSON.parse(value));
-
-      if (form && form.contains(quillEditor) && register) {
+      if (form && form.contains(quillEditor) && register === 'true') {
         form.addEventListener('formdata', (event) => {
           event.formData.append(name, JSON.stringify(quill.getContents().ops));
         });

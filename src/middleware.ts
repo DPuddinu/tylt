@@ -3,7 +3,17 @@ import { getSession } from 'auth-astro/server';
 import { getSetupDone } from './api/setup/queries';
 import { setupDoneKey } from './utils/constants';
 
-const protectedRoutes = ['/goals', '/setup', '/activities', '/reports', '/error', '/changelog', '/ChartsContainer'];
+const protectedRoutes = [
+  '/goals',
+  '/setup',
+  '/activities',
+  '/reports',
+  '/error',
+  '/changelog',
+  '/ChartsContainer',
+  '/barchart',
+  '/piechart'
+];
 
 export const onRequest = defineMiddleware(async ({ redirect, request, locals, url, cookies }, next) => {
   const matchingRoute = protectedRoutes.some((route) => url.pathname.toLowerCase().includes(route.toLowerCase()));
