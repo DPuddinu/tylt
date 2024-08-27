@@ -28,7 +28,6 @@ if (Astro.request.method === 'POST') {
 }
 Astro.response.headers.set('Cache-Control', 'public, max-age=31536000');
 Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, durable, max-age=31536000');
-export const prerender = true
 ---
 
 <Layout pageName='Activities'>
