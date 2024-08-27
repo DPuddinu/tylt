@@ -3,8 +3,8 @@ import Spinner from '@components/Spinner.astro';
 import Layout from '@layouts/MainLayout.astro';
 import GoalsContent from './_components/GoalsContent.astro';
 
-Astro.response.headers.set('Cache-Control', 'public, max-age=31536000');
-Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, durable, max-age=31536000');
+Astro.response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, durable, max-age=31536000, s-maxage=31536000');
 ---
 
 <Layout pageName='Goals'>
