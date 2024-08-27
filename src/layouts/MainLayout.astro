@@ -3,11 +3,11 @@ import '@/styles/commons.css';
 import { seoConfig } from '@/utils/seoConfig';
 import Dropdown from '@components/Dropdown.astro';
 import SignOut from '@components/SignOutButton.astro';
+import UserLetter from '@components/UserLetter.astro';
 import '@fontsource/inter';
 import { SEO } from 'astro-seo';
 import { ViewTransitions } from 'astro:transitions';
 
-const { user } = Astro.locals;
 type Props = {
   pageName?: string;
 };
@@ -75,7 +75,7 @@ const links = ['Activities', 'Goals', 'Reports'];
           <button
             slot='trigger'
             class='btn btn-circle border-base-content bg-base-content text-base-300 hover:border-base-content/90 hover:bg-base-content/90'>
-            {user.name[0]}
+            <UserLetter server:defer />
           </button>
           <div slot='content'>
             <li class='text-lg font-bold'><a href='/changelog'>Changelog</a></li>

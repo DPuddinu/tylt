@@ -12,7 +12,8 @@ const protectedRoutes = [
   '/changelog',
   '/ChartsContainer',
   '/barchart',
-  '/piechart'
+  '/piechart',
+  '/userletter'
 ];
 
 export const onRequest = defineMiddleware(async ({ redirect, request, locals, url, cookies }, next) => {
