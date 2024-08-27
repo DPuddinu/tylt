@@ -26,8 +26,9 @@ if (Astro.request.method === 'POST') {
     return Astro.redirect('/error?redirect=activities');
   }
 }
-Astro.response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+Astro.response.headers.set('Cache-Control', 'public, max-age=31536000');
 Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, durable, max-age=31536000');
+export const prerender = true
 ---
 
 <Layout pageName='Activities'>
