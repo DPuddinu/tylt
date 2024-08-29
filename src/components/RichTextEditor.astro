@@ -10,7 +10,6 @@ type Props = {
   register?: boolean;
 };
 const { value, id, name, placeholder, register = true } = Astro.props;
-
 ---
 
 <quill-editor
@@ -33,29 +32,31 @@ const { value, id, name, placeholder, register = true } = Astro.props;
   class QuillEditor extends HTMLElement {
     constructor() {
       super();
-      const { value, placeholder, id, name, register } = this.dataset;
-      const form = document.querySelector('#goal-form') as HTMLFormElement;
-      if (!id || !name) throw new Error('Editor ID or name is required');
+      setTimeout(() => {
+        const { value, placeholder, id, name, register } = this.dataset;
+        const form = document.querySelector('#goal-form') as HTMLFormElement;
+        if (!id || !name) throw new Error('Editor ID or name is required');
 
-      const quillEditor = document.querySelector('quill-editor') as HTMLFormElement;
-      const quill = new Quill(`#${id}`, {
-        modules: {
-          toolbar: [[{ header: [1, 2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'code-block']]
-        },
-        placeholder,
-        theme: 'snow'
-      });
-      const editorContainer = document.querySelector(`#${id}-container`);
-
-      editorContainer?.classList.remove('animate-pulse');
-      editorContainer?.classList.replace('hidden', 'flex');
-
-      if (value) quill.setContents(JSON.parse(value));
-      if (form && form.contains(quillEditor) && register === 'true') {
-        form.addEventListener('formdata', (event) => {
-          event.formData.append(name, JSON.stringify(quill.getContents().ops));
+        const quillEditor = document.querySelector('quill-editor') as HTMLFormElement;
+        const quill = new Quill(`#${id}`, {
+          modules: {
+            toolbar: [[{ header: [1, 2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'code-block']]
+          },
+          placeholder,
+          theme: 'snow'
         });
-      }
+        const editorContainer = document.querySelector(`#${id}-container`);
+
+        editorContainer?.classList.remove('animate-pulse');
+        editorContainer?.classList.replace('hidden', 'flex');
+
+        if (value) quill.setContents(JSON.parse(value));
+        if (form && form.contains(quillEditor) && register === 'true') {
+          form.addEventListener('formdata', (event) => {
+            event.formData.append(name, JSON.stringify(quill.getContents().ops));
+          });
+        }
+      }, 0);
     }
   }
 
