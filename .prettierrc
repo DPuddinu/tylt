@@ -3,8 +3,13 @@
   "printWidth": 120,
   "bracketSameLine": true,
   "htmlWhitespaceSensitivity": "ignore",
-  "trailingComma" : "none",
-  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-tailwindcss", "prettier-plugin-astro-organize-imports"],
+  "trailingComma": "none",
+  "plugins": [
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-tailwindcss",
+    "prettier-plugin-astro-organize-imports",
+    "prettier-plugin-astro"
+  ],
   "overrides": [
     {
       "files": "*.astro",
