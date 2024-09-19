@@ -6,7 +6,7 @@ import GoalsContent from './_components/GoalsContent.astro';
 
 <Layout pageName='Goals'>
   <section class='flex h-full flex-col gap-4 md:flex-row'>
-    <GoalsContent server:defer>
+    <GoalsContent>
       <Spinner slot='fallback' />
     </GoalsContent>
   </section>

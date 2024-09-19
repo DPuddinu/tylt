@@ -6,7 +6,7 @@ import ChartsContainer from './_charts/ChartsContainer.astro';
 
 <Layout pageName='Reports'>
   <header class='font-bolder pb-4 text-4xl text-base-content'><h1>Reports</h1></header>
-  <ChartsContainer server:defer>
+  <ChartsContainer>
     <Spinner slot='fallback' />
   </ChartsContainer>
 </Layout>
