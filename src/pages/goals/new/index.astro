@@ -18,15 +18,13 @@ if (Astro.request.method === 'POST') {
       authorId: user.id,
       authorName: user.name
     });
-    
+
     return Astro.redirect('/goals?revalidate=true');
   } catch (error) {
     return Astro.redirect('/error?redirect=goals');
   }
 }
 const title = 'New Goal';
-Astro.response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
-Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, durable, max-age=31536000, s-maxage=31536000');
 ---
 
 <Layout pageName={title}>
@@ -35,7 +33,7 @@ Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, durable, max-ag
       <h1 class='text-4xl font-bold'>{title}</h1>
     </header>
     <GoalForm transition:name='content' server:defer>
-      <Spinner slot="fallback" />
+      <Spinner slot='fallback' />
       <SelectActivityContainer slot='activities' />
       <a href='/goals' class='btn text-base-content'>Cancel</a>
     </GoalForm>
