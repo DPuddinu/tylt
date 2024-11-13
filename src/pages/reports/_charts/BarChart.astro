@@ -1,14 +1,4 @@
 ---
-import { getGoalsByTimePeriod } from '@/api/goals/queries';
-
-type ShortGoal = {
-  completed: boolean;
-  creationDate: Date;
-};
-const goalsByTimePeriod: ShortGoal[] = await getGoalsByTimePeriod({
-  userId: Astro.locals.user.id,
-  timeFilter: 'all Time'
-});
 ---
 
 <activities-bar-chart class='col-span-1 flex h-fit w-full grow flex-col gap-4 rounded-lg bg-base-200 p-4 sm:col-span-2'>
