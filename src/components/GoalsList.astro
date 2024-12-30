@@ -15,8 +15,8 @@ type Props = {
   queryParams?: Record<string, string | null> | undefined;
 };
 const { activities, goals, totalPages, offset, currentPage, itemsPerPage, queryParams = undefined } = Astro.props;
+console.log(goals);
 const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => Boolean(value));
-const locale = Astro.request.headers.get('Accept-Language')?.substring(0, 5);
 const path = Astro.url.pathname;
 const baseHref = path.includes('activities') ? '' : '/activities/';
 ---
@@ -70,10 +70,10 @@ const baseHref = path.includes('activities') ? '' : '/activities/';
                         </a>
                       </div>
                     </td>
-                    <td>{formatDate(goal.creationDate, locale)}</td>
-                    <td>{formatDate(goal.updateDate, locale)}</td>
-                    <td>{goal.dueDate ? formatDate(goal.dueDate, locale) : '-'}</td>
-                    <td>{goal.completionDate ? formatDate(goal.completionDate, locale) : '-'}</td>
+                    <td>{formatDate(goal.creationDate)}</td>
+                    <td>{formatDate(goal.updateDate)}</td>
+                    <td>{goal.dueDate ? formatDate(goal.dueDate) : '-'}</td>
+                    <td>{goal.completionDate ? formatDate(goal.completionDate) : '-'}</td>
                   </tr>
                 ))}
               </tbody>
