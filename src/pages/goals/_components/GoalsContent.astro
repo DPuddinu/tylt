@@ -3,8 +3,10 @@ import { getActivities } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE } from '@/api/goals/queries';
 import GoalFilterSidebar from '@/pages/goals/_components/GoalFilters.astro';
 import type { GoalFilters, GoalFormParam } from '@/types/filters.types';
+import Card from '@components/Card.astro';
+import GoalsList from '@components/GoalsList.astro';
+import Spinner from '@components/Spinner.astro';
 import type { TActivity } from 'db/config';
-import GoalsContainer from './GoalsContainer.astro';
 
 let activities: TActivity[] = [];
 const { user } = Astro.locals;
@@ -38,11 +40,29 @@ const offsetFilter = Number(getParam('offset')) || 0;
 const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 
 try {
-  activities = await getActivities(user.id);
+  const storedActivities = (await Astro.session?.get('activities')) as TActivity[];
+  activities = storedActivities || (await getActivities(user.id));
+  if (!storedActivities) {
+    Astro.session?.set('activities', activities);
+  }
 } catch (error) {
   return Astro.redirect('error?redirect=goals');
 }
 ---
 
 <GoalFilterSidebar activities={activities} filters={goalFilters} />
-<GoalsContainer goalFilters={goalFilters} currentPage={currentPage} params={params} offset={offsetFilter} />
+<Card title='Goals'>
+  <div slot='header-content' class='flex w-full items-center justify-end'>
+    <a
+      transition:animate='slide'
+      data-astro-prefetch='load'
+      href={`/goals/new`}
+      class='btn btn-circle btn-warning btn-sm text-base font-extrabold md:btn-md md:text-2xl md:font-bold'
+      transition:name='fab'>
+      +
+    </a>
+  </div>
+  <GoalsList goalFilters={goalFilters} currentPage={currentPage} params={params} offset={offsetFilter} server:defer>
+    <Spinner slot='fallback' />
+  </GoalsList>
+</Card>

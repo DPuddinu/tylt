@@ -1,5 +1,4 @@
 ---
 const { user } = Astro.locals;
-Astro.response.headers.set('Cache-Control', 'private, max-age=3600');
 ---
 {user.name[0]}

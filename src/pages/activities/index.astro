@@ -44,7 +44,7 @@ if (Astro.request.method === 'POST') {
         ))
       }
     </header>
-    <ActivitiesContent>
+    <ActivitiesContent server:defer>
       <Spinner slot='fallback' />
     </ActivitiesContent>
     <Popover id='new-activity-dialog' title='New Activity'>

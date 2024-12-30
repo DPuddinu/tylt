@@ -1,117 +1,118 @@
 ---
+import { getActivities } from '@/api/activities/queries';
+import { ITEMS_PER_PAGE, getPaginatedGoals } from '@/api/goals/queries';
 import GoalRow from '@/pages/goals/_components/GoalRow.astro';
+import type { GoalFilters } from '@/types/filters.types';
 import { formatDate } from '@/utils/format-date';
 import { Icon } from 'astro-icon/components';
-import type { TActivity, TGoal } from 'db/config';
-import Card from './Card.astro';
+import type { TActivity } from 'db/config';
 
 type Props = {
-  activities: TActivity[];
-  goals: TGoal[];
-  totalPages: number;
-  offset: number;
+  goalFilters: GoalFilters;
   currentPage: number;
-  itemsPerPage: number;
-  queryParams?: Record<string, string | null> | undefined;
+  offset: number;
+  params: Record<string, string | null> | undefined;
 };
-const { activities, goals, totalPages, offset, currentPage, itemsPerPage, queryParams = undefined } = Astro.props;
-console.log(goals);
-const paramsArray = Object.entries(queryParams ?? {}).filter(([key, value]) => Boolean(value));
+const { goalFilters, currentPage, params, offset = 0 } = Astro.props;
+const paramsArray = Object.entries(params ?? {}).filter(([key, value]) => Boolean(value));
 const path = Astro.url.pathname;
 const baseHref = path.includes('activities') ? '' : '/activities/';
+
+const { user } = Astro.locals;
+const { countGoals, goals } = await getPaginatedGoals({
+  userId: user.id,
+  page: currentPage,
+  filters: goalFilters
+});
+const totalPages = Math.ceil(countGoals / ITEMS_PER_PAGE);
+let activities: TActivity[] = [];
+
+try {
+  activities = await getActivities(user.id);
+} catch (error) {
+  return Astro.redirect('error?redirect=goals');
+}
 ---
 
-<Card title='Goals'>
-  <div slot='header-content' class='flex w-full items-center justify-end'>
-    <a
-      transition:animate='slide'
-      data-astro-prefetch='load'
-      href={`/goals/new`}
-      class='btn btn-circle btn-warning btn-sm text-base font-extrabold md:btn-md md:text-2xl md:font-bold'
-      transition:name='fab'>
-      +
-    </a>
-  </div>
-  {
-    goals.length > 0 ? (
-      <>
-        <article class='hidden grow md:flex'>
-          <div class='grow overflow-x-auto'>
-            <table class='table table-lg w-full'>
-              <thead>
-                <tr class='text-lg'>
-                  <th>Name</th>
-                  <th>Activity</th>
-                  <th>Creation</th>
-                  <th>Last Update</th>
-                  <th>Due Date</th>
-                  <th>Completion Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {goals.map((goal) => (
-                  <tr>
-                    <td>
-                      <a href={`/goals/${goal.id}`} class='hover:font-bold' data-astro-prefetch='load'>
-                        {goal.title}
+{
+  goals.length > 0 ? (
+    <>
+      <article class='hidden grow md:flex'>
+        <div class='grow overflow-x-auto'>
+          <table class='table table-lg w-full'>
+            <thead>
+              <tr class='text-lg'>
+                <th>Name</th>
+                <th>Activity</th>
+                <th>Creation</th>
+                <th>Last Update</th>
+                <th>Due Date</th>
+                <th>Completion Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {goals.map((goal) => (
+                <tr>
+                  <td>
+                    <a href={`/goals/${goal.id}`} class='hover:font-bold' data-astro-prefetch='load'>
+                      {goal.title}
+                    </a>
+                  </td>
+                  <td>
+                    <div class='flex items-center gap-2'>
+                      <Icon
+                        name={activities.find((activity) => activity.id === goal.activityId)?.icon}
+                        class='h-8 w-8 rounded-lg p-1'
+                      />
+                      <a
+                        href={`${baseHref}${activities.find((activity) => activity.id === goal.activityId)?.id}`}
+                        class='hover:font-bold'
+                        data-astro-prefetch='load'>
+                        {activities.find((activity) => activity.id === goal.activityId)?.name}
                       </a>
-                    </td>
-                    <td>
-                      <div class='flex items-center gap-2'>
-                        <Icon
-                          name={activities.find((activity) => activity.id === goal.activityId)?.icon}
-                          class='h-8 w-8 rounded-lg p-1'
-                        />
-                        <a
-                          href={`${baseHref}${activities.find((activity) => activity.id === goal.activityId)?.id}`}
-                          class='hover:font-bold'
-                          data-astro-prefetch='load'>
-                          {activities.find((activity) => activity.id === goal.activityId)?.name}
-                        </a>
-                      </div>
-                    </td>
-                    <td>{formatDate(goal.creationDate)}</td>
-                    <td>{formatDate(goal.updateDate)}</td>
-                    <td>{goal.dueDate ? formatDate(goal.dueDate) : '-'}</td>
-                    <td>{goal.completionDate ? formatDate(goal.completionDate) : '-'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </article>
-        <article class='flex grow flex-col gap-4 md:hidden'>
-          <ul transition:name='content'>
-            {goals.map((goal) => (
-              <GoalRow goal={goal} />
-            ))}
-          </ul>
-        </article>
-      </>
-    ) : (
-      <div class='flex grow items-center justify-center py-8 text-lg'>No Goals</div>
-    )
-  }
-  <footer class='flex justify-center gap-2'>
-    <form method='get' class='flex items-center justify-center'>
-      <input type='hidden' name='offset' value={offset >= itemsPerPage ? offset - itemsPerPage : itemsPerPage} />
-      {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
-      <button
-        disabled={offset === 0}
-        type='submit'
-        class={`${offset === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold btn-neutral'} transition-transform btn `}>
-        Previous Page
-      </button>
-    </form>
-    <form method='get' class='flex items-center justify-center'>
-      <input type='hidden' name='offset' value={offset ? offset + itemsPerPage : itemsPerPage} />
-      {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
-      <button
-        disabled={currentPage >= totalPages}
-        type='submit'
-        class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn btn-neutral`}>
-        Next Page
-      </button>
-    </form>
-  </footer>
-</Card>
+                    </div>
+                  </td>
+                  <td>{formatDate(goal.creationDate)}</td>
+                  <td>{formatDate(goal.updateDate)}</td>
+                  <td>{goal.dueDate ? formatDate(goal.dueDate) : '-'}</td>
+                  <td>{goal.completionDate ? formatDate(goal.completionDate) : '-'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class='flex grow flex-col gap-4 md:hidden'>
+        <ul transition:name='content'>
+          {goals.map((goal) => (
+            <GoalRow goal={goal} />
+          ))}
+        </ul>
+      </article>
+    </>
+  ) : (
+    <div class='flex grow items-center justify-center py-8 text-lg'>No Goals</div>
+  )
+}
+<footer class='flex justify-center gap-2'>
+  <form method='get' class='flex items-center justify-center'>
+    <input type='hidden' name='offset' value={offset >= ITEMS_PER_PAGE ? offset - ITEMS_PER_PAGE : ITEMS_PER_PAGE} />
+    {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
+    <button
+      disabled={offset === 0}
+      type='submit'
+      class={`${offset === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold btn-neutral'} transition-transform btn `}>
+      Previous Page
+    </button>
+  </form>
+  <form method='get' class='flex items-center justify-center'>
+    <input type='hidden' name='offset' value={offset ? offset + ITEMS_PER_PAGE : ITEMS_PER_PAGE} />
+    {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
+    <button
+      disabled={currentPage >= totalPages}
+      type='submit'
+      class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn btn-neutral`}>
+      Next Page
+    </button>
+  </form>
+</footer>
