@@ -6,7 +6,7 @@ import SignOut from '@components/SignOutButton.astro';
 import UserLetter from '@components/UserLetter.astro';
 import '@fontsource/inter';
 import { SEO } from 'astro-seo';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 
 type Props = {
   pageName?: string;
@@ -39,7 +39,7 @@ const links = ['Activities', 'Goals', 'Reports'];
         }
       }}
     />
-    <ViewTransitions />
+    <ClientRouter />
 
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
@@ -81,7 +81,7 @@ const links = ['Activities', 'Goals', 'Reports'];
             <li class='text-lg font-bold'><a href='/changelog'>Changelog</a></li>
             <li>
               <a class='flex text-lg font-bold'>
-                <SignOut> Logout </SignOut>
+                <SignOut server:defer> Logout </SignOut>
               </a>
             </li>
           </div>

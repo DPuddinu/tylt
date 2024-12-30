@@ -1,5 +1,4 @@
 ---
-export const prerender = true;
 import Prose from '@/components/Prose.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 const changelogs = (await getCollection('changelog')) as CollectionEntry<'changelog'>[];

@@ -20,9 +20,6 @@ export default defineConfig({
     prefetchAll: false,
     defaultStrategy: 'hover'
   },
-  experimental: {
-    serverIslands: true
-  },
   vite: {
     plugins: [
       VitePWA({
@@ -31,8 +28,21 @@ export default defineConfig({
         manifest,
         workbox: {
           globDirectory: 'dist',
-          globPatterns: ['**/*.{js,css,svg,png,jpg,jpeg,gif,webp,woff,woff2,ttf,eot,ico}'],
-          navigateFallback: '/'
+          globPatterns: [
+            '**/*.{js,css,svg,png,jpg,jpeg,gif,webp,woff,woff2,ttf,eot,ico,html}'
+          ],
+          navigateFallback: null,
+          runtimeCaching: [{
+            urlPattern: /^\/$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'start-url',
+              expiration: {
+                maxEntries: 1,
+                maxAgeSeconds: 24 * 60 * 60
+              }
+            }
+          }]
         }
       })
     ]

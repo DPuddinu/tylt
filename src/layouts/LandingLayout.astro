@@ -4,7 +4,7 @@ import { seoConfig } from '@/utils/seoConfig';
 import SignInButton from '@components/SignInButton.astro';
 import '@fontsource/inter';
 import { SEO } from 'astro-seo';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 
 const pathName = Astro.url.pathname;
 const { title } = Astro.props;
@@ -34,7 +34,7 @@ const { title } = Astro.props;
         }
       }}
     />
-    <ViewTransitions />
+    <ClientRouter />
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
 
@@ -96,7 +96,7 @@ const { title } = Astro.props;
           </ul>
         </div>
         <div class='navbar-end'>
-          <SignInButton className='btn-ghost btn-sm !bg-transparent' label='Sign in' />
+          <SignInButton className='btn-ghost btn-sm !bg-transparent' label='Sign in' server:defer />
         </div>
       </div>
     </header>
@@ -105,7 +105,7 @@ const { title } = Astro.props;
       <div class='content flex grow flex-col justify-center p-8 gap-16'>
         <slot />
         <div class='flex justify-center'>
-          <SignInButton className='btn-wide !text-white' label='Sign in with GitHub' />
+          <SignInButton className='btn-wide !text-white' label='Sign in with GitHub' server:defer />
         </div>
       </div>
     </main>
