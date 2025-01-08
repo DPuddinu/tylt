@@ -3,9 +3,12 @@ import { updateActivity } from '@/api/activities/mutations';
 import { getActivities, getActivityById } from '@/api/activities/queries';
 import { ITEMS_PER_PAGE, getGoalByActivityId } from '@/api/goals/queries';
 import { ActivitySchema } from '@/types/activities.types';
+import type { GoalFilters } from '@/types/filters.types';
 import ActivityForm from '@components/ActivityForm.astro';
+import Card from '@components/Card.astro';
 import GoalsList from '@components/GoalsList.astro';
 import Popover from '@components/Popover.astro';
+import Spinner from '@components/Spinner.astro';
 import Layout from '@layouts/MainLayout.astro';
 import type { TActivity, TGoal } from 'db/config';
 import { ZodError } from 'zod';
@@ -13,34 +16,21 @@ import { ZodError } from 'zod';
 const { id } = Astro.params;
 const { user } = Astro.locals;
 
-function getParam(param: string) {
-  return Astro.url.searchParams.get(param);
-}
-const offsetFilter = Number(getParam('offset')) || 0;
-const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
+const params = {
+  activity: id ?? null
+};
+const goalFilters: GoalFilters = {
+  activity: Number(params.activity) || undefined
+};
 
-let goals: TGoal[] = [];
-let totalPages = 0;
-let totalRows = 0;
-let activities: TActivity[] = [];
 let activity: TActivity | undefined;
-
+const offsetFilter = Number(Astro.url.searchParams.get('offset')) || 0;
+const currentPage = offsetFilter / ITEMS_PER_PAGE + 1;
 try {
-  const { count, goals: goalsByActivity } = await getGoalByActivityId({
-    activityId: Number(id),
-    userId: user.id,
-    page: currentPage
-  });
-
   activity = await getActivityById({
     id: Number(id),
     userId: user.id
   });
-  goals = goalsByActivity;
-  totalRows = count;
-  totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
-
-  activities = await getActivities(user.id);
 } catch (error) {
   return Astro.redirect(`/error?redirect=activities/${activity.id}`);
 }
@@ -96,13 +86,10 @@ if (Astro.request.method === 'POST') {
         </Popover>
       </div>
     </div>
-    <GoalsList
-      activities={activities}
-      goals={goals}
-      totalPages={totalPages}
-      offset={offsetFilter}
-      currentPage={currentPage}
-      itemsPerPage={ITEMS_PER_PAGE}
-    />
+    <Card title="Goals">
+      <GoalsList goalFilters={goalFilters} currentPage={currentPage} params={params} server:defer>
+        <Spinner slot='fallback' />
+      </GoalsList>
+    </Card>
   </div>
 </Layout>

@@ -10,10 +10,9 @@ import type { TActivity } from 'db/config';
 type Props = {
   goalFilters: GoalFilters;
   currentPage: number;
-  offset: number;
   params: Record<string, string | null> | undefined;
 };
-const { goalFilters, currentPage, params, offset = 0 } = Astro.props;
+const { goalFilters, currentPage, params } = Astro.props;
 const paramsArray = Object.entries(params ?? {}).filter(([key, value]) => Boolean(value));
 const path = Astro.url.pathname;
 const baseHref = path.includes('activities') ? '' : '/activities/';
@@ -37,7 +36,7 @@ try {
 {
   goals.length > 0 ? (
     <>
-      <article class='hidden grow md:flex'>
+      <article class='hidden grow md:flex bg-base-200 rounded-lg'>
         <div class='grow overflow-x-auto'>
           <table class='table table-lg w-full'>
             <thead>
@@ -96,22 +95,32 @@ try {
 }
 <footer class='flex justify-center gap-2'>
   <form method='get' class='flex items-center justify-center'>
-    <input type='hidden' name='offset' value={offset >= ITEMS_PER_PAGE ? offset - ITEMS_PER_PAGE : ITEMS_PER_PAGE} />
+    <input type='hidden' name='offset' value={(currentPage - 2) * ITEMS_PER_PAGE} />
     {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
     <button
-      disabled={offset === 0}
+      disabled={currentPage === 1}
       type='submit'
-      class={`${offset === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold btn-neutral'} transition-transform btn `}>
+      class:list={[
+        {
+          ' cursor-not-allowed !bg-base-100': currentPage === 1
+        }
+      ]}
+      class='hover:scale-105 hover:font-semibold transition-transform btn bg-base-200'>
       Previous Page
     </button>
   </form>
   <form method='get' class='flex items-center justify-center'>
-    <input type='hidden' name='offset' value={offset ? offset + ITEMS_PER_PAGE : ITEMS_PER_PAGE} />
+    <input type='hidden' name='offset' value={currentPage * ITEMS_PER_PAGE} />
     {paramsArray.map(([key, value]) => <input type='hidden' name={key} value={value} />)}
     <button
       disabled={currentPage >= totalPages}
       type='submit'
-      class={`${goals.length === 0 ? 'disabled cursor-not-allowed' : 'hover:scale-105 hover:font-semibold'} transition-transform btn btn-neutral`}>
+      class:list={[
+        {
+          ' cursor-not-allowed !bg-base-100': currentPage >= totalPages
+        }
+      ]}
+      class='hover:scale-105 hover:font-semibold transition-transform btn bg-base-200'>
       Next Page
     </button>
   </form>
