@@ -102,10 +102,10 @@ try {
       type='submit'
       class:list={[
         {
-          ' cursor-not-allowed !bg-base-100': currentPage === 1
+          ' cursor-not-allowed !bg-base-content/10': currentPage === 1
         }
       ]}
-      class='hover:scale-105 hover:font-semibold transition-transform btn bg-base-200'>
+      class='hover:scale-105 hover:font-semibold transition-transform btn bg-base-content/15 text-base-content'>
       Previous Page
     </button>
   </form>
@@ -120,7 +120,7 @@ try {
           ' cursor-not-allowed !bg-base-100': currentPage >= totalPages
         }
       ]}
-      class='hover:scale-105 hover:font-semibold transition-transform btn bg-base-200'>
+      class='hover:scale-105 hover:font-semibold transition-transform btn bg-base-content/15 text-base-content'>
       Next Page
     </button>
   </form>

@@ -52,7 +52,7 @@ const links = ['Activities', 'Goals', 'Reports'];
     <script is:inline src='/registerSW.js'></script>
     <link rel='manifest' href='/manifest.webmanifest' />
   </head>
-  <body class='flex flex-col bg-base-content/5'>
+  <body class='grid grid-rows-[auto_1fr_auto]'>
     <header class='h-16 bg-base-300 shadow-md shadow-base-300/50'>
       <nav class='flex h-full items-center justify-end gap-4'>
         {
@@ -94,24 +94,22 @@ const links = ['Activities', 'Goals', 'Reports'];
         <slot />
       </div>
     </main>
-    {
-      pageName && (
-        <footer
-          role='tablist'
-          class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl rounded-b-none bg-base-300 px-2 shadow shadow-base-content/10 md:hidden'>
-          {links.map((link) => (
-            <a
-              data-astro-prefetch='load'
-              href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
-              role='link'
-              class:list={[{ 'tab-active': pageName === link }]}
-              class='tab h-3/4 text-base font-bold'>
-              {link}
-            </a>
-          ))}
-        </footer>
-      )
-    }
+    <footer
+      role='tablist'
+      class='tabs-boxed grid h-16 grid-cols-3 items-center rounded-xl rounded-b-none bg-base-300 px-2 shadow shadow-base-content/10 md:hidden'>
+      {
+        links.map((link) => (
+          <a
+            data-astro-prefetch='load'
+            href={`${pageName === link ? '#' : '/' + link.toLowerCase()}`}
+            role='link'
+            class:list={[{ 'tab-active': pageName === link }]}
+            class='tab h-3/4 text-base font-bold'>
+            {link}
+          </a>
+        ))
+      }
+    </footer>
   </body>
 </html>
 <script>
