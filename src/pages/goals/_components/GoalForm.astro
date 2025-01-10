@@ -14,25 +14,22 @@ const { goal } = Astro.props;
 ---
 
 <form id='goal-form' method='post' class='flex w-full grow flex-col gap-6 rounded-lg bg-base-200 p-4'>
-  <div class='flex flex-wrap gap-2'>
+  <div class='grid md:grid-cols-2 gap-2'>
     <InputContainer HTMLFor='title-input' label='Title'>
       <TextInput id='title-input' name={formNames.title.inputName} value={goal?.title} placeholder='Type title...' />
     </InputContainer>
     <InputContainer HTMLFor={formNames.activityId.label} label={formNames.activityId.label}>
-      <slot name="activities"></slot>
-      
+      <slot name='activities' />
     </InputContainer>
-    <div class='flex flex-wrap gap-2'>
-      <InputContainer HTMLFor={formNames.completionDate.label} label={formNames.completionDate.label}>
-        <DatePicker
-          name={formNames.completionDate.inputName}
-          value={goal?.completionDate ? goal.completionDate : new Date()}
-        />
-      </InputContainer>
-      <InputContainer HTMLFor={formNames.dueDate.label} label={formNames.dueDate.label}>
-        <DatePicker name={formNames.dueDate.inputName} value={goal?.dueDate} />
-      </InputContainer>
-    </div>
+    <InputContainer HTMLFor={formNames.completionDate.label} label={formNames.completionDate.label}>
+      <DatePicker
+        name={formNames.completionDate.inputName}
+        value={goal?.completionDate ? goal.completionDate : new Date()}
+      />
+    </InputContainer>
+    <InputContainer HTMLFor={formNames.dueDate.label} label={formNames.dueDate.label}>
+      <DatePicker name={formNames.dueDate.inputName} value={goal?.dueDate} />
+    </InputContainer>
   </div>
 
   <div class='grow'>
@@ -65,10 +62,7 @@ const { goal } = Astro.props;
             />
           </div>
           <footer class='flex justify-end gap-4'>
-            <button
-              onclick={`editorDialog.close();`}
-              type='button'
-              class='btn btn-ghost text-base-content'>
+            <button onclick={`editorDialog.close();`} type='button' class='btn btn-ghost text-base-content'>
               Cancel
             </button>
             <button id='confirm-editor-dialog-btn' type='button' class='btn btn-warning' onclick='editorDialog.close()'>
